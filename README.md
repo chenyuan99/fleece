@@ -2,6 +2,12 @@
 
 ### Note: You can directly start working on this app and customize it from [Databutton's](https://databutton.com/login?utm_source=github&utm_medium=avra&utm_article=memorybot) App template and deploy :rocket: in no time!
 
+### A GenAI Hackthon Project
+
+## Author
+
+@chenyuan99
+
 ---
 
 The live demo app is hosted over [here](https://next.databutton.com/v/lgzxq112/Memory_Bot)
