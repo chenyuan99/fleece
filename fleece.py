@@ -1,19 +1,36 @@
 """
 This is a Python script that serves as a frontend for a conversational AI model built with the `langchain` and `llms` libraries.
 The code creates a web application using Streamlit, a Python library for building interactive web apps.
-# Author: Avratanu Biswas
-# Date: March 11, 2023
+# Author: Yuan Chen
+# Date: March 16, 2025
 """
+import os
 
 # Import necessary libraries
 import streamlit as st
 from langchain.chains import ConversationChain
 from langchain.chains.conversation.memory import ConversationEntityMemory
 from langchain.chains.conversation.prompt import ENTITY_MEMORY_CONVERSATION_TEMPLATE
-from langchain.llms import OpenAI
+from langchain_openai import ChatOpenAI  # Using ChatOpenAI for chat models
+# from dotenv import load_dotenv
+
+
+# Load environment variables
+# load_dotenv()
 
 # Set Streamlit page configuration
 st.set_page_config(page_title="Fleece", layout="wide")
+
+# Load custom CSS
+def load_css():
+    with open("style.css") as f:
+        st.markdown(f'<style>{f.read()}</style>', unsafe_allow_html=True)
+
+try:
+    load_css()
+except Exception as e:
+    st.warning(f"Could not load custom styling: {e}")
+
 # Initialize session states
 if "generated" not in st.session_state:
     st.session_state["generated"] = []
@@ -74,10 +91,11 @@ with st.sidebar.expander("🛠️ ", expanded=False):
         label="Model",
         options=[
             "gpt-3.5-turbo",
-            "text-davinci-003",
-            "text-davinci-002",
-            "code-davinci-002",
+            "gpt-4",
+            "gpt-4-turbo",
+            "gpt-4o"
         ],
+        index=0
     )
     K = st.number_input(
         " (#)Summary of prompts to consider", min_value=3, max_value=1000
@@ -85,15 +103,19 @@ with st.sidebar.expander("🛠️ ", expanded=False):
 
 # Set up the Streamlit app layout
 st.title("Fleece")
-st.subheader(" find the best card for deal saviors")
+st.subheader("Find the best card for deal saviors")
+
+# Add navigation information
+st.info("💡 Navigate to the Credit Cards page to explore available cards or My Credit Cards to manage your existing cards!")
 
 # Ask the user to enter their OpenAI API key
 API_O = st.sidebar.text_input("API-KEY", type="password")
 
+# API_O = os.getenv('OPENAI_API_KEY')
 # Session state storage would be ideal
 if API_O:
-    # Create an OpenAI instance
-    llm = OpenAI(temperature=0, openai_api_key=API_O, model_name=MODEL, verbose=False)
+    # Create a ChatOpenAI instance for chat models
+    llm = ChatOpenAI(temperature=0, api_key=API_O, model_name=MODEL, verbose=False)
 
     # Create a ConversationEntityMemory object if not already created
     if "entity_memory" not in st.session_state:
@@ -111,8 +133,27 @@ else:
     )
     # st.stop()
 
+# Add navigation and action buttons
+st.sidebar.markdown("## Navigation")
+st.sidebar.info("Use the dropdown menu above ↑ to navigate between pages")
+
 # Add a button to start a new chat
+st.sidebar.markdown("## Actions")
 st.sidebar.button("New Chat", on_click=new_chat, type="primary")
+
+# Add links to the credit cards pages
+col1, col2 = st.sidebar.columns(2)
+with col1:
+    if st.button("Credit Cards", type="secondary"):
+        # This is a workaround since direct navigation isn't supported in this way
+        # The user will need to use the sidebar navigation
+        st.info("Please use the sidebar navigation menu to view the Credit Cards page")
+
+with col2:
+    if st.button("My Cards", type="secondary"):
+        # This is a workaround since direct navigation isn't supported in this way
+        # The user will need to use the sidebar navigation
+        st.info("Please use the sidebar navigation menu to view the My Credit Cards page")
 
 # Get the user input
 user_input = get_text()

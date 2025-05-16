@@ -1,0 +1,81 @@
+/* Custom CSS for Fleece Application */
+
+/* Main title styling */
+h1 {
+    color: #1E3A8A;
+    font-weight: 700;
+}
+
+/* Subheader styling */
+h2, h3 {
+    color: #2563EB;
+    margin-top: 1rem;
+}
+
+/* Card styling */
+.stExpander {
+    border-radius: 10px;
+    border: 1px solid #E5E7EB;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+    margin-bottom: 1rem;
+    padding: 0.5rem;
+}
+
+/* Button styling */
+.stButton > button {
+    border-radius: 8px;
+    font-weight: 500;
+    transition: all 0.2s ease;
+}
+
+.stButton > button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Sidebar styling */
+.sidebar .sidebar-content {
+    background-color: #F8FAFC;
+}
+
+/* Info box styling */
+.stAlert {
+    border-radius: 8px;
+}
+
+/* Slider styling */
+.stSlider > div > div {
+    color: #2563EB;
+}
+
+/* Footer styling */
+footer {
+    margin-top: 3rem;
+    color: #6B7280;
+    font-size: 0.8rem;
+}
+
+/* Chat message styling */
+.chat-message {
+    padding: 1.5rem;
+    border-radius: 10px;
+    margin-bottom: 1rem;
+    display: flex;
+    flex-direction: column;
+}
+
+.user-message {
+    background-color: #F3F4F6;
+    border-left: 5px solid #2563EB;
+}
+
+.bot-message {
+    background-color: #EFF6FF;
+    border-left: 5px solid #1E3A8A;
+}
+
+/* Card image styling */
+img {
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
