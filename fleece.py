@@ -81,12 +81,18 @@ def new_chat():
 with st.sidebar.expander("🛠️ ", expanded=False):
     # Option to preview memory store
     if st.checkbox("Preview memory store"):
-        with st.expander("Memory-Store", expanded=False):
-            st.session_state.entity_memory.store
+        st.write("### Memory Store")
+        if "entity_memory" in st.session_state and hasattr(st.session_state.entity_memory, "store"):
+            st.write(st.session_state.entity_memory.store)
+        else:
+            st.write("Memory store not initialized yet.")
     # Option to preview memory buffer
     if st.checkbox("Preview memory buffer"):
-        with st.expander("Bufffer-Store", expanded=False):
-            st.session_state.entity_memory.buffer
+        st.write("### Buffer Store")
+        if "entity_memory" in st.session_state and hasattr(st.session_state.entity_memory, "buffer"):
+            st.write(st.session_state.entity_memory.buffer)
+        else:
+            st.write("Memory buffer not initialized yet.")
     MODEL = st.selectbox(
         label="Model",
         options=[
