@@ -11,7 +11,7 @@ import requests
 from io import BytesIO
 import json
 import datetime
-
+from image_service import  display_card_image
 # Set page configuration
 st.set_page_config(page_title="My Credit Cards | Fleece", layout="wide")
 
@@ -61,21 +61,6 @@ def save_user_cards(cards):
     except Exception as e:
         st.error(f"Error saving your cards: {e}")
         return False
-
-# Function to display card image
-def display_card_image(image_url):
-    try:
-        response = requests.get(image_url)
-        img = Image.open(BytesIO(response.content))
-        return img
-    except Exception as e:
-        # If loading from URL fails, try to use a default image
-        try:
-            img = Image.open(os.path.join(os.path.dirname(__file__), "..", "assets", "default_card.png"))
-            return img
-        except:
-            st.error(f"Error loading image")
-            return None
 
 # Load user's credit cards
 user_cards = load_user_cards()

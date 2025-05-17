@@ -4,11 +4,8 @@ This page displays various credit cards and their details to users.
 """
 import streamlit as st
 import pandas as pd
-from PIL import Image
 import os
-import io
-import requests
-from io import BytesIO
+from image_service import  display_card_image
 
 # Set page configuration
 st.set_page_config(page_title="Credit Cards | Fleece", layout="wide")
@@ -80,16 +77,6 @@ cards = [
     }
 ]
 
-# Function to display card image
-def display_card_image(image_url):
-    try:
-        response = requests.get(image_url)
-        img = Image.open(BytesIO(response.content))
-        return img
-    except Exception as e:
-        st.error(f"Error loading image: {e}")
-        return None
-
 # Filter options
 st.sidebar.header("Filter Cards")
 annual_fee_filter = st.sidebar.multiselect(
@@ -120,7 +107,6 @@ for i, card in enumerate(filtered_cards):
             if img:
                 st.image(img, width=300)
             
-            # Card details
             st.markdown(f"**Annual Fee:** {card['annual_fee']}")
             st.markdown(f"**Rewards:** {card['rewards']}")
             st.markdown(f"**Welcome Bonus:** {card['welcome_bonus']}")
