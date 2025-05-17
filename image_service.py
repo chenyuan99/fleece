@@ -3,6 +3,7 @@ from PIL import Image, ImageDraw, ImageFont
 import requests
 from io import BytesIO
 import streamlit as st
+import logging
 
 # Function to display card image
 def display_card_image(image_url):
@@ -13,11 +14,11 @@ def display_card_image(image_url):
                 img = Image.open(BytesIO(response.content))
                 return img
             except Exception as e:
-                st.warning(f"Could not process image from URL: {e}")
+                logging.warning(f"Could not process image from URL: {e}")
         else:
-            st.warning(f"Failed to fetch image: Status code {response.status_code}")
+            logging.warning(f"Failed to fetch image: Status code {response.status_code}")
     except Exception as e:
-        st.warning(f"Error fetching image: {e}")
+        logging.warning(f"Error fetching image: {e}")
     
     # If loading from URL fails, create a default image
     try:
@@ -40,7 +41,7 @@ def display_card_image(image_url):
         
         return img
     except Exception as e:
-        st.error(f"Error creating default image: {e}")
+        logging.warning(f"Error creating default image: {e}")
     
     # If all else fails, return None
     return None
