@@ -1,45 +1,127 @@
-# Fleece
+# Fleece - Credit Card Recommendation and Management App
 
-### Note: You can directly start working on this app and customize it from [Databutton's](https://databutton.com/login?utm_source=github&utm_medium=avra&utm_article=memorybot) App template and deploy :rocket: in no time!
+## Overview
 
-### A GenAI Hackthon Project
+Fleece is a comprehensive credit card recommendation and management application built with Streamlit and LangChain. The app helps users find the best credit cards based on their spending habits and manage their existing credit card portfolio.
 
 ## Author
 
 @chenyuan99
 
----
+## Features
 
-The live demo app is hosted over [here](https://next.databutton.com/v/lgzxq112/Memory_Bot)
+### Chat Interface
+- Interactive AI-powered chat assistant using OpenAI's GPT models
+- Conversation memory that remembers context across sessions
+- Entity memory to track important information mentioned in conversations
+- Ability to save and download conversation history
 
-Blog - [here](https://medium.com/@avra42/how-to-build-a-chatbot-with-chatgpt-api-and-a-conversational-memory-in-python-8d856cda4542) 
+### Credit Card Recommendations
+- Browse a curated list of popular credit cards with detailed information
+- Filter cards by annual fee, reward type, and other criteria
+- Get personalized card recommendations based on spending habits
+- Compare different cards side by side
 
-Video - [here](https://youtu.be/cHjlperESbg)
+### My Credit Cards Management
+- Track all your existing credit cards in one place
+- Add new cards with templates or custom information
+- Edit card details and remove cards you no longer use
+- View portfolio insights with visualizations of credit limits and annual fees
+- Sort and filter your cards by various criteria
 
+## Performance Optimizations
 
-# Features
-A typical chatbot which can,
-- Memorize the conversation
-- Save the conversation
-- Download the conversation
+The application includes several performance optimizations:
 
-# Similar to:
+1. **Image Handling**
+   - Parallel image loading with ThreadPoolExecutor
+   - Multi-level image caching to reduce network requests
+   - Pre-generated default card images
 
-Personal MemoryBot : Memory 🧠  to your Personal ChatBot 🤖|  LangChainAI and Databutton 
+2. **Data Management**
+   - Streamlit caching with TTL for expensive operations
+   - Lazy loading of UI components
+   - Optimized data structures
 
-Demo App - [here](https://next.databutton.com/v/lgzxq112/Personalised_Memory_Bot)
+3. **UI/UX Improvements**
+   - Pagination for card displays
+   - Progressive loading with "Load More" buttons
+   - Form submission to reduce rerendering
 
-Video - [here](https://youtu.be/daMNGGPJkEE)
+## Technical Architecture
 
-Blog - [here](https://medium.com/@avra42/how-to-build-a-personalized-pdf-chat-bot-with-conversational-memory-965280c160f8)
+### Core Components
+- **fleece.py**: Main application entry point with chat interface
+- **pages/credit_cards.py**: Credit card recommendation page
+- **pages/my_credit_cards.py**: Personal credit card management page
+- **image_service.py**: Optimized image loading and caching service
+- **style.css**: Custom styling for the application
 
-# Resources
+### Dependencies
+- Streamlit: Web application framework
+- LangChain: Framework for working with language models
+- OpenAI: API for accessing GPT models
+- Pandas: Data manipulation and analysis
+- PIL: Image processing
+- Requests: HTTP requests for fetching card images
 
-[Open AI](https://openai.com/) |
-[LangChain](https://langchain.readthedocs.io/en/latest/index.html) | 
-[Streamlit](https://streamlit.io/) | 
-[DataButton](https://www.databutton.io/)
+## Installation and Setup
 
+1. Clone the repository:
+   ```bash
+   git clone https://github.com/chenyuan99/fleece.git
+   cd fleece
+   ```
 
- 
+2. Create and activate a virtual environment:
+   ```bash
+   python -m venv .venv
+   source .venv/bin/activate  # On Windows: .venv\Scripts\activate
+   ```
+
+3. Install dependencies:
+   ```bash
+   pip install -r requirements.txt
+   ```
+
+4. Set up your OpenAI API key in a `.env` file:
+   ```
+   OPENAI_API_KEY=your_api_key_here
+   ```
+
+5. Run the application:
+   ```bash
+   streamlit run fleece.py
+   ```
+
+## Usage Guide
+
+### Chat Interface
+- Enter your query in the text input field
+- The AI assistant will respond based on the conversation context
+- Use the "New Chat" button to start a fresh conversation
+- Download your conversation history using the download button
+
+### Credit Card Recommendations
+- Browse available credit cards in the expandable card views
+- Use sidebar filters to narrow down card options
+- Enter your spending habits in the form to get personalized recommendations
+- Click "Apply" on any card to start the application process
+
+### My Credit Cards
+- View all your cards with detailed information
+- Use the "Add New Card" tab to add a new credit card
+- Choose from templates or create a custom card entry
+- Edit or remove existing cards as needed
+- View portfolio insights to understand your credit profile
+
+## Resources
+
+- [OpenAI](https://openai.com/)
+- [LangChain](https://langchain.readthedocs.io/)
+- [Streamlit](https://streamlit.io/)
+
+## License
+
+MIT
 

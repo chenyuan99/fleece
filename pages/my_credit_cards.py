@@ -1,6 +1,24 @@
 """
 My Credit Cards Page for Fleece Application
-This page displays the credit cards that the user currently owns and their details.
+
+This module implements the personal credit card management page of the Fleece application.
+It allows users to track, add, edit, and analyze their existing credit cards portfolio.
+
+Features:
+- View all current credit cards with detailed information
+- Add new cards using templates or custom information
+- Edit existing card details
+- Remove cards no longer in use
+- Sort cards by name, annual fee, credit limit, or date added
+- View portfolio insights with visualizations
+- Performance optimizations including:
+  - Cached data loading
+  - Pagination for improved performance
+  - Parallel image loading
+  - Lazy loading with collapsed expanders
+
+Author: @chenyuan99
+Date: May 2025
 """
 import streamlit as st
 import pandas as pd
@@ -43,7 +61,22 @@ USER_CARDS_FILE = os.path.join(os.path.dirname(__file__), "..", "user_cards.json
 # Function to load user's credit cards with caching
 @st.cache_data(ttl=300)  # Cache for 5 minutes
 def load_user_cards():
-    """Load user's credit cards with caching to improve performance"""
+    """
+    Load the user's credit cards from the JSON file with caching for improved performance.
+    
+    This function reads the user's credit cards from a JSON file and caches the result
+    for 5 minutes to avoid unnecessary file I/O operations. If the file doesn't exist
+    or there's an error reading it, an empty list is returned.
+    
+    Returns:
+        list: A list of dictionaries, each containing details about a user's credit card
+              with keys such as name, last_four, annual_fee, credit_limit, rewards,
+              expiration, image_url, and date_added.
+    
+    Performance Notes:
+        - Uses Streamlit's caching with a 5-minute TTL to balance freshness and performance
+        - Returns an empty list as fallback if the file doesn't exist or can't be read
+    """
     if os.path.exists(USER_CARDS_FILE):
         try:
             with open(USER_CARDS_FILE, 'r') as f:
@@ -56,6 +89,23 @@ def load_user_cards():
 
 # Function to save user's credit cards
 def save_user_cards(cards):
+    """
+    Save the user's credit cards to the JSON file.
+    
+    This function writes the user's credit cards to a JSON file with proper formatting.
+    If there's an error during the save operation, an error message is displayed and
+    False is returned.
+    
+    Args:
+        cards (list): A list of dictionaries, each containing details about a user's credit card
+    
+    Returns:
+        bool: True if the save operation was successful, False otherwise
+    
+    Note:
+        After a successful save operation, you should clear the load_user_cards cache
+        using load_user_cards.clear() to ensure fresh data is loaded on the next read.
+    """
     try:
         with open(USER_CARDS_FILE, 'w') as f:
             json.dump(cards, f, indent=2)
@@ -106,7 +156,30 @@ with tab1:
         # Preload card images in parallel for better performance
         @st.cache_data(ttl=3600)
         def preload_my_card_images(cards, max_cards=5):
-            """Preload card images in parallel"""
+            """
+            Preload user's credit card images in parallel for improved performance.
+            
+            This function uses Python's concurrent.futures module to fetch multiple card images
+            simultaneously, which significantly improves loading performance compared to
+            sequential loading. It only preloads a limited number of images (default: 5) to
+            balance initial load time with memory usage.
+            
+            Args:
+                cards (list): List of user's card dictionaries containing image_url keys
+                max_cards (int, optional): Maximum number of cards to preload. Defaults to 5.
+                    Increasing this value will preload more images initially but may slow down
+                    the initial page load.
+            
+            Returns:
+                dict: A dictionary mapping image URLs to their corresponding PIL Image objects
+            
+            Performance Notes:
+                - Uses ThreadPoolExecutor for parallel fetching
+                - Limited to 5 concurrent workers to avoid overwhelming the network
+                - Results are cached for 1 hour using Streamlit's caching
+                - Only preloads the first few cards for optimal initial page load time
+                - Silently handles errors to avoid disrupting the UI
+            """
             import concurrent.futures
             
             # Only preload the first few cards for initial performance

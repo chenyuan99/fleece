@@ -1,6 +1,22 @@
 """
 Credit Cards Page for Fleece Application
-This page displays various credit cards and their details to users.
+
+This module implements the credit card recommendations page of the Fleece application.
+It displays a curated list of credit cards, allows filtering based on user preferences,
+and provides personalized recommendations based on spending habits.
+
+Features:
+- Display of credit cards with details (rewards, annual fees, welcome bonuses)
+- Filtering by annual fee and reward type
+- Personalized recommendations based on spending profile
+- Performance optimizations including:
+  - Parallel image loading
+  - Data caching
+  - Progressive loading with "Load More" functionality
+  - Form-based inputs to reduce rerendering
+
+Author: @chenyuan99
+Date: May 2025
 """
 import streamlit as st
 import pandas as pd
@@ -36,7 +52,27 @@ st.subheader("Find the best cards for your needs")
 # Cache card data to avoid recomputation on each rerun
 @st.cache_data(ttl=3600)  # Cache for 1 hour
 def get_card_data():
-    """Get credit card data with caching"""
+    """
+    Retrieve credit card data with caching for improved performance.
+    
+    This function returns a list of credit card dictionaries containing information about
+    various credit cards including their names, annual fees, rewards, welcome bonuses,
+    image URLs, and what they're best for. The data is cached for 1 hour to avoid
+    unnecessary recomputation on each app rerun.
+    
+    Returns:
+        list: A list of dictionaries, each containing details about a credit card
+              with the following keys:
+              - name (str): The name of the credit card
+              - annual_fee (str): The annual fee of the card (formatted as string with $)
+              - rewards (str): Description of the card's rewards structure
+              - welcome_bonus (str): Description of the welcome bonus
+              - image_url (str): URL to the card's image
+              - best_for (str): Brief description of what the card is best for
+    
+    Performance Note:
+        Uses Streamlit's caching decorator with a 1-hour TTL to avoid recomputation
+    """
     return [
         {
             "name": "Chase Sapphire Preferred",
@@ -103,7 +139,29 @@ filtered_cards = cards
 # Function to preload card images in parallel
 @st.cache_data(ttl=3600)
 def preload_card_images(cards, max_cards=5):
-    """Preload card images in parallel for better performance"""
+    """
+    Preload credit card images in parallel for improved performance.
+    
+    This function uses Python's concurrent.futures module to fetch multiple card images
+    simultaneously, which significantly improves loading performance compared to
+    sequential loading. It only preloads a limited number of images (default: 5) to
+    balance initial load time with memory usage.
+    
+    Args:
+        cards (list): List of card dictionaries containing image_url keys
+        max_cards (int, optional): Maximum number of cards to preload. Defaults to 5.
+            Increasing this value will preload more images initially but may slow down
+            the initial page load.
+    
+    Returns:
+        dict: A dictionary mapping image URLs to their corresponding PIL Image objects
+    
+    Performance Notes:
+        - Uses ThreadPoolExecutor for parallel fetching
+        - Limited to 5 concurrent workers to avoid overwhelming the network
+        - Results are cached for 1 hour using Streamlit's caching
+        - Only preloads the first few cards for optimal initial page load time
+    """
     import concurrent.futures
     
     # Only preload the first few cards for initial performance
@@ -204,7 +262,31 @@ with st.form(key="spending_form"):
 # Cache the recommendation logic
 @st.cache_data
 def get_card_recommendations(spending):
-    """Get card recommendations based on spending profile"""
+    """
+    Generate personalized credit card recommendations based on a user's spending profile.
+    
+    This function analyzes a user's spending habits across different categories and
+    recommends credit cards that would provide the best rewards for their specific
+    spending pattern. The recommendations are cached to improve performance.
+    
+    Args:
+        spending (dict): A dictionary containing the user's monthly spending across
+                         different categories. Expected keys include:
+                         - 'Travel': Monthly travel spending in dollars
+                         - 'Dining': Monthly dining/restaurant spending in dollars
+                         - 'Groceries': Monthly grocery spending in dollars
+                         - 'Gas': Monthly gas/fuel spending in dollars
+                         - 'Other': Other monthly spending in dollars
+    
+    Returns:
+        list: A list of tuples, each containing (card_name, reason_for_recommendation)
+              where card_name is the name of the recommended credit card and
+              reason_for_recommendation is a brief explanation of why it's recommended
+    
+    Performance Notes:
+        - Uses Streamlit's caching to avoid recalculating recommendations
+        - Provides both primary and secondary recommendations when appropriate
+    """
     travel = spending.get("Travel", 0)
     dining = spending.get("Dining", 0)
     groceries = spending.get("Groceries", 0)
