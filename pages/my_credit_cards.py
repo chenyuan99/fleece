@@ -40,8 +40,10 @@ st.subheader("Manage your current credit card portfolio")
 # File path for storing user's credit cards
 USER_CARDS_FILE = os.path.join(os.path.dirname(__file__), "..", "user_cards.json")
 
-# Function to load user's credit cards
+# Function to load user's credit cards with caching
+@st.cache_data(ttl=300)  # Cache for 5 minutes
 def load_user_cards():
+    """Load user's credit cards with caching to improve performance"""
     if os.path.exists(USER_CARDS_FILE):
         try:
             with open(USER_CARDS_FILE, 'r') as f:
@@ -101,14 +103,67 @@ with tab1:
         else:  # Date Added
             sorted_cards = sorted(user_cards, key=lambda x: x.get('date_added', ''), reverse=True)
         
-        # Display cards in a grid layout
-        for i, card in enumerate(sorted_cards):
-            with st.expander(f"**{card['name']}**", expanded=True):
+        # Preload card images in parallel for better performance
+        @st.cache_data(ttl=3600)
+        def preload_my_card_images(cards, max_cards=5):
+            """Preload card images in parallel"""
+            import concurrent.futures
+            
+            # Only preload the first few cards for initial performance
+            urls = [card.get('image_url', '') for card in cards[:max_cards] if card.get('image_url')]
+            
+            results = {}
+            with concurrent.futures.ThreadPoolExecutor(max_workers=5) as executor:
+                future_to_url = {executor.submit(display_card_image, url): url for url in urls}
+                for future in concurrent.futures.as_completed(future_to_url):
+                    url = future_to_url[future]
+                    try:
+                        results[url] = future.result()
+                    except Exception as e:
+                        pass  # Silently handle errors
+            
+            return results
+        
+        # Preload images for better performance
+        preloaded_images = preload_my_card_images(sorted_cards)
+        
+        # Show initial number of cards with pagination
+        if 'cards_page' not in st.session_state:
+            st.session_state.cards_page = 0
+        
+        cards_per_page = 3
+        start_idx = st.session_state.cards_page * cards_per_page
+        end_idx = min(start_idx + cards_per_page, len(sorted_cards))
+        
+        # Display pagination controls
+        col1, col2, col3 = st.columns([1, 3, 1])
+        with col1:
+            if st.session_state.cards_page > 0:
+                if st.button("← Previous"):
+                    st.session_state.cards_page -= 1
+                    st.rerun()
+        
+        with col2:
+            st.write(f"Showing cards {start_idx + 1}-{end_idx} of {len(sorted_cards)}")
+        
+        with col3:
+            if end_idx < len(sorted_cards):
+                if st.button("Next →"):
+                    st.session_state.cards_page += 1
+                    st.rerun()
+        
+        # Display cards for current page
+        for i, card in enumerate(sorted_cards[start_idx:end_idx], start_idx):
+            with st.expander(f"**{card['name']}**", expanded=False):  # Use collapsed by default for better performance
                 col1, col2 = st.columns([1, 2])
                 
                 with col1:
-                    # Display card image
-                    img = display_card_image(card.get('image_url', ''))
+                    # Use preloaded image if available, otherwise fetch on demand
+                    if card.get('image_url') in preloaded_images:
+                        img = preloaded_images[card.get('image_url')]
+                    else:
+                        img = display_card_image(card.get('image_url', ''))
+                        
                     if img:
                         st.image(img, width=250)
                 
@@ -122,20 +177,23 @@ with tab1:
                     st.markdown(f"**Expiration:** {card.get('expiration', 'N/A')}")
                     st.markdown(f"**Date Added:** {card.get('date_added', 'N/A')}")
                     
-                    # Action buttons
-                    col1, col2 = st.columns(2)
-                    with col1:
-                        if st.button(f"Remove Card", key=f"remove_{i}"):
-                            user_cards.remove(card)
-                            if save_user_cards(user_cards):
-                                st.success(f"Removed {card['name']} from your cards!")
+                    # Action buttons in a form to reduce rerendering
+                    with st.container():
+                        col1, col2 = st.columns(2)
+                        with col1:
+                            if st.button(f"Remove Card", key=f"remove_{i}"):
+                                user_cards.remove(card)
+                                if save_user_cards(user_cards):
+                                    st.success(f"Removed {card['name']} from your cards!")
+                                    # Clear cache to reload cards
+                                    load_user_cards.clear()
+                                    st.rerun()
+                        
+                        with col2:
+                            if st.button(f"Edit Details", key=f"edit_{i}"):
+                                st.session_state['edit_card'] = card
+                                st.session_state['edit_index'] = i
                                 st.rerun()
-                    
-                    with col2:
-                        if st.button(f"Edit Details", key=f"edit_{i}"):
-                            st.session_state['edit_card'] = card
-                            st.session_state['edit_index'] = i
-                            st.rerun()
         
         # Edit card form (appears when Edit Details is clicked)
         if 'edit_card' in st.session_state and 'edit_index' in st.session_state:
