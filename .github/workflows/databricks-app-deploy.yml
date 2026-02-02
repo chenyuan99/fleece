@@ -1,0 +1,40 @@
+name: Deploy Databricks App
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+env:
+  DATABRICKS_HOST: ${{ secrets.DATABRICKS_HOST }}
+  DATABRICKS_TOKEN: ${{ secrets.DATABRICKS_TOKEN }}
+  APP_NAME: ${{ vars.DATABRICKS_APP_NAME || 'fleece' }}
+  WORKSPACE_USER: ${{ vars.DATABRICKS_WORKSPACE_USER }}
+  SOURCE_CODE_PATH: /Workspace/Users/${{ vars.DATABRICKS_WORKSPACE_USER }}/fleece
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install Databricks CLI
+        uses: databricks/setup-cli@main
+
+      - name: Sync source code to workspace
+        run: |
+          databricks sync . "$SOURCE_CODE_PATH" --exclude ".git"
+
+      - name: Create app if missing
+        run: |
+          databricks apps create "$APP_NAME" || true
+
+      - name: Deploy app
+        run: |
+          databricks apps deploy "$APP_NAME" --source-code-path "$SOURCE_CODE_PATH" --mode AUTO_SYNC
