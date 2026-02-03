@@ -37,4 +37,4 @@ jobs:
 
       - name: Deploy app
         run: |
-          databricks apps deploy "$APP_NAME" --source-code-path "$SOURCE_CODE_PATH" --mode AUTO_SYNC
+          databricks apps deploy "$APP_NAME" --source-code-path "$SOURCE_CODE_PATH"
