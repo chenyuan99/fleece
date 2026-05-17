@@ -18,7 +18,6 @@ class FakeSessionState:
     """Mimics Streamlit's SessionState: supports both dict-style and attribute access."""
 
     def __init__(self, initial=None):
-        # Use object.__setattr__ to avoid triggering our custom __setattr__
         object.__setattr__(self, "_store", dict(initial or {}))
 
     def __contains__(self, key):
@@ -49,33 +48,35 @@ class FakeSessionState:
 def _build_st_mock():
     """Build a mock for the `streamlit` module with enough surface area for fleece.py."""
     st = MagicMock()
-    # Default text inputs to empty strings so the module-level code
-    # doesn't enter the API-key or user-input branches.
     st.text_input.return_value = ""
     st.sidebar.text_input.return_value = ""
-    # Buttons and checkboxes default to False (not clicked / unchecked),
-    # matching Streamlit's real behavior.
     st.button.return_value = False
     st.checkbox.return_value = False
     st.sidebar.checkbox.return_value = False
-    # st.sidebar.columns(2) must return two context-manager-capable mocks
     col1, col2 = MagicMock(), MagicMock()
     st.sidebar.columns.return_value = [col1, col2]
+    # st.status must work as a context manager
+    status_cm = MagicMock()
+    status_cm.__enter__ = MagicMock(return_value=status_cm)
+    status_cm.__exit__ = MagicMock(return_value=False)
+    st.status.return_value = status_cm
     return st
 
 
 def _default_langchain_mocks(lc_overrides=None):
     """Return the standard set of langchain sys.modules mocks."""
-    lc_prompt = MagicMock()
-    lc_prompt.ENTITY_MEMORY_CONVERSATION_TEMPLATE = MagicMock()
-
     mocks = {
         "langchain": MagicMock(),
+        "langchain.agents": MagicMock(),
         "langchain.chains": MagicMock(),
         "langchain.chains.conversation": MagicMock(),
         "langchain.chains.conversation.memory": MagicMock(),
-        "langchain.chains.conversation.prompt": lc_prompt,
+        "langchain_core": MagicMock(),
+        "langchain_core.prompts": MagicMock(),
         "langchain_openai": MagicMock(),
+        "tools": MagicMock(),
+        "prompts": MagicMock(),
+        "prompts.agent_system_prompt": MagicMock(SYSTEM_PROMPT="{entities}"),
     }
     if lc_overrides:
         mocks.update(lc_overrides)
@@ -83,10 +84,7 @@ def _default_langchain_mocks(lc_overrides=None):
 
 
 def _import_fleece(st_mock, langchain_mocks=None):
-    """
-    Import (or reload) fleece.py with streamlit and langchain patched.
-    Returns the imported module.
-    """
+    """Import (or reload) fleece.py with streamlit and langchain patched."""
     import sys
 
     patches = {"streamlit": st_mock}
@@ -153,7 +151,6 @@ class TestNewChat:
     """Tests for the new_chat() function."""
 
     def _setup(self, store_contents):
-        """Import fleece with the given session state and return (new_chat, state)."""
         st_mock = _build_st_mock()
         state = FakeSessionState(store_contents)
         st_mock.session_state = state
@@ -268,8 +265,6 @@ class TestGetText:
 
         mod = _import_fleece(st_mock)
 
-        # Change return value *after* import so module-level get_text()
-        # returned "" (avoiding the Conversation branch).
         st_mock.text_input.return_value = "What card should I get?"
         result = mod.get_text()
 
@@ -289,45 +284,94 @@ class TestGetText:
         assert call_args[0][0] == "You: "
 
 
-class TestConversationChainSetup:
-    """Verify that providing an API key sets up the LLM and memory."""
+class TestAgentExecutorSetup:
+    """Verify that providing an API key sets up the LLM, memory, and agent correctly."""
+
+    def _make_mocks(self):
+        mock_chat_openai = MagicMock()
+        mock_create_agent = MagicMock()
+        mock_agent_executor_cls = MagicMock()
+        mock_entity_memory_cls = MagicMock()
+        mock_chat_prompt = MagicMock()
+
+        lc_agents = MagicMock()
+        lc_agents.create_openai_tools_agent = mock_create_agent
+        lc_agents.AgentExecutor = mock_agent_executor_cls
+
+        lc_memory = MagicMock()
+        lc_memory.ConversationEntityMemory = mock_entity_memory_cls
+
+        lc_core_prompts = MagicMock()
+        lc_core_prompts.ChatPromptTemplate = mock_chat_prompt
+        lc_core_prompts.MessagesPlaceholder = MagicMock()
+
+        lc_openai = MagicMock()
+        lc_openai.ChatOpenAI = mock_chat_openai
+
+        overrides = {
+            "langchain.agents": lc_agents,
+            "langchain.chains.conversation.memory": lc_memory,
+            "langchain_core.prompts": lc_core_prompts,
+            "langchain_openai": lc_openai,
+        }
+        return overrides, mock_chat_openai, mock_create_agent, mock_entity_memory_cls
 
     def test_llm_created_with_api_key(self):
         st_mock = _build_st_mock()
         state = FakeSessionState()
         st_mock.session_state = state
 
-        # sidebar.text_input returns an API key
         st_mock.sidebar.text_input.return_value = "sk-test-key-123"
         st_mock.sidebar.expander.return_value.__enter__ = MagicMock(return_value=st_mock)
         st_mock.sidebar.expander.return_value.__exit__ = MagicMock(return_value=False)
         st_mock.selectbox.return_value = "gpt-4o"
         st_mock.number_input.return_value = 5
 
-        mock_chat_openai = MagicMock()
-        lc_openai = MagicMock()
-        lc_openai.ChatOpenAI = mock_chat_openai
-
-        lc_chain = MagicMock()
-        lc_prompt = MagicMock()
-        lc_prompt.ENTITY_MEMORY_CONVERSATION_TEMPLATE = "template"
-
-        overrides = {
-            "langchain.chains": lc_chain,
-            "langchain.chains.conversation.prompt": lc_prompt,
-            "langchain_openai": lc_openai,
-        }
-
+        overrides, mock_chat_openai, _, _ = self._make_mocks()
         _import_fleece(st_mock, _default_langchain_mocks(overrides))
 
         mock_chat_openai.assert_called()
+
+    def test_entity_memory_uses_correct_keys(self):
+        """chat_history_key and return_messages must be set correctly."""
+        st_mock = _build_st_mock()
+        state = FakeSessionState()
+        st_mock.session_state = state
+
+        st_mock.sidebar.text_input.return_value = "sk-test-key-123"
+        st_mock.sidebar.expander.return_value.__enter__ = MagicMock(return_value=st_mock)
+        st_mock.sidebar.expander.return_value.__exit__ = MagicMock(return_value=False)
+        st_mock.selectbox.return_value = "gpt-4o"
+        st_mock.number_input.return_value = 5
+
+        overrides, _, _, mock_entity_memory_cls = self._make_mocks()
+        _import_fleece(st_mock, _default_langchain_mocks(overrides))
+
+        call_kwargs = mock_entity_memory_cls.call_args[1] if mock_entity_memory_cls.called else {}
+        assert call_kwargs.get("chat_history_key") == "chat_history"
+        assert call_kwargs.get("return_messages") is True
+
+    def test_create_openai_tools_agent_called(self):
+        st_mock = _build_st_mock()
+        state = FakeSessionState()
+        st_mock.session_state = state
+
+        st_mock.sidebar.text_input.return_value = "sk-test-key-123"
+        st_mock.sidebar.expander.return_value.__enter__ = MagicMock(return_value=st_mock)
+        st_mock.sidebar.expander.return_value.__exit__ = MagicMock(return_value=False)
+        st_mock.selectbox.return_value = "gpt-4o"
+        st_mock.number_input.return_value = 5
+
+        overrides, _, mock_create_agent, _ = self._make_mocks()
+        _import_fleece(st_mock, _default_langchain_mocks(overrides))
+
+        mock_create_agent.assert_called()
 
     def test_no_api_key_shows_warning(self):
         st_mock = _build_st_mock()
         state = FakeSessionState()
         st_mock.session_state = state
 
-        # sidebar.text_input returns empty string (no API key)
         st_mock.sidebar.text_input.return_value = ""
         st_mock.sidebar.expander.return_value.__enter__ = MagicMock(return_value=st_mock)
         st_mock.sidebar.expander.return_value.__exit__ = MagicMock(return_value=False)
@@ -341,12 +385,9 @@ class TestDownloadConversation:
     """Verify conversation download string is built correctly."""
 
     def test_download_str_format(self):
-        """The download string joins past and generated messages with newlines,
-        newest first."""
         past = ["Hello", "How are you?"]
         generated = ["Hi there!", "I'm good, thanks!"]
 
-        # Reproduce the logic from fleece.py lines 174-184
         download_str = []
         for i in range(len(generated) - 1, -1, -1):
             download_str.append(past[i])

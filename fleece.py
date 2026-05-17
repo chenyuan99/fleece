@@ -1,37 +1,39 @@
 """
-This is a Python script that serves as a frontend for a conversational AI model built with the `langchain` and `llms` libraries.
-The code creates a web application using Streamlit, a Python library for building interactive web apps.
+Fleece — AI-powered credit card advisor chatbot.
 # Author: Yuan Chen
 # Date: March 16, 2025
 """
 import os
 
-# Import necessary libraries
 import streamlit as st
-from langchain.chains import ConversationChain
+from langchain.agents import AgentExecutor, create_openai_tools_agent
 from langchain.chains.conversation.memory import ConversationEntityMemory
-from langchain.chains.conversation.prompt import ENTITY_MEMORY_CONVERSATION_TEMPLATE
-from langchain_openai import ChatOpenAI  # Using ChatOpenAI for chat models
-# from dotenv import load_dotenv
+from langchain_core.prompts import ChatPromptTemplate, MessagesPlaceholder
+from langchain_openai import ChatOpenAI
 
+from prompts.agent_system_prompt import SYSTEM_PROMPT
 
-# Load environment variables
-# load_dotenv()
+# ---------------------------------------------------------------------------
+# Page config + CSS
+# ---------------------------------------------------------------------------
 
-# Set Streamlit page configuration
 st.set_page_config(page_title="Fleece", layout="wide")
 
-# Load custom CSS
+
 def load_css():
     with open("style.css") as f:
         st.markdown(f'<style>{f.read()}</style>', unsafe_allow_html=True)
+
 
 try:
     load_css()
 except Exception as e:
     st.warning(f"Could not load custom styling: {e}")
 
-# Initialize session states
+# ---------------------------------------------------------------------------
+# Session state initialisation
+# ---------------------------------------------------------------------------
+
 if "generated" not in st.session_state:
     st.session_state["generated"] = []
 if "past" not in st.session_state:
@@ -42,29 +44,23 @@ if "stored_session" not in st.session_state:
     st.session_state["stored_session"] = []
 
 
-# Define function to get user input
-def get_text():
-    """
-    Get the user input text.
+# ---------------------------------------------------------------------------
+# Helper functions
+# ---------------------------------------------------------------------------
 
-    Returns:
-        (str): The text entered by the user
-    """
-    input_text = st.text_input(
+def get_text():
+    """Return the current user input from the text box."""
+    return st.text_input(
         "You: ",
         st.session_state["input"],
         key="input",
         placeholder="Your AI assistant here! Ask me anything ...",
         label_visibility="hidden",
     )
-    return input_text
 
 
-# Define function to start a new chat
 def new_chat():
-    """
-    Clears session state and starts a new chat.
-    """
+    """Archive the current conversation and start fresh."""
     save = []
     for i in range(len(st.session_state["generated"]) - 1, -1, -1):
         save.append("User:" + st.session_state["past"][i])
@@ -77,16 +73,17 @@ def new_chat():
     st.session_state.entity_memory.buffer.clear()
 
 
-# Set up sidebar with various options
+# ---------------------------------------------------------------------------
+# Sidebar — settings
+# ---------------------------------------------------------------------------
+
 with st.sidebar.expander("🛠️ ", expanded=False):
-    # Option to preview memory store
     if st.checkbox("Preview memory store"):
         st.write("### Memory Store")
         if "entity_memory" in st.session_state and hasattr(st.session_state.entity_memory, "store"):
             st.write(st.session_state.entity_memory.store)
         else:
             st.write("Memory store not initialized yet.")
-    # Option to preview memory buffer
     if st.checkbox("Preview memory buffer"):
         st.write("### Buffer Store")
         if "entity_memory" in st.session_state and hasattr(st.session_state.entity_memory, "buffer"):
@@ -95,84 +92,129 @@ with st.sidebar.expander("🛠️ ", expanded=False):
             st.write("Memory buffer not initialized yet.")
     MODEL = st.selectbox(
         label="Model",
-        options=[
-            "gpt-3.5-turbo",
-            "gpt-4",
-            "gpt-4-turbo",
-            "gpt-4o"
-        ],
-        index=0
+        options=["gpt-3.5-turbo", "gpt-4", "gpt-4-turbo", "gpt-4o"],
+        index=0,
     )
-    K = st.number_input(
-        " (#)Summary of prompts to consider", min_value=3, max_value=1000
-    )
+    K = st.number_input(" (#)Summary of prompts to consider", min_value=3, max_value=1000)
+    show_tool_calls = st.checkbox("Show tool calls", value=False)
 
-# Set up the Streamlit app layout
+# ---------------------------------------------------------------------------
+# Main layout
+# ---------------------------------------------------------------------------
+
 st.title("Fleece")
 st.subheader("Find the best card for deal saviors")
-
-# Add navigation information
 st.info("💡 Navigate to the Credit Cards page to explore available cards or My Credit Cards to manage your existing cards!")
 
-# Ask the user to enter their OpenAI API key
 API_O = st.sidebar.text_input("API-KEY", type="password")
 
-# API_O = os.getenv('OPENAI_API_KEY')
-# Session state storage would be ideal
+# ---------------------------------------------------------------------------
+# Agent setup (runs on every Streamlit rerender — cheap, stateless object)
+# ---------------------------------------------------------------------------
+
 if API_O:
-    # Create a ChatOpenAI instance for chat models
     llm = ChatOpenAI(temperature=0, api_key=API_O, model_name=MODEL, verbose=False)
 
-    # Create a ConversationEntityMemory object if not already created
+    # Critical: chat_history_key and return_messages must match the prompt placeholders
     if "entity_memory" not in st.session_state:
-        st.session_state.entity_memory = ConversationEntityMemory(llm=llm, k=K)
+        st.session_state.entity_memory = ConversationEntityMemory(
+            llm=llm,
+            k=K,
+            chat_history_key="chat_history",  # must match MessagesPlaceholder name
+            return_messages=True,              # must be True for MessagesPlaceholder
+        )
 
-    # Create the ConversationChain object with the specified configuration
-    Conversation = ConversationChain(
-        llm=llm,
-        prompt=ENTITY_MEMORY_CONVERSATION_TEMPLATE,
+    brave_key = os.getenv("BRAVE_API_KEY", "")
+
+    try:
+        from tools import build_tools
+        tools = build_tools(brave_key) if brave_key else []
+    except Exception:
+        tools = []
+
+    prompt = ChatPromptTemplate.from_messages([
+        ("system", SYSTEM_PROMPT),
+        MessagesPlaceholder(variable_name="chat_history", optional=True),
+        ("human", "{input}"),
+        MessagesPlaceholder(variable_name="agent_scratchpad"),
+    ])
+
+    agent = create_openai_tools_agent(llm=llm, tools=tools, prompt=prompt)
+    agent_executor = AgentExecutor(
+        agent=agent,
+        tools=tools,
         memory=st.session_state.entity_memory,
+        handle_parsing_errors=True,
+        max_iterations=5,
+        max_execution_time=150.0,
+        verbose=False,
+        return_intermediate_steps=show_tool_calls,
     )
-else:
-    st.sidebar.warning(
-        "API key required to try this app.The API key is not stored in any form."
-    )
-    # st.stop()
 
-# Add navigation and action buttons
+    # Sidebar research status
+    st.sidebar.markdown("## Research Tools")
+    if brave_key:
+        st.sidebar.success(f"Live research enabled ({len(tools)} tools)")
+    else:
+        st.sidebar.info("Research tools disabled. Set BRAVE_API_KEY to enable live card data.")
+
+else:
+    st.sidebar.warning("API key required to try this app. The API key is not stored in any form.")
+
+# ---------------------------------------------------------------------------
+# Sidebar — navigation and actions
+# ---------------------------------------------------------------------------
+
 st.sidebar.markdown("## Navigation")
 st.sidebar.info("Use the dropdown menu above ↑ to navigate between pages")
 
-# Add a button to start a new chat
 st.sidebar.markdown("## Actions")
 st.sidebar.button("New Chat", on_click=new_chat, type="primary")
 
-# Add links to the credit cards pages
 col1, col2 = st.sidebar.columns(2)
 with col1:
     if st.button("Credit Cards", type="secondary"):
-        # This is a workaround since direct navigation isn't supported in this way
-        # The user will need to use the sidebar navigation
         st.info("Please use the sidebar navigation menu to view the Credit Cards page")
-
 with col2:
     if st.button("My Cards", type="secondary"):
-        # This is a workaround since direct navigation isn't supported in this way
-        # The user will need to use the sidebar navigation
         st.info("Please use the sidebar navigation menu to view the My Credit Cards page")
 
-# Get the user input
+# ---------------------------------------------------------------------------
+# Conversation — input → agent → display
+# ---------------------------------------------------------------------------
+
 user_input = get_text()
 
-# Generate the output using the ConversationChain object and the user input, and add the input/output to the session
-if user_input:
-    output = Conversation.run(input=user_input)
+if user_input and API_O:
+    with st.status("Thinking...", expanded=False) as status:
+        try:
+            result = agent_executor.invoke({"input": user_input})
+            output = result["output"]
+
+            if show_tool_calls and result.get("intermediate_steps"):
+                st.write("**Tools used:**")
+                for action, _ in result["intermediate_steps"]:
+                    st.write(f"- `{action.tool}` ← {action.tool_input}")
+
+            status.update(label="Done", state="complete", expanded=False)
+        except Exception as e:
+            error_type = type(e).__name__
+            if "RateLimit" in error_type:
+                output = "I've hit the API rate limit. Please wait a moment and try again."
+            elif "Timeout" in error_type or "Connection" in error_type:
+                output = "Research is temporarily unavailable. I'll answer from my training data instead. Please try again shortly."
+            else:
+                output = "I encountered an error processing your request. Please try rephrasing your question."
+            status.update(label="Error", state="error", expanded=False)
+
     st.session_state.past.append(user_input)
     st.session_state.generated.append(output)
 
-# Allow to download as well
+# ---------------------------------------------------------------------------
+# Conversation history display
+# ---------------------------------------------------------------------------
+
 download_str = []
-# Display the conversation history using an expander, and allow the user to download it
 with st.expander("Conversation", expanded=True):
     for i in range(len(st.session_state["generated"]) - 1, -1, -1):
         st.info(st.session_state["past"][i], icon="🧐")
@@ -180,17 +222,18 @@ with st.expander("Conversation", expanded=True):
         download_str.append(st.session_state["past"][i])
         download_str.append(st.session_state["generated"][i])
 
-    # Can throw error - requires fix
     download_str = "\n".join(download_str)
     if download_str:
         st.download_button("Download", download_str)
 
-# Display stored conversation sessions in the sidebar
+# ---------------------------------------------------------------------------
+# Stored sessions
+# ---------------------------------------------------------------------------
+
 for i, sublist in enumerate(st.session_state.stored_session):
     with st.sidebar.expander(label=f"Conversation-Session:{i}"):
         st.write(sublist)
 
-# Allow the user to clear all stored conversation sessions
 if st.session_state.stored_session:
     if st.sidebar.checkbox("Clear-all"):
         del st.session_state.stored_session
