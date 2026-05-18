@@ -152,9 +152,30 @@ div[data-testid="stAlert"][data-type="success"] {
 
 /* ── Select box ─────────────────────────────────────── */
 
-.stSelectbox select {
+section[data-testid="stSidebar"] .stSelectbox div[data-baseweb="select"] {
+    background-color: #222222;
+    border: 1px solid #444444;
     border-radius: 4px;
-    font-family: 'Source Sans 3', sans-serif;
+}
+
+section[data-testid="stSidebar"] .stSelectbox div[data-baseweb="select"] * {
+    color: #FFD100 !important;
+    font-family: 'Source Sans 3', sans-serif !important;
+}
+
+section[data-testid="stSidebar"] .stSelectbox [data-baseweb="popover"] {
+    background-color: #1a1a1a;
+}
+
+section[data-testid="stSidebar"] .stSelectbox [role="option"] {
+    color: #ffffff !important;
+    background-color: #1a1a1a;
+}
+
+section[data-testid="stSidebar"] .stSelectbox [role="option"]:hover,
+section[data-testid="stSidebar"] .stSelectbox [aria-selected="true"] {
+    background-color: #FFD100 !important;
+    color: #111111 !important;
 }
 
 /* ── Download button ────────────────────────────────── */
