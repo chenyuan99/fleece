@@ -1,49 +1,123 @@
-# Fleece - Credit Card Research Chatbot
+# Fleece — Credit Card Research & Redemption
 
 ## Project Overview
-**Fleece** is a Streamlit-based conversational AI application designed to help users find the best credit cards for their needs. The tagline is "Find the best card for deal saviors."
 
-### Core Purpose
-Fleece is a chatbot that:
-- Uses OpenAI's chat models (gpt-3.5-turbo, gpt-4, gpt-4-turbo, gpt-4o) to provide conversational credit card research and recommendations
-- Maintains entity-based memory across conversations to remember user details and preferences
-- Allows users to explore available credit cards and manage their existing card portfolio
-- Stores conversation history and provides download capability
+**Fleece** is a credit card research and award redemption toolkit. Tagline: "Find the best card for deal saviors."
 
-### Tech Stack
-- **Frontend**: Streamlit (Python web app framework)
-- **LLM**: OpenAI ChatGPT (via LangChain)
-- **Memory**: ConversationEntityMemory (tracks entities mentioned in conversation)
-- **Language**: Python
+It has two surfaces:
+1. **Streamlit chatbot** (`fleece.py`) — conversational AI assistant backed by OpenAI
+2. **CLI** (`cli.py`) — 12 commands for card research, wallet analysis, MCC lookup, and award redemption
 
-## Key Features
-1. **Conversational Interface**: Chat with an AI assistant about credit cards
-2. **Entity Memory**: Remembers details about the user across conversation turns
-3. **Multi-model Support**: Choose between different OpenAI models
-4. **Conversation Management**: 
-   - Start new chats
-   - Browse past conversation sessions
-   - Download conversation history
-   - Customize memory buffer size (K parameter)
-5. **Navigation**: Planned pages for "Credit Cards" exploration and "My Credit Cards" management
+Published on PyPI as [`fleece-cli`](https://pypi.org/project/fleece-cli/) · current version **0.3.1**
 
-## Current Limitations & Opportunities
-- **Limited knowledge**: Currently relies on OpenAI's training data, which may be outdated for credit card details
-- **No specialized tools**: The chatbot cannot search current issuer websites or real-time data sources
-- **No structured research**: Lacks the ability to provide specific, verified credit card information (fees, benefits, offers, transfer partners, etc.)
+---
 
-## Future Integration Opportunities
-- **Multi-page app expansion**: Build out the "Credit Cards" discovery page and "My Credit Cards" portfolio management
-- **Database backend**: Store user profiles, card portfolios, and preferences
+## Tech Stack
 
-## CLI — Redemption Commands
-The `fleece flights` and `fleece hotels` commands are merged from the former `pointsyeah-cli` project (now archived). They generate PointsYeah search URLs with no API key required — pure stdlib, zero external dependencies. Source lives in `pointsyeah.py`.
+| Layer | Technology |
+|---|---|
+| Chatbot frontend | Streamlit |
+| Chatbot LLM | OpenAI (gpt-3.5-turbo, gpt-4, gpt-4o) via LangChain |
+| Chatbot memory | ConversationEntityMemory |
+| CLI framework | Typer |
+| Live research | Brave Search API |
+| Card portfolio | SQLite (`fleece.db`) via `db.py` |
+| MCC dataset | Bundled `mcc_codes.jsonl` (981 codes, offline) |
+| Redemption URLs | `pointsyeah.py` (pure stdlib, no deps) |
+| Language | Python 3.11+ |
 
-## Development Notes
-- Author: Yuan Chen
-- Created: March 16, 2025
-- Uses custom CSS styling (style.css)
-- Requires OpenAI API key (entered via sidebar, not stored)
+---
+
+## CLI Commands
+
+### Research (requires `BRAVE_API_KEY`)
+| Command | Description |
+|---|---|
+| `fleece card "<name>"` | Full card report — fees, welcome offer, rates, credits, benefits |
+| `fleece rates "<name>"` | Earning rates by spend category |
+| `fleece partners "<name>"` | Transfer partners, ratios, timing |
+| `fleece credits "<name>"` | Statement credits and perks |
+| `fleece news "<name>"` | Recent changes (past month, freshness-filtered) |
+| `fleece compare "<A>" "<B>"` | Side-by-side comparison |
+| `fleece wallet` | Portfolio analysis — coverage, overlaps, gaps, next-card suggestions |
+| `fleece roi "<name>"` | First-year ROI estimate by spend profile |
+| `fleece recommend "<profile>"` | Card recommendations for a spending profile |
+
+### Redemption (no API key needed — work fully offline)
+| Command | Description |
+|---|---|
+| `fleece mcc <code>` | Offline MCC code lookup (981 codes bundled). Add `--wallet` to cross-reference saved cards |
+| `fleece flights <ORIGIN> <DEST> --date <YYYY-MM-DD>` | PointsYeah award flight search URL |
+| `fleece hotels "<location>" --checkin <date> --checkout <date>` | PointsYeah award hotel search URL |
+
+All commands support `--json` for agent-friendly output and `-` to read arguments from stdin.
+
+### BRAVE_API_KEY
+Optional at startup — checked only when a research command actually runs. `mcc`, `flights`, and `hotels` work with no key set.
+
+---
+
+## Key Files
+
+| File | Purpose |
+|---|---|
+| `cli.py` | Main CLI entry point (Typer app) |
+| `fleece.py` | Streamlit chatbot app |
+| `db.py` | SQLite helpers for card portfolio (`fleece.db`) |
+| `pointsyeah.py` | PointsYeah URL generation (pure stdlib, merged from archived `pointsyeah-cli`) |
+| `mcc_codes.jsonl` | Bundled MCC dataset (981 codes, source: greggles/mcc-codes) |
+| `tools/brave_client.py` | Brave Search API client |
+| `tools/credit_card_tools.py` | LangChain tools for the chatbot |
+| `pyproject.toml` | Package config — hatchling build, `fleece` entry point |
+| `install.sh` | Installs Claude Code skills and/or agent skill |
+
+---
+
+## Agent Skills
+
+### Claude Code (`/.claude/skills/`)
+12 slash commands installed via `bash install.sh --claude`:
+
+**Research:** `/fleece-card` `/fleece-rates` `/fleece-partners` `/fleece-credits` `/fleece-news` `/fleece-compare` `/fleece-wallet` `/fleece-roi` `/fleece-recommend`
+
+**Redemption:** `/fleece-mcc` `/fleece-flights` `/fleece-hotels`
+
+### ClawHub / OpenClaw (`/.agents/skills/fleece/SKILL.md`)
+Published on ClawHub as `fleece@1.3.0`. Install via `clawhub install fleece` or `bash install.sh --agents`.
+
+---
+
+## CI/CD
+
+| Workflow | Trigger | Action |
+|---|---|---|
+| `publish.yml` | Push `v*` tag | Build and publish to PyPI via OIDC trusted publishing |
+| `publish-skills.yml` | Push to `main` touching `.agents/skills/` or `.claude/skills/` | Publish to ClawHub via `CLAWHUB_TOKEN` secret |
+
+GitHub environment `pypi` is required for the PyPI workflow (OIDC).
+
+---
+
+## Landing Page
+
+`docs/` is served as GitHub Pages at **https://getfleece.io/**.
+
+Contains `index.html`, `sitemap.xml`, `robots.txt`. Submitted to Google Search Console. JSON-LD structured data included.
+
+SEO notes tracked in `docs/SEO.md`.
+
+---
 
 ## Infrastructure Notes
-- **Databricks**: No Databricks resources are available at the moment. The Databricks App deployment workflow has been removed. Do not suggest or implement Databricks-based solutions until resources are provisioned.
+
+- **Databricks**: No resources available. Do not suggest Databricks solutions until provisioned.
+- **pointsyeah-cli**: Archived. All functionality merged into fleece (`pointsyeah.py`, `fleece flights`, `fleece hotels`).
+
+---
+
+## Development Notes
+
+- Author: Yuan Chen
+- Created: March 16, 2025
+- Chatbot uses custom CSS styling (`style.css`)
+- OpenAI API key entered via Streamlit sidebar — not stored
