@@ -310,6 +310,87 @@ def recommend(
 
 
 # ---------------------------------------------------------------------------
+# MCC lookup — offline, no API key required
+# ---------------------------------------------------------------------------
+
+def _load_mcc_db() -> dict[str, dict]:
+    """Load mcc_codes.jsonl bundled with the package. Returns {mcc: record}."""
+    import importlib.resources, pathlib
+    # Try installed package data first, fall back to local file
+    for candidate in [
+        pathlib.Path(__file__).parent / "mcc_codes.jsonl",
+    ]:
+        if candidate.exists():
+            data = {}
+            for line in candidate.read_text().splitlines():
+                line = line.strip()
+                if line:
+                    rec = json.loads(line)
+                    data[str(rec["mcc"]).zfill(4)] = rec
+            return data
+    _error_exit("mcc_codes.jsonl not found. Re-install fleece-cli.", code=1)
+
+
+@app.command()
+def mcc(
+    code:     Annotated[str, typer.Argument(help="4-digit MCC code, e.g. 5812.")],
+    wallet:   Annotated[bool, typer.Option("--wallet", "-w", help="Cross-reference with your saved cards.")] = False,
+    api_key:  ApiKeyOpt  = None,
+    as_json:  JsonOpt    = False,
+    no_dotenv: NoDotenv  = False,
+):
+    """Look up a Merchant Category Code and find the best card in your wallet to use."""
+    code = code.strip().zfill(4)
+    db = _load_mcc_db()
+
+    if code not in db:
+        _error_exit(f"MCC {code} not found in dataset.", code=1)
+
+    rec = db[code]
+    category = rec.get("edited_description") or rec.get("combined_description", "Unknown")
+    irs_desc = rec.get("irs_description", "")
+
+    if not wallet:
+        if as_json:
+            typer.echo(json.dumps({"command": "mcc", "mcc": code, "category": category,
+                                   "irs_description": irs_desc, "ok": True, "error": None}))
+        else:
+            typer.echo(f"MCC {code}: {category}")
+            if irs_desc and irs_desc != category:
+                typer.echo(f"IRS description: {irs_desc}")
+        return
+
+    # Wallet mode — look up earning rates for each card in the profile
+    card_names = _profile_card_names()
+    if not card_names:
+        _error_exit("No cards in profile. Add cards with: fleece cards add \"<name>\"", code=1)
+
+    key = _resolve_key(api_key, no_dotenv)
+    from tools.brave_client import search_and_format
+    wrapper = _get_wrapper(key)
+
+    parts = []
+    try:
+        for name in card_names:
+            result = search_and_format(
+                wrapper,
+                f'"{name}" credit card earning rate "{category}" OR "{irs_desc}" category multiplier 2025',
+                max_results=2,
+            )
+            parts.append(f"### {name}\n{result}")
+    except Exception as e:
+        _error_exit(str(e), code=1)
+
+    combined = (
+        f"MCC {code}: {category}\n\n"
+        + "\n\n".join(parts)
+        + f"\n\nBased on the above, which card earns the most at merchants coded as MCC {code} ({category})? "
+        "Show the multiplier for each card and pick the winner."
+    )
+    _emit(combined, as_json, "mcc", code)
+
+
+# ---------------------------------------------------------------------------
 # Redemption — PointsYeah URL generation (no API key required)
 # ---------------------------------------------------------------------------
 

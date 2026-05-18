@@ -33,4 +33,4 @@ dependencies = [
 fleece = "cli:app"
 
 [tool.hatch.build.targets.wheel]
-include = ["cli.py", "db.py", "pointsyeah.py", "tools/"]
+include = ["cli.py", "db.py", "pointsyeah.py", "mcc_codes.jsonl", "tools/"]
