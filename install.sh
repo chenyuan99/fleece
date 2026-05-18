@@ -20,8 +20,9 @@ install_claude() {
     cp "$f" "$dest"
   done
   echo "✓ Claude Code skills installed to $TARGET/"
-  echo "  Slash commands: /fleece-card /fleece-rates /fleece-partners /fleece-credits"
-  echo "                  /fleece-news /fleece-compare /fleece-wallet /fleece-roi /fleece-recommend"
+  echo "  Research:    /fleece-card /fleece-rates /fleece-partners /fleece-credits"
+  echo "               /fleece-news /fleece-compare /fleece-wallet /fleece-roi /fleece-recommend"
+  echo "  Redemption:  /fleece-mcc /fleece-flights /fleece-hotels"
 }
 
 install_agents() {
