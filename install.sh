@@ -59,4 +59,5 @@ case "${1:-auto}" in
 esac
 
 echo ""
-echo "Set BRAVE_API_KEY in your environment or .env file to enable live research."
+echo "BRAVE_API_KEY is optional — mcc, flights, and hotels work without it."
+echo "Set BRAVE_API_KEY in your environment or .env file to enable live research commands."

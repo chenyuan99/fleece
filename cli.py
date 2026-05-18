@@ -4,10 +4,13 @@ Fleece CLI — agent-friendly companion to the Fleece Streamlit chatbot.
 Exposes credit card research tools as shell commands backed by Brave Search.
 Designed for use by AI agents (Claude Code, Codex) and humans alike.
 
+BRAVE_API_KEY is optional — commands that don't need live search (mcc, flights,
+hotels) work fully offline. Research commands (card, rates, wallet, …) require it.
+
 Exit codes:
   0  success
   1  search / tool error
-  2  configuration error (missing API key)
+  2  BRAVE_API_KEY required but not set
 """
 import json
 import sys
@@ -18,7 +21,11 @@ from dotenv import load_dotenv
 
 app = typer.Typer(
     name="fleece",
-    help="Fleece credit card research CLI — live data via Brave Search.",
+    help=(
+        "Fleece credit card research CLI — live data via Brave Search.\n\n"
+        "BRAVE_API_KEY is optional: mcc, flights, and hotels work offline.\n"
+        "Research commands (card, rates, wallet, …) require it."
+    ),
     no_args_is_help=True,
 )
 
@@ -27,20 +34,21 @@ app = typer.Typer(
 # ---------------------------------------------------------------------------
 
 def _resolve_key(api_key: Optional[str], no_dotenv: bool) -> str:
-    """Load env and return the Brave API key, or exit with code 2."""
+    """Load env and return the Brave API key (may be empty — checked at use time)."""
     import os
     if not no_dotenv:
         load_dotenv()
-    key = api_key or os.getenv("BRAVE_API_KEY", "")
-    if not key:
-        _error_exit(
-            "BRAVE_API_KEY not set. Pass --api-key or add it to .env.",
-            code=2,
-        )
-    return key
+    return api_key or os.getenv("BRAVE_API_KEY", "")
 
 
 def _get_wrapper(key: str, freshness: Optional[str] = None):
+    if not key:
+        _error_exit(
+            "BRAVE_API_KEY is required for live research. "
+            "Set it in your environment, add it to .env, or pass --api-key. "
+            "Commands mcc, flights, and hotels work without it.",
+            code=2,
+        )
     from tools.brave_client import build_brave_wrapper
     return build_brave_wrapper(key, freshness=freshness)
 
