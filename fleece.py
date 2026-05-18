@@ -11,7 +11,8 @@ from langchain.chains.conversation.memory import ConversationEntityMemory
 from langchain_core.prompts import ChatPromptTemplate, MessagesPlaceholder
 from langchain_openai import ChatOpenAI
 
-from prompts.agent_system_prompt import SYSTEM_PROMPT
+from prompts.agent_system_prompt import build_system_prompt
+import db
 
 # ---------------------------------------------------------------------------
 # Page config + CSS
@@ -86,29 +87,48 @@ def new_chat():
 
 
 # ---------------------------------------------------------------------------
-# Sidebar — settings
+# Sidebar — API key (env first, text input as fallback)
 # ---------------------------------------------------------------------------
 
-with st.sidebar.expander("🛠️ ", expanded=False):
-    if st.checkbox("Preview memory store"):
-        st.write("### Memory Store")
+_env_key = os.getenv("OPENAI_API_KEY", "")
+if _env_key:
+    API_O = _env_key
+    st.sidebar.success("OpenAI key loaded from environment")
+else:
+    API_O = st.sidebar.text_input("OpenAI API Key", type="password",
+                                  placeholder="sk-...",
+                                  help="Or set OPENAI_API_KEY in your environment")
+
+# ---------------------------------------------------------------------------
+# Sidebar — visible settings
+# ---------------------------------------------------------------------------
+
+st.sidebar.markdown("## Model")
+MODEL = st.sidebar.selectbox(
+    label="Model",
+    options=["gpt-4o", "gpt-4-turbo", "gpt-4", "gpt-3.5-turbo"],
+    index=0,
+    label_visibility="collapsed",
+)
+K = st.sidebar.slider("Memory depth (K)", min_value=2, max_value=20, value=5,
+                      help="Number of recent exchanges kept in entity memory")
+
+# ---------------------------------------------------------------------------
+# Sidebar — debug expander
+# ---------------------------------------------------------------------------
+
+with st.sidebar.expander("Debug", expanded=False):
+    show_tool_calls = st.checkbox("Show tool calls", value=False)
+    if st.checkbox("Memory store"):
         if "entity_memory" in st.session_state and hasattr(st.session_state.entity_memory, "store"):
             st.write(st.session_state.entity_memory.store)
         else:
-            st.write("Memory store not initialized yet.")
-    if st.checkbox("Preview memory buffer"):
-        st.write("### Buffer Store")
+            st.write("Not initialized.")
+    if st.checkbox("Memory buffer"):
         if "entity_memory" in st.session_state and hasattr(st.session_state.entity_memory, "buffer"):
             st.write(st.session_state.entity_memory.buffer)
         else:
-            st.write("Memory buffer not initialized yet.")
-    MODEL = st.selectbox(
-        label="Model",
-        options=["gpt-3.5-turbo", "gpt-4", "gpt-4-turbo", "gpt-4o"],
-        index=0,
-    )
-    K = st.number_input(" (#)Summary of prompts to consider", min_value=3, max_value=1000)
-    show_tool_calls = st.checkbox("Show tool calls", value=False)
+            st.write("Not initialized.")
 
 # ---------------------------------------------------------------------------
 # Main layout
@@ -124,8 +144,6 @@ st.markdown(
 )
 st.info("💡 Navigate to the Credit Cards page to explore available cards or My Credit Cards to manage your existing cards!")
 
-API_O = st.sidebar.text_input("API-KEY", type="password")
-
 # ---------------------------------------------------------------------------
 # Agent setup (runs on every Streamlit rerender — cheap, stateless object)
 # ---------------------------------------------------------------------------
@@ -133,13 +151,12 @@ API_O = st.sidebar.text_input("API-KEY", type="password")
 if API_O:
     llm = ChatOpenAI(temperature=0, api_key=API_O, model_name=MODEL, verbose=False)
 
-    # Critical: chat_history_key and return_messages must match the prompt placeholders
     if "entity_memory" not in st.session_state:
         st.session_state.entity_memory = ConversationEntityMemory(
             llm=llm,
             k=K,
-            chat_history_key="chat_history",  # must match MessagesPlaceholder name
-            return_messages=True,              # must be True for MessagesPlaceholder
+            chat_history_key="chat_history",
+            return_messages=True,
         )
 
     brave_key = os.getenv("BRAVE_API_KEY", "")
@@ -150,8 +167,19 @@ if API_O:
     except Exception:
         tools = []
 
+    # Pre-load profile and wallet from fleece.db into the system prompt
+    try:
+        profile_ctx = db.profile_as_context()
+        card_names  = db.get_card_names()
+        wallet_ctx  = ", ".join(card_names) if card_names else ""
+    except Exception:
+        profile_ctx = ""
+        wallet_ctx  = ""
+
+    system_prompt = build_system_prompt(profile_ctx, wallet_ctx)
+
     prompt = ChatPromptTemplate.from_messages([
-        ("system", SYSTEM_PROMPT),
+        ("system", system_prompt),
         MessagesPlaceholder(variable_name="chat_history", optional=True),
         ("human", "{input}"),
         MessagesPlaceholder(variable_name="agent_scratchpad"),
@@ -169,22 +197,30 @@ if API_O:
         return_intermediate_steps=show_tool_calls,
     )
 
-    # Sidebar research status
-    st.sidebar.markdown("## Research Tools")
+    # Sidebar — profile & wallet status
+    st.sidebar.markdown("## Research")
     if brave_key:
         st.sidebar.success(f"Live research enabled ({len(tools)} tools)")
     else:
-        st.sidebar.info("Research tools disabled. Set BRAVE_API_KEY to enable live card data.")
+        st.sidebar.info("Set BRAVE_API_KEY to enable live card data.")
+
+    if profile_ctx:
+        st.sidebar.markdown("## Profile")
+        st.sidebar.caption(profile_ctx)
+    if wallet_ctx:
+        st.sidebar.markdown("## Wallet")
+        st.sidebar.caption(wallet_ctx)
 
 else:
-    st.sidebar.warning("API key required to try this app. The API key is not stored in any form.")
+    if not _env_key:
+        st.sidebar.warning("Enter your OpenAI API key above to get started. It is not stored.")
 
 # ---------------------------------------------------------------------------
 # Sidebar — navigation and actions
 # ---------------------------------------------------------------------------
 
 st.sidebar.markdown("## Navigation")
-st.sidebar.info("Use the dropdown menu above ↑ to navigate between pages")
+st.sidebar.info("Use the sidebar menu ↑ to navigate between pages")
 
 st.sidebar.markdown("## Actions")
 st.sidebar.button("New Chat", on_click=new_chat, type="primary")
