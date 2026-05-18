@@ -6,9 +6,9 @@
 
 It has two surfaces:
 1. **Streamlit chatbot** (`fleece.py`) — conversational AI assistant backed by OpenAI
-2. **CLI** (`cli.py`) — 12 commands for card research, wallet analysis, MCC lookup, and award redemption
+2. **CLI** (`cli.py`) — 13 commands for card research, wallet analysis, MCC lookup, spending profile, and award redemption
 
-Published on PyPI as [`fleece-cli`](https://pypi.org/project/fleece-cli/) · current version **0.3.1**
+Published on PyPI as [`fleece-cli`](https://pypi.org/project/fleece-cli/) · current version **0.4.0**
 
 ---
 
@@ -43,17 +43,29 @@ Published on PyPI as [`fleece-cli`](https://pypi.org/project/fleece-cli/) · cur
 | `fleece roi "<name>"` | First-year ROI estimate by spend profile |
 | `fleece recommend "<profile>"` | Card recommendations for a spending profile |
 
-### Redemption (no API key needed — work fully offline)
+### Redemption & Profile (no API key needed — work fully offline)
 | Command | Description |
 |---|---|
 | `fleece mcc <code>` | Offline MCC code lookup (981 codes bundled). Add `--wallet` to cross-reference saved cards |
 | `fleece flights <ORIGIN> <DEST> --date <YYYY-MM-DD>` | PointsYeah award flight search URL |
 | `fleece hotels "<location>" --checkin <date> --checkout <date>` | PointsYeah award hotel search URL |
+| `fleece profile show` | Display spending profile |
+| `fleece profile set <field> <value>` | Set a profile field |
+| `fleece profile unset <field>` | Clear a profile field |
+| `fleece profile fields` | List all 10 profile fields |
 
 All commands support `--json` for agent-friendly output and `-` to read arguments from stdin.
 
 ### BRAVE_API_KEY
-Optional at startup — checked only when a research command actually runs. `mcc`, `flights`, and `hotels` work with no key set.
+Optional at startup — checked only when a research command actually runs. `mcc`, `flights`, `hotels`, and `profile` work with no key set.
+
+### Spending Profile
+Stored in `fleece.db` (table: `profile`). Fields: `dining_monthly`, `groceries_monthly`, `travel_monthly`, `gas_monthly`, `other_monthly`, `annual_fee_tolerance`, `points_programs`, `home_airport`, `goal`, `preferences`.
+
+Once set, profile context is automatically injected into:
+- `fleece roi` — pulls spend values when flags not passed
+- `fleece wallet` — tailors gap analysis to the user's actual spend
+- `fleece recommend` — prepends profile context to the search query
 
 ---
 
@@ -63,7 +75,7 @@ Optional at startup — checked only when a research command actually runs. `mcc
 |---|---|
 | `cli.py` | Main CLI entry point (Typer app) |
 | `fleece.py` | Streamlit chatbot app |
-| `db.py` | SQLite helpers for card portfolio (`fleece.db`) |
+| `db.py` | SQLite helpers for card portfolio and spending profile (`fleece.db`) |
 | `pointsyeah.py` | PointsYeah URL generation (pure stdlib, merged from archived `pointsyeah-cli`) |
 | `mcc_codes.jsonl` | Bundled MCC dataset (981 codes, source: greggles/mcc-codes) |
 | `tools/brave_client.py` | Brave Search API client |
@@ -76,14 +88,16 @@ Optional at startup — checked only when a research command actually runs. `mcc
 ## Agent Skills
 
 ### Claude Code (`/.claude/skills/`)
-12 slash commands installed via `bash install.sh --claude`:
+13 slash commands installed via `bash install.sh --claude`:
 
 **Research:** `/fleece-card` `/fleece-rates` `/fleece-partners` `/fleece-credits` `/fleece-news` `/fleece-compare` `/fleece-wallet` `/fleece-roi` `/fleece-recommend`
 
 **Redemption:** `/fleece-mcc` `/fleece-flights` `/fleece-hotels`
 
+**Profile:** `/fleece-profile`
+
 ### ClawHub / OpenClaw (`/.agents/skills/fleece/SKILL.md`)
-Published on ClawHub as `fleece@1.3.0`. Install via `clawhub install fleece` or `bash install.sh --agents`.
+Published on ClawHub as `fleece@1.5.0`. Install via `clawhub install fleece` or `bash install.sh --agents`.
 
 ---
 
