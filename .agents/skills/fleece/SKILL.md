@@ -1,6 +1,6 @@
 ---
 name: fleece
-description: Fleece credit card research CLI. Provides live US credit card data via Brave Search — full reports, earning rates, transfer partners, statement credits, recent news, card comparisons, portfolio analysis, ROI estimates, and profile-based recommendations. Install with `pip install fleece-cli`. Use whenever you need current credit card information.
+description: Fleece credit card research and redemption CLI. Provides live US credit card data via Brave Search — full reports, earning rates, transfer partners, statement credits, recent news, card comparisons, portfolio analysis, ROI estimates, and profile-based recommendations. Also generates PointsYeah redemption URLs for flights and hotels (no API key needed). Install with `pip install fleece-cli`. Use whenever you need current credit card information or want to find award redemptions.
 ---
 
 # Fleece Credit Card Research
@@ -113,3 +113,38 @@ printf "Amex Gold\nChase Freedom Unlimited\nBilt\n" | fleece wallet - --json
 
 Supports all major US issuers: Amex, Bank of America, Barclays, Bilt, Capital One,
 Chase, Citi, Discover, Robinhood, U.S. Bank, Wells Fargo.
+
+## Redemption — PointsYeah URL generation
+
+No API key required. These commands generate best-effort PointsYeah deep-link URLs
+and optionally open them in the browser. Pure stdlib, no external calls.
+
+### Flight search
+```bash
+fleece flights JFK LAX --date 2026-06-01 --json
+fleece flights JFK LHR --date 2026-06-01 --return 2026-06-15 --adults 2 --cabin business --open
+```
+
+Options: `--date` (required), `--return`, `--adults` (default 1), `--cabin` (economy | premium-economy | business | first), `--open`, `--json`
+
+### Hotel search
+```bash
+fleece hotels "Tokyo" --checkin 2026-06-01 --checkout 2026-06-07 --json
+fleece hotels "Jersey City" --checkin 2026-04-10 --checkout 2026-04-12 --guests 2 --rooms 1 --open
+```
+
+Options: `--checkin` (required), `--checkout` (required), `--guests` (default 1), `--rooms` (default 1), `--open`, `--json`
+
+### JSON output format
+```json
+{
+  "command": "flights",
+  "origin": "JFK", "destination": "LAX", "date": "2026-06-01",
+  "return_date": null, "adults": 1, "cabin": "economy",
+  "url": "https://www.pointsyeah.com/?type=flights&...",
+  "ok": true, "error": null
+}
+```
+
+> PointsYeah does not publish a stable deep-link spec. If the URL stops working,
+> the query parameters still serve as a useful manual search reference.
