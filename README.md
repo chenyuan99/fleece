@@ -1,127 +1,123 @@
-# Fleece - Credit Card Recommendation and Management App
+# Fleece — Credit Card Research & Redemption
 
-## Overview
+[![PyPI version](https://img.shields.io/pypi/v/fleece-cli?color=FFD100&label=fleece-cli)](https://pypi.org/project/fleece-cli/)
+[![PyPI downloads](https://img.shields.io/pypi/dm/fleece-cli?color=FFD100)](https://pypi.org/project/fleece-cli/)
+[![Python](https://img.shields.io/pypi/pyversions/fleece-cli?color=FFD100)](https://pypi.org/project/fleece-cli/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-FFD100.svg)](https://github.com/chenyuan99/fleece/blob/main/LICENSE)
+[![Publish to PyPI](https://github.com/chenyuan99/fleece/actions/workflows/publish.yml/badge.svg)](https://github.com/chenyuan99/fleece/actions/workflows/publish.yml)
+[![ClawHub](https://img.shields.io/badge/ClawHub-fleece%401.5.0-FFD100)](https://clawhub.ai)
+[![Website](https://img.shields.io/website?url=https%3A%2F%2Fgetfleece.io&color=FFD100&label=getfleece.io)](https://getfleece.io/)
 
-Fleece is a comprehensive credit card recommendation and management application built with Streamlit and LangChain. The app helps users find the best credit cards based on their spending habits and manage their existing credit card portfolio.
+> Find the best card for deal saviors.
 
-## Author
+Fleece is a free, open-source credit card research and award redemption toolkit. It provides live data via Brave Search — no stale training data. Every command outputs clean JSON, making it easy to plug into AI agent workflows.
 
-@chenyuan99
+---
 
-## Features
+## Quick Start
 
-### Chat Interface
-- Interactive AI-powered chat assistant using OpenAI's GPT models
-- Conversation memory that remembers context across sessions
-- Entity memory to track important information mentioned in conversations
-- Ability to save and download conversation history
+```bash
+pip install fleece-cli
+export BRAVE_API_KEY=<your_key>   # optional — offline commands work without it
 
-### Credit Card Recommendations
-- Browse a curated list of popular credit cards with detailed information
-- Filter cards by annual fee, reward type, and other criteria
-- Get personalized card recommendations based on spending habits
-- Compare different cards side by side
+fleece card "Amex Gold"           # full card report
+fleece wallet                     # portfolio analysis
+fleece mcc 5812                   # MCC lookup (no API key needed)
+fleece flights JFK NRT --date 2026-06-01 --cabin business --open
+```
 
-### My Credit Cards Management
-- Track all your existing credit cards in one place
-- Add new cards with templates or custom information
-- Edit card details and remove cards you no longer use
-- View portfolio insights with visualizations of credit limits and annual fees
-- Sort and filter your cards by various criteria
+## CLI Commands
 
-## Performance Optimizations
+### Research (requires `BRAVE_API_KEY`)
 
-The application includes several performance optimizations:
+| Command | Description |
+|---|---|
+| `fleece card "<name>"` | Fees, welcome offer, earning rates, credits, benefits |
+| `fleece rates "<name>"` | Earning rates by spend category |
+| `fleece partners "<name>"` | Transfer partners, ratios, and timing |
+| `fleece credits "<name>"` | Statement credits and perks |
+| `fleece news "<name>"` | Recent changes (past month) |
+| `fleece compare "<A>" "<B>"` | Side-by-side card comparison |
+| `fleece wallet` | Portfolio analysis — coverage, overlaps, gaps |
+| `fleece roi "<name>"` | First-year ROI estimate |
+| `fleece recommend "<profile>"` | Personalized card recommendations |
 
-1. **Image Handling**
-   - Parallel image loading with ThreadPoolExecutor
-   - Multi-level image caching to reduce network requests
-   - Pre-generated default card images
+### Offline (no API key needed)
 
-2. **Data Management**
-   - Streamlit caching with TTL for expensive operations
-   - Lazy loading of UI components
-   - Optimized data structures
+| Command | Description |
+|---|---|
+| `fleece mcc <code>` | Look up a Merchant Category Code (981 codes bundled) |
+| `fleece mcc <code> --wallet` | Cross-reference MCC with your saved cards |
+| `fleece flights <ORIGIN> <DEST> --date <YYYY-MM-DD>` | PointsYeah award flight search URL |
+| `fleece hotels "<location>" --checkin <date> --checkout <date>` | PointsYeah award hotel search URL |
+| `fleece profile set <field> <value>` | Save your spending profile |
+| `fleece profile show` | View your profile |
 
-3. **UI/UX Improvements**
-   - Pagination for card displays
-   - Progressive loading with "Load More" buttons
-   - Form submission to reduce rerendering
+All commands support `--json` for agent-friendly output and `-` to read from stdin.
 
-## Technical Architecture
+## Spending Profile
 
-### Core Components
-- **fleece.py**: Main application entry point with chat interface
-- **pages/credit_cards.py**: Credit card recommendation page
-- **pages/my_credit_cards.py**: Personal credit card management page
-- **image_service.py**: Optimized image loading and caching service
-- **style.css**: Custom styling for the application
+Set your profile once — `fleece wallet`, `fleece roi`, and `fleece recommend` use it automatically:
 
-### Dependencies
-- Streamlit: Web application framework
-- LangChain: Framework for working with language models
-- OpenAI: API for accessing GPT models
-- Pandas: Data manipulation and analysis
-- PIL: Image processing
-- Requests: HTTP requests for fetching card images
+```bash
+fleece profile set dining_monthly 600
+fleece profile set travel_monthly 300
+fleece profile set home_airport JFK
+fleece profile set goal "business class to Tokyo 2027"
+fleece profile set annual_fee_tolerance 550
 
-## Installation and Setup
+fleece roi "Amex Gold"      # spend values pulled from profile
+fleece wallet               # gap analysis tailored to your spend
+```
 
-1. Clone the repository:
-   ```bash
-   git clone https://github.com/chenyuan99/fleece.git
-   cd fleece
-   ```
+## AI Agent Integration
 
-2. Create and activate a virtual environment:
-   ```bash
-   python -m venv .venv
-   source .venv/bin/activate  # On Windows: .venv\Scripts\activate
-   ```
+### Claude Code
+```bash
+bash install.sh --claude
+# Installs 13 slash commands: /fleece-card /fleece-wallet /fleece-mcc ...
+```
 
-3. Install dependencies:
-   ```bash
-   pip install -r requirements.txt
-   ```
+### OpenClaw / Codex
+```bash
+bash install.sh --agents
+# Installs .agents/skills/fleece/SKILL.md
+```
 
-4. Set up your OpenAI API key in a `.env` file:
-   ```
-   OPENAI_API_KEY=your_api_key_here
-   ```
+### ClawHub Registry
+```bash
+clawhub install fleece   # fleece@1.5.0
+```
 
-5. Run the application:
-   ```bash
-   streamlit run fleece.py
-   ```
+## Chatbot
 
-## Usage Guide
+A Streamlit conversational interface is also included:
 
-### Chat Interface
-- Enter your query in the text input field
-- The AI assistant will respond based on the conversation context
-- Use the "New Chat" button to start a fresh conversation
-- Download your conversation history using the download button
+```bash
+pip install -r requirements.txt
+OPENAI_API_KEY=<key> streamlit run fleece.py
+```
 
-### Credit Card Recommendations
-- Browse available credit cards in the expandable card views
-- Use sidebar filters to narrow down card options
-- Enter your spending habits in the form to get personalized recommendations
-- Click "Apply" on any card to start the application process
+## Development
 
-### My Credit Cards
-- View all your cards with detailed information
-- Use the "Add New Card" tab to add a new credit card
-- Choose from templates or create a custom card entry
-- Edit or remove existing cards as needed
-- View portfolio insights to understand your credit profile
+```bash
+git clone https://github.com/chenyuan99/fleece.git
+cd fleece
+pip install -e .
+export BRAVE_API_KEY=<your_key>
+fleece --help
+```
 
-## Resources
-
-- [OpenAI](https://openai.com/)
-- [LangChain](https://langchain.readthedocs.io/)
-- [Streamlit](https://streamlit.io/)
+### Running tests
+```bash
+pip install pytest
+pytest -q
+```
 
 ## License
 
-MIT
+MIT — see [LICENSE](LICENSE)
 
+## Author
+
+[@chenyuan99](https://github.com/chenyuan99) · [getfleece.io](https://getfleece.io/)
