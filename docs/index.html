@@ -464,7 +464,7 @@
   <div class="hero-inner">
     <div>
       <h1>Find the best card for <span>deal saviors</span></h1>
-      <p>AI-powered credit card research. Live data via Brave Search. Every command outputs clean JSON — built for humans and AI agents alike.</p>
+      <p>AI-powered credit card research and award redemption. Live data via Brave Search, PointsYeah flight and hotel search — every command outputs clean JSON, built for humans and AI agents alike.</p>
       <div class="hero-actions">
         <a class="btn-pill-dark" href="https://github.com/chenyuan99/fleece" target="_blank">
           Get Started
@@ -483,7 +483,7 @@
 
 <!-- FEATURE CARDS -->
 <section class="cards-section" id="features">
-  <div class="cards-inner">
+  <div class="cards-inner" style="grid-template-columns: repeat(3, 1fr);">
 
     <div class="card">
       <svg class="card-icon" viewBox="0 0 60 60" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -509,6 +509,20 @@
       <p>Nine commands backed by live Brave Search data. Full card reports, wallet analysis, transfer partners, ROI estimates, and more — with JSON output for AI agents.</p>
       <a class="btn-arrow" href="https://pypi.org/project/fleece-cli/" target="_blank">
         pip install
+        <svg viewBox="0 0 16 16" fill="none"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </a>
+    </div>
+
+    <div class="card">
+      <svg class="card-icon" viewBox="0 0 60 60" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M8 38l10-16 6 8 8-12 6 8 10-14" stroke="black" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+        <path d="M6 44h48" stroke="black" stroke-width="2.5" stroke-linecap="round"/>
+        <path d="M38 28l8-4-2 8" stroke="black" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+      <h3>Redemption</h3>
+      <p>Generate PointsYeah search URLs for award flights and hotels — no API key needed. Pure URL generation, open directly in your browser or pipe into an agent workflow.</p>
+      <a class="btn-arrow" href="#commands" >
+        See commands
         <svg viewBox="0 0 16 16" fill="none"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"/></svg>
       </a>
     </div>
@@ -559,7 +573,7 @@
 
     <div>
       <h2>CLI Commands</h2>
-      <p>All commands support <code style="font-size:0.9em;background:rgba(0,0,0,0.05);padding:1px 5px;border-radius:3px">--json</code> output and stdin piping via <code style="font-size:0.9em;background:rgba(0,0,0,0.05);padding:1px 5px;border-radius:3px">-</code>.</p>
+      <p>All commands support <code style="font-size:0.9em;background:rgba(0,0,0,0.05);padding:1px 5px;border-radius:3px">--json</code> output. <span style="color:var(--yellow);font-weight:600;">Highlighted</span> commands require no API key.</p>
 
       <div class="cmd-list">
         <div class="cmd-row"><span class="cmd-name">fleece card</span><span class="cmd-desc">Full card report — fees, welcome offer, rates, credits, benefits</span></div>
@@ -571,6 +585,8 @@
         <div class="cmd-row"><span class="cmd-name">fleece wallet</span><span class="cmd-desc">Portfolio analysis — coverage, overlaps, gaps</span></div>
         <div class="cmd-row"><span class="cmd-name">fleece roi</span><span class="cmd-desc">First-year ROI estimate by spend profile</span></div>
         <div class="cmd-row"><span class="cmd-name">fleece recommend</span><span class="cmd-desc">Card recommendations for a spending profile</span></div>
+        <div class="cmd-row"><span class="cmd-name" style="color:var(--yellow)">fleece flights</span><span class="cmd-desc">PointsYeah award flight search URL — no API key needed</span></div>
+        <div class="cmd-row"><span class="cmd-name" style="color:var(--yellow)">fleece hotels</span><span class="cmd-desc">PointsYeah award hotel search URL — no API key needed</span></div>
       </div>
     </div>
 
