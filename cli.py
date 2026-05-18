@@ -310,6 +310,73 @@ def recommend(
 
 
 # ---------------------------------------------------------------------------
+# Redemption — PointsYeah URL generation (no API key required)
+# ---------------------------------------------------------------------------
+
+CABINS = ["economy", "premium-economy", "business", "first"]
+
+
+@app.command()
+def flights(
+    origin:      Annotated[str, typer.Argument(help="Origin airport code (e.g. JFK).")],
+    destination: Annotated[str, typer.Argument(help="Destination airport code (e.g. LAX).")],
+    date:        Annotated[str,  typer.Option("--date", help="Departure date (YYYY-MM-DD).")],
+    return_date: Annotated[Optional[str], typer.Option("--return", help="Return date (YYYY-MM-DD).")] = None,
+    adults:      Annotated[int,  typer.Option("--adults", min=1)] = 1,
+    cabin:       Annotated[str,  typer.Option("--cabin", help=f"Cabin class: {', '.join(CABINS)}.")] = "economy",
+    open_url:    Annotated[bool, typer.Option("--open", help="Open URL in browser.")] = False,
+    as_json:     JsonOpt = False,
+):
+    """Generate a PointsYeah flight search URL and optionally open it."""
+    import webbrowser
+    from pointsyeah import FlightsQuery, build_flights_url
+
+    if cabin not in CABINS:
+        _error_exit(f"Invalid cabin '{cabin}'. Choose from: {', '.join(CABINS)}")
+
+    q = FlightsQuery(origin=origin, destination=destination, date=date,
+                     return_date=return_date, adults=adults, cabin=cabin)
+    url = build_flights_url(q)
+
+    if as_json:
+        import dataclasses
+        typer.echo(json.dumps({"command": "flights", **dataclasses.asdict(q), "url": url, "ok": True, "error": None}))
+    else:
+        typer.echo(url)
+
+    if open_url:
+        webbrowser.open(url)
+
+
+@app.command()
+def hotels(
+    location: Annotated[str, typer.Argument(help="City, area, or hotel keyword.")],
+    checkin:  Annotated[str, typer.Option("--checkin",  help="Check-in date (YYYY-MM-DD).")],
+    checkout: Annotated[str, typer.Option("--checkout", help="Check-out date (YYYY-MM-DD).")],
+    guests:   Annotated[int, typer.Option("--guests", min=1)] = 1,
+    rooms:    Annotated[int, typer.Option("--rooms",  min=1)] = 1,
+    open_url: Annotated[bool, typer.Option("--open", help="Open URL in browser.")] = False,
+    as_json:  JsonOpt = False,
+):
+    """Generate a PointsYeah hotel search URL and optionally open it."""
+    import webbrowser
+    from pointsyeah import HotelsQuery, build_hotels_url
+
+    q = HotelsQuery(location=location, checkin=checkin, checkout=checkout,
+                    guests=guests, rooms=rooms)
+    url = build_hotels_url(q)
+
+    if as_json:
+        import dataclasses
+        typer.echo(json.dumps({"command": "hotels", **dataclasses.asdict(q), "url": url, "ok": True, "error": None}))
+    else:
+        typer.echo(url)
+
+    if open_url:
+        webbrowser.open(url)
+
+
+# ---------------------------------------------------------------------------
 # cards — profile management (read/write user_cards.json)
 # ---------------------------------------------------------------------------
 

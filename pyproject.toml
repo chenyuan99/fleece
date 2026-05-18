@@ -5,7 +5,7 @@ build-backend = "hatchling.build"
 [project]
 name = "fleece-cli"
 version = "0.1.0"
-description = "Credit card research CLI — live data via Brave Search, designed for humans and AI agents."
+description = "Credit card research and redemption CLI — live data via Brave Search, PointsYeah URL generation, designed for humans and AI agents."
 readme = "README.md"
 license = { text = "MIT" }
 authors = [{ name = "Yuan Chen", email = "cysbc1999@gmail.com" }]
@@ -33,4 +33,4 @@ dependencies = [
 fleece = "cli:app"
 
 [tool.hatch.build.targets.wheel]
-include = ["cli.py", "db.py", "tools/"]
+include = ["cli.py", "db.py", "pointsyeah.py", "tools/"]

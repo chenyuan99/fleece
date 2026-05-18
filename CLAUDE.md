@@ -33,9 +33,11 @@ Fleece is a chatbot that:
 - **No structured research**: Lacks the ability to provide specific, verified credit card information (fees, benefits, offers, transfer partners, etc.)
 
 ## Future Integration Opportunities
-- **credit-card-skills integration**: Add specialized research capabilities to access live issuer data
 - **Multi-page app expansion**: Build out the "Credit Cards" discovery page and "My Credit Cards" portfolio management
 - **Database backend**: Store user profiles, card portfolios, and preferences
+
+## CLI — Redemption Commands
+The `fleece flights` and `fleece hotels` commands are merged from the former `pointsyeah-cli` project (now archived). They generate PointsYeah search URLs with no API key required — pure stdlib, zero external dependencies. Source lives in `pointsyeah.py`.
 
 ## Development Notes
 - Author: Yuan Chen
