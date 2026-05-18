@@ -1,6 +1,6 @@
 ---
 name: fleece
-description: Fleece credit card research CLI. Provides live US credit card data via Brave Search — full reports, earning rates, transfer partners, statement credits, recent news, card comparisons, portfolio analysis, ROI estimates, and profile-based recommendations. Use whenever you need current credit card information.
+description: Fleece credit card research CLI. Provides live US credit card data via Brave Search — full reports, earning rates, transfer partners, statement credits, recent news, card comparisons, portfolio analysis, ROI estimates, and profile-based recommendations. Install with `pip install fleece-cli`. Use whenever you need current credit card information.
 ---
 
 # Fleece Credit Card Research
