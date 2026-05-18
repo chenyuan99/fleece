@@ -1,0 +1,29 @@
+name: Publish Skills to ClawHub
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - ".agents/skills/**"
+      - ".claude/skills/**"
+  workflow_dispatch:
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Install clawhub
+        run: npm install -g clawhub
+
+      - name: Authenticate
+        run: clawhub login --token "${{ secrets.CLAWHUB_TOKEN }}" --no-browser
+
+      - name: Publish skills
+        run: clawhub sync --root .agents/skills --all --changelog "Automated publish from ${{ github.sha }}"
