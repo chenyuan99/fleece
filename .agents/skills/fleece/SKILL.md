@@ -15,8 +15,38 @@ Use this skill when the user asks about:
 - **ROI / value**: "Is the Amex Platinum worth the $695 fee?", "First-year value of the Sapphire Preferred"
 - **Award redemptions**: "Find business class flights JFK to Tokyo", "Search hotels in Paris with points"
 - **Merchant lookup**: "What card should I use at Costco?", "Which card earns the most at gas stations?", "What MCC is a pharmacy?"
+- **Spending profile**: "Set up my profile", "Save my spending habits", "Remember I spend $600/month on dining"
 
 Live US credit card data via Brave Search. All commands output JSON for programmatic use.
+
+## Spending profile
+
+The user's spending profile is stored in `fleece.db` and automatically injected into `fleece wallet`, `fleece roi`, and `fleece recommend`. Set it up once and all research commands become personalised.
+
+```bash
+# Set profile fields (no API key needed)
+fleece profile set dining_monthly 600
+fleece profile set travel_monthly 300
+fleece profile set groceries_monthly 400
+fleece profile set annual_fee_tolerance 550
+fleece profile set home_airport JFK
+fleece profile set goal "business class to Tokyo 2027"
+fleece profile set points_programs "Amex MR, Chase UR"
+
+# View current profile
+fleece profile show --json
+
+# List all available fields
+fleece profile fields
+```
+
+Once set, spend values are pulled automatically:
+```bash
+# No need to pass --dining or --travel flags
+fleece roi "Amex Gold"
+fleece wallet
+fleece recommend "travel rewards"
+```
 
 ## MCC-enriched workflow
 
