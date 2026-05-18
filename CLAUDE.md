@@ -42,3 +42,6 @@ Fleece is a chatbot that:
 - Created: March 16, 2025
 - Uses custom CSS styling (style.css)
 - Requires OpenAI API key (entered via sidebar, not stored)
+
+## Infrastructure Notes
+- **Databricks**: No Databricks resources are available at the moment. The Databricks App deployment workflow has been removed. Do not suggest or implement Databricks-based solutions until resources are provisioned.
