@@ -525,6 +525,11 @@
     <div class="hero-install-box">
       <h2>Install CLI</h2>
       <div class="install-cmd"><span>$</span> pip install fleece-cli</div>
+      <div style="display:flex;gap:8px;margin-bottom:1.25rem;flex-wrap:wrap;">
+        <span style="background:#1e1e1e;border:1px solid #333;color:#aaa;font-family:'Courier New',monospace;font-size:0.72rem;padding:3px 10px;border-radius:20px;">v0.4.0</span>
+        <span style="background:#1e1e1e;border:1px solid #333;color:#aaa;font-family:'Courier New',monospace;font-size:0.72rem;padding:3px 10px;border-radius:20px;">Python 3.11+</span>
+        <span style="background:#1e1e1e;border:1px solid #333;color:#aaa;font-family:'Courier New',monospace;font-size:0.72rem;padding:3px 10px;border-radius:20px;">MIT</span>
+      </div>
       <p><code style="color:rgba(255,255,255,0.5);font-size:0.85em">BRAVE_API_KEY</code> is optional — <code style="color:rgba(255,255,255,0.5);font-size:0.85em">mcc</code>, <code style="color:rgba(255,255,255,0.5);font-size:0.85em">flights</code>, and <code style="color:rgba(255,255,255,0.5);font-size:0.85em">hotels</code> work fully offline. Live research commands require it. Requires Python 3.11+.</p>
     </div>
   </div>
@@ -607,11 +612,11 @@
         <path d="M20 30h20M20 22h12M20 38h16" stroke="black" stroke-width="2.5" stroke-linecap="round"/>
       </svg>
       <h3>Claude Code</h3>
-      <p>Install 12 slash commands directly into your Claude Code session. Use <code style="font-size:0.85em;background:#f0f0f0;padding:1px 4px;border-radius:3px">/fleece-wallet</code>, <code style="font-size:0.85em;background:#f0f0f0;padding:1px 4px;border-radius:3px">/fleece-mcc</code>, and more without leaving the terminal.</p>
+      <p>Install 13 slash commands directly into your Claude Code session. Use <code style="font-size:0.85em;background:#f0f0f0;padding:1px 4px;border-radius:3px">/fleece-wallet</code>, <code style="font-size:0.85em;background:#f0f0f0;padding:1px 4px;border-radius:3px">/fleece-profile</code>, <code style="font-size:0.85em;background:#f0f0f0;padding:1px 4px;border-radius:3px">/fleece-mcc</code>, and more without leaving the terminal.</p>
       <div style="font-family:'Courier New',monospace;font-size:0.8rem;background:#f7f7f5;border:1px solid var(--border);border-radius:6px;padding:0.9rem 1rem;line-height:1.8;">
         <div><span style="color:var(--mid)">$</span> bash install.sh --claude</div>
-        <div style="color:var(--mid);font-size:0.75rem;margin-top:4px">/fleece-card &nbsp;/fleece-wallet &nbsp;/fleece-mcc</div>
-        <div style="color:var(--mid);font-size:0.75rem">/fleece-flights &nbsp;/fleece-hotels &nbsp;+7 more</div>
+        <div style="color:var(--mid);font-size:0.75rem;margin-top:4px">/fleece-card &nbsp;/fleece-wallet &nbsp;/fleece-profile</div>
+        <div style="color:var(--mid);font-size:0.75rem">/fleece-mcc &nbsp;/fleece-flights &nbsp;+8 more</div>
       </div>
     </div>
 
@@ -639,7 +644,7 @@
       <p>Fleece is published on ClawHub. Any agent that supports the ClawHub registry can install and use it with a single command — no git clone required.</p>
       <div style="font-family:'Courier New',monospace;font-size:0.8rem;background:#f7f7f5;border:1px solid var(--border);border-radius:6px;padding:0.9rem 1rem;line-height:1.8;">
         <div><span style="color:var(--mid)">$</span> clawhub install fleece</div>
-        <div style="color:var(--mid);font-size:0.75rem;margin-top:4px">fleece@1.3.0 &nbsp;·&nbsp; MIT-0</div>
+        <div style="color:var(--mid);font-size:0.75rem;margin-top:4px">fleece@1.4.0 &nbsp;·&nbsp; MIT-0</div>
         <div style="color:var(--mid);font-size:0.75rem">clawhub search "credit card research"</div>
       </div>
     </div>
@@ -693,6 +698,7 @@
         <div class="cmd-row"><span class="cmd-name" style="color:var(--yellow)">fleece mcc</span><span class="cmd-desc">Look up a merchant category code — find your best card at checkout</span></div>
         <div class="cmd-row"><span class="cmd-name" style="color:var(--yellow)">fleece flights</span><span class="cmd-desc">PointsYeah award flight search URL — no API key needed</span></div>
         <div class="cmd-row"><span class="cmd-name" style="color:var(--yellow)">fleece hotels</span><span class="cmd-desc">PointsYeah award hotel search URL — no API key needed</span></div>
+        <div class="cmd-row"><span class="cmd-name" style="color:var(--yellow)">fleece profile</span><span class="cmd-desc">Manage spending profile — auto-enriches wallet, roi, and recommend</span></div>
       </div>
     </div>
 
