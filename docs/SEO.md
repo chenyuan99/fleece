@@ -83,6 +83,23 @@ Tracking description changes, tag updates, and search ranking results for the `f
 
 ---
 
+## v1.3.0 — MCC-enriched workflows across all skills (2026-05-18)
+
+**Changes:**
+- Added merchant lookup as an explicit trigger phrase in agent SKILL.md:
+  > "What card should I use at Costco?", "Which card earns the most at gas stations?", "What MCC is a pharmacy?"
+- Added MCC workflow table to agent SKILL.md mapping common codes to typical card bonuses (5411 groceries, 5812 restaurants, 5541 gas, 4511 airlines, 7011 hotels, 4111 transit, 5912 drugstores)
+- **fleece-wallet**: added post-gap-analysis MCC flow (`fleece mcc <code> --wallet`)
+- **fleece-rates**: added MCC precision tip (5812 vs 5814 vs 5411 distinctions)
+- **fleece-recommend**: added MCC-informed spending profile workflow
+- **fleece-compare**: added MCC-precise comparison example
+
+**Rationale:** MCC lookup answers "what card should I use at [merchant]?" with precision. Cross-referencing wallet gaps with MCC codes turns vague category gaps into specific merchant-level card recommendations. Adding merchant phrasing to trigger phrases broadens the query surface the skill matches.
+
+**Tags:** unchanged from v1.2.1
+
+---
+
 ## Observations & lessons
 
 1. **Description is the primary ranking signal** — ClawHub's vector search indexes the frontmatter `description` field. The body content appears to have lower weight. Front-load the highest-value keywords.
