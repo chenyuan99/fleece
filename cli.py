@@ -250,14 +250,18 @@ def wallet(
     except Exception as e:
         _error_exit(str(e), code=1)
 
+    import db as _db
+    profile_ctx = _db.profile_as_context()
+
     combined = "\n\n".join(parts)
-    combined += (
-        "\n\nBased on the above, identify:\n"
-        "1. Category coverage map\n"
-        "2. Overlapping benefits or redundant categories\n"
-        "3. Gaps — categories with no bonus multiplier\n"
-        "4. Top 1-2 cards that would complement this portfolio"
-    )
+    combined += "\n\nBased on the above, identify:\n"
+    combined += "1. Category coverage map\n"
+    combined += "2. Overlapping benefits or redundant categories\n"
+    combined += "3. Gaps — categories with no bonus multiplier\n"
+    combined += "4. Top 1-2 cards that would complement this portfolio"
+    if profile_ctx:
+        combined += f"\n\nUser profile context: {profile_ctx}"
+        combined += "\nTailor the gap analysis and recommendations to this profile."
     _emit(combined, as_json, "wallet", ", ".join(card_list))
 
 
@@ -274,9 +278,19 @@ def roi(
     """First-year ROI estimate — welcome bonus + earn + credits minus annual fee."""
     from tools.brave_client import search_and_format
     from tools.credit_card_tools import _guess_cpp
+    import db as _db
 
     name = _read_stdin_or_arg(name)
     key  = _resolve_key(api_key, no_dotenv)
+
+    # Pull spend values from saved profile if not provided on the command line
+    p = _db.get_profile()
+    if travel == 0.0 and p.get("travel_monthly"):
+        travel = float(p["travel_monthly"])
+    if dining == 0.0 and p.get("dining_monthly"):
+        dining = float(p["dining_monthly"])
+    if other  == 0.0 and p.get("other_monthly"):
+        other  = float(p["other_monthly"])
 
     annual_travel = travel * 12
     annual_dining = dining * 12
@@ -310,10 +324,16 @@ def recommend(
     no_dotenv:   NoDotenv   = False,
 ):
     """Card recommendations matched to a spending profile and preferences."""
+    import db as _db
     profile = _read_stdin_or_arg(profile)
     key     = _resolve_key(api_key, no_dotenv)
     pref    = f"{preferences} " if preferences else ""
-    query   = f"best credit cards {profile} {pref}US 2025 site:nerdwallet.com OR site:thepointsguy.com OR site:doctorofcredit.com"
+
+    # Enrich with saved profile context if available
+    saved_ctx = _db.profile_as_context(cards=_db.get_card_names())
+    ctx = f"{saved_ctx} | " if saved_ctx else ""
+
+    query = f"best credit cards {ctx}{profile} {pref}US 2025 site:nerdwallet.com OR site:thepointsguy.com OR site:doctorofcredit.com"
     _run_search(_get_wrapper(key), query, "recommend", as_json)
 
 
@@ -463,6 +483,72 @@ def hotels(
 
     if open_url:
         webbrowser.open(url)
+
+
+# ---------------------------------------------------------------------------
+# profile — spending profile management
+# ---------------------------------------------------------------------------
+
+profile_app = typer.Typer(name="profile", help="Manage your spending profile — used to personalise research commands.", no_args_is_help=True)
+app.add_typer(profile_app)
+
+
+@profile_app.command("show")
+def profile_show(as_json: JsonOpt = False):
+    """Show your current spending profile."""
+    import db as _db
+    p = _db.get_profile()
+    if not p:
+        typer.echo("No profile set. Run: fleece profile set <field> <value>")
+        typer.echo(f"Fields: {', '.join(_db.PROFILE_FIELDS)}")
+        return
+    if as_json:
+        typer.echo(json.dumps({"command": "profile show", "profile": p, "ok": True, "error": None}))
+        return
+    for key, label in _db.PROFILE_FIELDS.items():
+        val = p.get(key, "")
+        if val:
+            typer.echo(f"  {label:<45} {val}")
+
+
+@profile_app.command("set")
+def profile_set(
+    field: Annotated[str, typer.Argument(help=f"Field name. One of: {', '.join(__import__('db').PROFILE_FIELDS)}")],
+    value: Annotated[str, typer.Argument(help="Value to set.")],
+    as_json: JsonOpt = False,
+):
+    """Set a profile field."""
+    import db as _db
+    try:
+        _db.set_profile_field(field, value)
+    except ValueError as e:
+        _error_exit(str(e), code=1)
+    if as_json:
+        typer.echo(json.dumps({"command": "profile set", "field": field, "value": value, "ok": True, "error": None}))
+    else:
+        typer.echo(f"Profile updated: {field} = {value}")
+
+
+@profile_app.command("unset")
+def profile_unset(
+    field: Annotated[str, typer.Argument(help="Field name to clear.")],
+    as_json: JsonOpt = False,
+):
+    """Clear a single profile field."""
+    import db as _db
+    _db.clear_profile_field(field)
+    if as_json:
+        typer.echo(json.dumps({"command": "profile unset", "field": field, "ok": True, "error": None}))
+    else:
+        typer.echo(f"Cleared: {field}")
+
+
+@profile_app.command("fields")
+def profile_fields():
+    """List all available profile fields and their descriptions."""
+    import db as _db
+    for key, label in _db.PROFILE_FIELDS.items():
+        typer.echo(f"  {key:<30} {label}")
 
 
 # ---------------------------------------------------------------------------

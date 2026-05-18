@@ -23,7 +23,25 @@ CREATE TABLE IF NOT EXISTS cards (
     image_url    TEXT    NOT NULL DEFAULT '',
     date_added   TEXT    NOT NULL DEFAULT (date('now'))
 );
+CREATE TABLE IF NOT EXISTS profile (
+    key   TEXT PRIMARY KEY,
+    value TEXT NOT NULL DEFAULT ''
+);
 """
+
+# Default profile fields and their human-readable labels
+PROFILE_FIELDS = {
+    "dining_monthly":        "Monthly dining spend ($)",
+    "groceries_monthly":     "Monthly groceries spend ($)",
+    "travel_monthly":        "Monthly travel spend ($)",
+    "gas_monthly":           "Monthly gas spend ($)",
+    "other_monthly":         "Monthly other spend ($)",
+    "annual_fee_tolerance":  "Max annual fee willing to pay ($)",
+    "points_programs":       "Preferred points programs (e.g. Amex MR, Chase UR)",
+    "home_airport":          "Home airport IATA code (e.g. JFK)",
+    "goal":                  "Current redemption goal (e.g. business class to Tokyo)",
+    "preferences":           "Other preferences (e.g. no foreign transaction fees)",
+}
 
 _COLUMNS = ("id", "name", "last_four", "annual_fee", "credit_limit",
             "rewards", "expiration", "image_url", "date_added")
@@ -131,6 +149,73 @@ def remove_card(name: str) -> bool:
     with _conn() as con:
         cur = con.execute("DELETE FROM cards WHERE name = ?", (name,))
     return cur.rowcount > 0
+
+
+# ---------------------------------------------------------------------------
+# Profile
+# ---------------------------------------------------------------------------
+
+def get_profile() -> dict[str, str]:
+    """Return the full profile as {key: value}. Missing keys return ''."""
+    init_db()
+    with _conn() as con:
+        rows = con.execute("SELECT key, value FROM profile").fetchall()
+    return {r["key"]: r["value"] for r in rows}
+
+
+def set_profile_field(key: str, value: str) -> None:
+    """Upsert a single profile field."""
+    if key not in PROFILE_FIELDS:
+        raise ValueError(f'Unknown profile field "{key}". Valid fields: {", ".join(PROFILE_FIELDS)}')
+    init_db()
+    with _conn() as con:
+        con.execute(
+            "INSERT INTO profile (key, value) VALUES (?, ?) "
+            "ON CONFLICT(key) DO UPDATE SET value = excluded.value",
+            (key, value),
+        )
+
+
+def clear_profile_field(key: str) -> None:
+    """Remove a single profile field."""
+    init_db()
+    with _conn() as con:
+        con.execute("DELETE FROM profile WHERE key = ?", (key,))
+
+
+def profile_as_context(cards: list[str] | None = None) -> str:
+    """
+    Return a compact natural-language summary of the user profile suitable
+    for injecting into a Brave Search query or LLM prompt.
+    """
+    p = get_profile()
+    parts = []
+
+    spend_fields = [
+        ("dining_monthly", "dining"),
+        ("groceries_monthly", "groceries"),
+        ("travel_monthly", "travel"),
+        ("gas_monthly", "gas"),
+        ("other_monthly", "other"),
+    ]
+    spend_parts = [f"${p[k]}/mo {label}" for k, label in spend_fields if p.get(k)]
+    if spend_parts:
+        parts.append("Spending: " + ", ".join(spend_parts))
+
+    if p.get("annual_fee_tolerance"):
+        parts.append(f"Max annual fee: ${p['annual_fee_tolerance']}")
+    if p.get("points_programs"):
+        parts.append(f"Points programs: {p['points_programs']}")
+    if p.get("home_airport"):
+        parts.append(f"Home airport: {p['home_airport']}")
+    if p.get("goal"):
+        parts.append(f"Goal: {p['goal']}")
+    if p.get("preferences"):
+        parts.append(f"Preferences: {p['preferences']}")
+    if cards:
+        parts.append(f"Current cards: {', '.join(cards)}")
+
+    return " | ".join(parts) if parts else ""
 
 
 # ---------------------------------------------------------------------------
