@@ -23,6 +23,7 @@ install_claude() {
   echo "  Research:    /fleece-card /fleece-rates /fleece-partners /fleece-credits"
   echo "               /fleece-news /fleece-compare /fleece-wallet /fleece-roi /fleece-recommend"
   echo "  Redemption:  /fleece-mcc /fleece-flights /fleece-hotels"
+  echo "  Profile:     /fleece-profile"
 }
 
 install_agents() {
