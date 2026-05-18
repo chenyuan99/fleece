@@ -15,13 +15,13 @@ Fetches transfer partner details for a card's rewards currency.
 ## Usage
 
 ```bash
-python cli.py partners "<card name>" --json
+fleece partners "<card name>" --json
 ```
 
 ## Example
 
 ```bash
-python cli.py partners "Chase Sapphire Preferred" --json
-python cli.py partners "Capital One Venture X" --json
-python cli.py partners "Amex Platinum" --json
+fleece partners "Chase Sapphire Preferred" --json
+fleece partners "Capital One Venture X" --json
+fleece partners "Amex Platinum" --json
 ```

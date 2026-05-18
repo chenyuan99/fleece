@@ -15,7 +15,7 @@ Searches for the latest news and changes for a card using freshness-filtered res
 ## Usage
 
 ```bash
-python cli.py news "<card name>" --json
+fleece news "<card name>" --json
 ```
 
 Results are filtered to the past month (`freshness=pm`).
@@ -23,6 +23,6 @@ Results are filtered to the past month (`freshness=pm`).
 ## Example
 
 ```bash
-python cli.py news "Amex Gold" --json
-python cli.py news "Chase Sapphire Reserve" --json
+fleece news "Amex Gold" --json
+fleece news "Chase Sapphire Reserve" --json
 ```

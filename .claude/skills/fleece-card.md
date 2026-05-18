@@ -15,7 +15,7 @@ Fetches a comprehensive report for a US credit card using live Brave Search data
 ## Usage
 
 ```bash
-python cli.py card "<card name>" --json
+fleece card "<card name>" --json
 ```
 
 The `--json` flag returns a structured envelope your can parse:
@@ -33,6 +33,6 @@ Use `result` as your research context, then synthesize a natural answer.
 ## Example
 
 ```bash
-python cli.py card "Chase Sapphire Preferred" --json
-python cli.py card "Amex Gold" --json
+fleece card "Chase Sapphire Preferred" --json
+fleece card "Amex Gold" --json
 ```

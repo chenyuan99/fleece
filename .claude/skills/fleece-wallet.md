@@ -18,19 +18,19 @@ Analyzes a multi-card portfolio and identifies optimization opportunities.
 **If the user has a saved profile (most common)** — no args needed; the CLI auto-loads from `fleece.db`:
 
 ```bash
-python cli.py wallet
+fleece wallet
 ```
 
 **To pass cards explicitly:**
 
 ```bash
-python cli.py wallet "Amex Platinum" "Chase Freedom Unlimited" "Bilt"
+fleece wallet "Amex Platinum" "Chase Freedom Unlimited" "Bilt"
 ```
 
 **Agent-friendly JSON output:**
 
 ```bash
-python cli.py wallet --json
+fleece wallet --json
 ```
 
 Cards can come from three sources (in priority order):
@@ -55,8 +55,8 @@ The result includes:
 
 ```bash
 # Auto-load saved wallet (preferred)
-python cli.py wallet
+fleece wallet
 
 # Explicit cards
-python cli.py wallet "Amex Gold" "Chase Sapphire Preferred" "Citi Double Cash"
+fleece wallet "Amex Gold" "Chase Sapphire Preferred" "Citi Double Cash"
 ```

@@ -15,8 +15,8 @@ Searches live data for both cards and returns research for a structured comparis
 ## Usage
 
 ```bash
-python cli.py compare "<card A>" "<card B>" --json
-python cli.py compare "<card A>" "<card B>" --aspects "fees,rewards,credits" --json
+fleece compare "<card A>" "<card B>" --json
+fleece compare "<card A>" "<card B>" --aspects "fees,rewards,credits" --json
 ```
 
 Default aspects: `fees,rewards,welcome_offer,credits,transfer_partners`
@@ -24,8 +24,8 @@ Default aspects: `fees,rewards,welcome_offer,credits,transfer_partners`
 ## Example
 
 ```bash
-python cli.py compare "Amex Gold" "Chase Sapphire Preferred" --json
-python cli.py compare "Capital One Venture X" "Chase Sapphire Reserve" --json
+fleece compare "Amex Gold" "Chase Sapphire Preferred" --json
+fleece compare "Capital One Venture X" "Chase Sapphire Reserve" --json
 ```
 
 After receiving the result, synthesize a clear recommendation based on the user's stated priorities.

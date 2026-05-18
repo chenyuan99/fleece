@@ -15,12 +15,12 @@ Fetches the full list of statement credits and perks for a card.
 ## Usage
 
 ```bash
-python cli.py credits "<card name>" --json
+fleece credits "<card name>" --json
 ```
 
 ## Example
 
 ```bash
-python cli.py credits "Amex Platinum" --json
-python cli.py credits "Chase Sapphire Reserve" --json
+fleece credits "Amex Platinum" --json
+fleece credits "Chase Sapphire Reserve" --json
 ```

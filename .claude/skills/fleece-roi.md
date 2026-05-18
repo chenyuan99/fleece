@@ -15,7 +15,7 @@ Estimates first-year return on investment for a card based on the user's spendin
 ## Usage
 
 ```bash
-python cli.py roi "<card name>" --travel <monthly $> --dining <monthly $> --other <monthly $> --json
+fleece roi "<card name>" --travel <monthly $> --dining <monthly $> --other <monthly $> --json
 ```
 
 All spend flags are optional and default to `0`. Omit any category the user didn't mention.
@@ -23,8 +23,8 @@ All spend flags are optional and default to `0`. Omit any category the user didn
 ## Example
 
 ```bash
-python cli.py roi "Chase Sapphire Preferred" --travel 500 --dining 300 --other 1000 --json
-python cli.py roi "Amex Gold" --dining 800 --other 500 --json
+fleece roi "Chase Sapphire Preferred" --travel 500 --dining 300 --other 1000 --json
+fleece roi "Amex Gold" --dining 800 --other 500 --json
 ```
 
 The result includes annual spend totals, an assumed cents-per-point value, and live research context.

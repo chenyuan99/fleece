@@ -15,8 +15,8 @@ Looks up earning rates for a credit card, with optional category filtering.
 ## Usage
 
 ```bash
-python cli.py rates "<card name>" --json
-python cli.py rates "<card name>" --category "<category>" --json
+fleece rates "<card name>" --json
+fleece rates "<card name>" --category "<category>" --json
 ```
 
 Categories: `dining`, `travel`, `groceries`, `gas`, `streaming`, `drugstores`, etc.
@@ -24,6 +24,6 @@ Categories: `dining`, `travel`, `groceries`, `gas`, `streaming`, `drugstores`, e
 ## Example
 
 ```bash
-python cli.py rates "Chase Sapphire Preferred" --json
-python cli.py rates "Amex Gold" --category dining --json
+fleece rates "Chase Sapphire Preferred" --json
+fleece rates "Amex Gold" --category dining --json
 ```

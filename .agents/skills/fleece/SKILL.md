@@ -11,66 +11,66 @@ programmatic use. Requires `BRAVE_API_KEY` in the environment.
 ## Prerequisites
 
 ```bash
+# Install once
+pip install fleece-cli
+
 # Set in environment or .env file
 export BRAVE_API_KEY=<your_key>
-
-# Run from the fleece project root
-cd /path/to/fleece
 ```
 
 ## Commands
 
 ### Full card report
 ```bash
-python cli.py card "<card name>" --json
+fleece card "<card name>" --json
 ```
 Returns fees, welcome offer, earning rates, credits, benefits, and strategy.
 
 ### Earning rates
 ```bash
-python cli.py rates "<card name>" --json
-python cli.py rates "<card name>" --category "<dining|travel|groceries|gas>" --json
+fleece rates "<card name>" --json
+fleece rates "<card name>" --category "<dining|travel|groceries|gas>" --json
 ```
 
 ### Transfer partners
 ```bash
-python cli.py partners "<card name>" --json
+fleece partners "<card name>" --json
 ```
 Returns airline and hotel partners with ratios and transfer timing.
 
 ### Statement credits
 ```bash
-python cli.py credits "<card name>" --json
+fleece credits "<card name>" --json
 ```
 Returns all credits with amounts, cadence, and enrollment requirements.
 
 ### Recent news (past month)
 ```bash
-python cli.py news "<card name>" --json
+fleece news "<card name>" --json
 ```
 Freshness-filtered to the past month.
 
 ### Side-by-side comparison
 ```bash
-python cli.py compare "<card A>" "<card B>" --json
-python cli.py compare "<card A>" "<card B>" --aspects "fees,rewards,credits" --json
+fleece compare "<card A>" "<card B>" --json
+fleece compare "<card A>" "<card B>" --aspects "fees,rewards,credits" --json
 ```
 
 ### Portfolio / wallet analysis
 ```bash
-python cli.py wallet "<card 1>" "<card 2>" "<card 3>" --json
+fleece wallet "<card 1>" "<card 2>" "<card 3>" --json
 ```
 Returns coverage map, overlaps, gaps, and next-card suggestions.
 
 ### First-year ROI
 ```bash
-python cli.py roi "<card name>" --travel <monthly $> --dining <monthly $> --other <monthly $> --json
+fleece roi "<card name>" --travel <monthly $> --dining <monthly $> --other <monthly $> --json
 ```
 
 ### Profile-based recommendations
 ```bash
-python cli.py recommend "<spending profile>" --json
-python cli.py recommend "<spending profile>" --preferences "<preferences>" --json
+fleece recommend "<spending profile>" --json
+fleece recommend "<spending profile>" --preferences "<preferences>" --json
 ```
 
 ## Output format
@@ -100,13 +100,13 @@ On error, `ok` is `false` and `error` contains the message. Always check `ok` be
 
 The primary argument on any single-card command accepts `-` to read from stdin:
 ```bash
-echo "Chase Sapphire Preferred" | python cli.py card - --json
-echo "high dining spend" | python cli.py recommend - --json
+echo "Chase Sapphire Preferred" | fleece card - --json
+echo "high dining spend" | fleece recommend - --json
 ```
 
 The `wallet` command accepts `-` as its sole argument to read newline-delimited card names:
 ```bash
-printf "Amex Gold\nChase Freedom Unlimited\nBilt\n" | python cli.py wallet - --json
+printf "Amex Gold\nChase Freedom Unlimited\nBilt\n" | fleece wallet - --json
 ```
 
 ## Coverage
