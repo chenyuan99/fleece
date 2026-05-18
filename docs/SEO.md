@@ -100,6 +100,31 @@ Tracking description changes, tag updates, and search ranking results for the `f
 
 ---
 
+## v1.4.0 — Profile system added (2026-05-18)
+
+**Changes:**
+- Added `fleece profile` command (show/set/unset/fields — no API key needed)
+- `fleece wallet`, `fleece roi`, and `fleece recommend` now auto-inject profile context
+- Added `fleece-profile.md` Claude Code skill
+- Added `profile` tag
+- Agent SKILL.md: added "Spending profile" trigger phrase and profile setup section
+
+**Tags:** added `profile`
+
+---
+
+## v1.5.0 — Profile section in agent SKILL.md (2026-05-18)
+
+**Changes:**
+- Expanded agent SKILL.md with full profile documentation: setup workflow, field list, auto-injection behaviour for wallet/roi/recommend
+- No description change
+
+**Rationale:** Adding profile as a trigger phrase ("Save my spending habits", "Remember I spend $600/month on dining") broadens the query surface to match users who want to personalise their research experience.
+
+**Tags:** unchanged from v1.4.0
+
+---
+
 ## Observations & lessons
 
 1. **Description is the primary ranking signal** — ClawHub's vector search indexes the frontmatter `description` field. The body content appears to have lower weight. Front-load the highest-value keywords.
