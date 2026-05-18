@@ -29,3 +29,15 @@ fleece compare "Capital One Venture X" "Chase Sapphire Reserve" --json
 ```
 
 After receiving the result, synthesize a clear recommendation based on the user's stated priorities.
+
+## MCC-precise comparison
+
+When comparing two cards on rewards, use `fleece mcc` to identify the exact merchant category first — then compare on that specific category for a more accurate result:
+
+```bash
+# User wants to know which card earns more at Costco (a grocery/wholesale club)
+fleece mcc 5411   # → Grocery Stores, Supermarkets
+
+# Then compare with that category as the focus
+fleece compare "Amex Gold" "Chase Sapphire Preferred" --aspects "grocery rewards,supermarket earning rate" --json
+```

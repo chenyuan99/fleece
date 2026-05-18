@@ -60,3 +60,20 @@ fleece wallet
 # Explicit cards
 fleece wallet "Amex Gold" "Chase Sapphire Preferred" "Citi Double Cash"
 ```
+
+## MCC-enriched gap analysis
+
+After `fleece wallet` identifies a gap (e.g., "no bonus on grocery stores"), use `fleece mcc` to drill into the precise merchant category and find the best card for it:
+
+```bash
+# Wallet says "gap on groceries" → confirm the MCC and cross-reference wallet
+fleece mcc 5411 --wallet --json   # Grocery Stores, Supermarkets
+
+# Other common gap MCCs to check after a wallet analysis
+fleece mcc 5541 --wallet          # Gas stations
+fleece mcc 5912 --wallet          # Drugstores / pharmacies
+fleece mcc 4111 --wallet          # Transit / commuter
+fleece mcc 5812 --wallet          # Restaurants
+```
+
+This turns a vague "gap on groceries" into a precise card recommendation for a specific merchant category.

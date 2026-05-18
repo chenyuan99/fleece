@@ -27,3 +27,13 @@ Categories: `dining`, `travel`, `groceries`, `gas`, `streaming`, `drugstores`, e
 fleece rates "Chase Sapphire Preferred" --json
 fleece rates "Amex Gold" --category dining --json
 ```
+
+## MCC precision tip
+
+Category names like `dining` are broad — a card may earn differently at MCC 5812 (sit-down restaurants) vs 5814 (fast food) vs 5411 (grocery stores with a café). When exact merchant-level precision matters, pair with `fleece mcc`:
+
+```bash
+# Confirm the MCC for the merchant type, then look up the rate
+fleece mcc 5814   # → Fast Food Restaurants
+fleece rates "Amex Gold" --category "fast food restaurants" --json
+```

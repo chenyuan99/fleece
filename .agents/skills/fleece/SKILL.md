@@ -14,8 +14,35 @@ Use this skill when the user asks about:
 - **Card recommendations**: "Best travel credit card for beginners", "No annual fee cash back card"
 - **ROI / value**: "Is the Amex Platinum worth the $695 fee?", "First-year value of the Sapphire Preferred"
 - **Award redemptions**: "Find business class flights JFK to Tokyo", "Search hotels in Paris with points"
+- **Merchant lookup**: "What card should I use at Costco?", "Which card earns the most at gas stations?", "What MCC is a pharmacy?"
 
 Live US credit card data via Brave Search. All commands output JSON for programmatic use.
+
+## MCC-enriched workflow
+
+The bundled MCC dataset (981 codes, offline) enables a precise end-to-end flow:
+
+```
+fleece wallet          → identify category gaps
+fleece mcc 5411        → confirm "Grocery Stores, Supermarkets"
+fleece mcc 5411 --wallet → find best card for that exact merchant type
+fleece recommend "grocery stores, gas, transit"  → suggest a card to fill the gap
+```
+
+**Common MCCs to know:**
+
+| MCC  | Category | Typical card bonus |
+|------|----------|--------------------|
+| 5411 | Grocery Stores | Amex Gold 4x, BofA Cash Rewards 3% |
+| 5812 | Restaurants | Amex Gold 4x, CSP 3x |
+| 5814 | Fast Food | Varies — not always same as 5812 |
+| 5541 | Gas Stations | Citi Custom Cash 5x, BofA 3% |
+| 4511 | Airlines | Amex Platinum 5x, CSR 3x |
+| 7011 | Hotels | Amex Platinum 5x (Amex Travel), CSR 3x |
+| 4111 | Transit / Commuter | CSR 3x, Bilt 3x |
+| 5912 | Drugstores | Chase Freedom Flex 3x |
+
+Use `fleece mcc <code>` (no API key needed) to resolve any MCC before running a rates or wallet query.
 
 ## Prerequisites
 
