@@ -591,6 +591,62 @@
   </div>
 </section>
 
+<!-- AGENT INTEGRATION -->
+<section class="cards-section" id="agents" style="border-top: 1px solid var(--border);">
+  <div style="max-width:1100px;margin:0 auto;padding:0 0 2rem;">
+    <p class="section-label" style="color:var(--mid);font-size:0.72rem;font-weight:800;letter-spacing:2px;text-transform:uppercase;margin-bottom:0.6rem;">Agent Integration</p>
+    <h2 style="font-family:var(--font-head);font-size:clamp(1.75rem,3vw,2.2rem);font-weight:900;letter-spacing:-0.5px;margin-bottom:0.75rem;">Works with your AI agent</h2>
+    <p style="font-size:1rem;color:var(--mid);max-width:540px;margin-bottom:2.5rem;">Install once and every supported agent gains access to all 12 Fleece commands — research, wallet analysis, MCC lookup, and award redemption.</p>
+  </div>
+
+  <div class="cards-inner" style="grid-template-columns: repeat(3, 1fr);">
+
+    <div class="card">
+      <svg class="card-icon" viewBox="0 0 60 60" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <rect x="8" y="8" width="44" height="44" rx="8" stroke="black" stroke-width="2.5"/>
+        <path d="M20 30h20M20 22h12M20 38h16" stroke="black" stroke-width="2.5" stroke-linecap="round"/>
+      </svg>
+      <h3>Claude Code</h3>
+      <p>Install 12 slash commands directly into your Claude Code session. Use <code style="font-size:0.85em;background:#f0f0f0;padding:1px 4px;border-radius:3px">/fleece-wallet</code>, <code style="font-size:0.85em;background:#f0f0f0;padding:1px 4px;border-radius:3px">/fleece-mcc</code>, and more without leaving the terminal.</p>
+      <div style="font-family:'Courier New',monospace;font-size:0.8rem;background:#f7f7f5;border:1px solid var(--border);border-radius:6px;padding:0.9rem 1rem;line-height:1.8;">
+        <div><span style="color:var(--mid)">$</span> bash install.sh --claude</div>
+        <div style="color:var(--mid);font-size:0.75rem;margin-top:4px">/fleece-card &nbsp;/fleece-wallet &nbsp;/fleece-mcc</div>
+        <div style="color:var(--mid);font-size:0.75rem">/fleece-flights &nbsp;/fleece-hotels &nbsp;+7 more</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <svg class="card-icon" viewBox="0 0 60 60" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="30" cy="30" r="22" stroke="black" stroke-width="2.5"/>
+        <path d="M22 30c0-4.4 3.6-8 8-8s8 3.6 8 8-3.6 8-8 8" stroke="black" stroke-width="2.5" stroke-linecap="round"/>
+        <circle cx="30" cy="30" r="3" fill="black"/>
+      </svg>
+      <h3>OpenClaw &amp; Codex</h3>
+      <p>Install the agent skill to give OpenClaw or Codex full Fleece capability — card research, wallet gaps, MCC lookup, and redemption, all in one skill.</p>
+      <div style="font-family:'Courier New',monospace;font-size:0.8rem;background:#f7f7f5;border:1px solid var(--border);border-radius:6px;padding:0.9rem 1rem;line-height:1.8;">
+        <div><span style="color:var(--mid)">$</span> bash install.sh --agents</div>
+        <div style="color:var(--mid);font-size:0.75rem;margin-top:4px">.agents/skills/fleece/SKILL.md</div>
+        <div style="color:var(--mid);font-size:0.75rem">or: clawhub install fleece</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <svg class="card-icon" viewBox="0 0 60 60" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M10 20l20-10 20 10v20L30 50 10 40V20z" stroke="black" stroke-width="2.5" stroke-linejoin="round"/>
+        <path d="M30 40V20M10 20l20 10 20-10" stroke="black" stroke-width="2.5" stroke-linejoin="round"/>
+      </svg>
+      <h3>ClawHub Registry</h3>
+      <p>Fleece is published on ClawHub. Any agent that supports the ClawHub registry can install and use it with a single command — no git clone required.</p>
+      <div style="font-family:'Courier New',monospace;font-size:0.8rem;background:#f7f7f5;border:1px solid var(--border);border-radius:6px;padding:0.9rem 1rem;line-height:1.8;">
+        <div><span style="color:var(--mid)">$</span> clawhub install fleece</div>
+        <div style="color:var(--mid);font-size:0.75rem;margin-top:4px">fleece@1.3.0 &nbsp;·&nbsp; MIT-0</div>
+        <div style="color:var(--mid);font-size:0.75rem">clawhub search "credit card research"</div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
 <!-- COMMANDS + LINKS -->
 <section class="contact-section" id="commands">
   <div class="contact-inner">
