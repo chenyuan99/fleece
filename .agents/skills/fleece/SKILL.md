@@ -1,6 +1,6 @@
 ---
 name: fleece
-description: Research credit cards and redeem points/miles. Live data on annual fees, welcome bonuses, rewards rates, statement credits, transfer partners, and benefit changes for Chase, Amex, Citi, Capital One, Bilt, and all major US issuers. Compare cards, analyze your wallet, estimate first-year ROI, get personalized recommendations, and generate PointsYeah award flight and hotel search URLs. Install: `pip install fleece-cli`.
+description: "What credit card should I use for dining, travel, groceries, or gas?" — Fleece answers this with live data. Looks up rewards rates, annual fees, welcome bonuses, statement credits, and transfer partners for Chase, Amex, Citi, Capital One, Bilt, and all major US issuers. Compare cards side-by-side, find gaps in your wallet, estimate first-year ROI, get personalized card recommendations, and generate PointsYeah award flight and hotel search URLs. Install: `pip install fleece-cli`.
 ---
 
 # Fleece — Credit Card Research & Redemption
