@@ -1,12 +1,21 @@
 ---
 name: fleece
-description: Fleece credit card research and redemption CLI. Provides live US credit card data via Brave Search — full reports, earning rates, transfer partners, statement credits, recent news, card comparisons, portfolio analysis, ROI estimates, and profile-based recommendations. Also generates PointsYeah redemption URLs for flights and hotels (no API key needed). Install with `pip install fleece-cli`. Use whenever you need current credit card information or want to find award redemptions.
+description: Research credit cards and redeem points/miles. Live data on annual fees, welcome bonuses, rewards rates, statement credits, transfer partners, and benefit changes for Chase, Amex, Citi, Capital One, Bilt, and all major US issuers. Compare cards, analyze your wallet, estimate first-year ROI, get personalized recommendations, and generate PointsYeah award flight and hotel search URLs. Install: `pip install fleece-cli`.
 ---
 
-# Fleece Credit Card Research
+# Fleece — Credit Card Research & Redemption
 
-Live US credit card research backed by Brave Search. All commands output JSON for
-programmatic use. Requires `BRAVE_API_KEY` in the environment.
+Use this skill when the user asks about:
+- **Specific cards**: "What are the Amex Gold benefits?", "Is the Chase Sapphire Preferred worth it?", "What changed with the Citi Double Cash?"
+- **Earning rates**: "Which card earns the most on dining?", "What's the best card for groceries?"
+- **Transfer partners**: "Where can I transfer Chase Ultimate Rewards?", "What airlines does Amex transfer to?"
+- **Statement credits**: "How do I use the Amex Gold dining credit?", "What credits does the Venture X have?"
+- **Wallet optimization**: "Which card should I use for travel?", "What gaps does my wallet have?"
+- **Card recommendations**: "Best travel credit card for beginners", "No annual fee cash back card"
+- **ROI / value**: "Is the Amex Platinum worth the $695 fee?", "First-year value of the Sapphire Preferred"
+- **Award redemptions**: "Find business class flights JFK to Tokyo", "Search hotels in Paris with points"
+
+Live US credit card data via Brave Search. All commands output JSON for programmatic use.
 
 ## Prerequisites
 
