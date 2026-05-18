@@ -17,10 +17,22 @@ from prompts.agent_system_prompt import SYSTEM_PROMPT
 # Page config + CSS
 # ---------------------------------------------------------------------------
 
-st.set_page_config(page_title="Fleece", layout="wide")
+st.set_page_config(
+    page_title="Fleece — Find the best card for deal saviors",
+    page_icon="🟡",
+    layout="wide",
+)
 
 
 def load_css():
+    # Google Fonts
+    st.markdown(
+        '<link rel="preconnect" href="https://fonts.googleapis.com">'
+        '<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>'
+        '<link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;600;700'
+        '&family=Source+Sans+3:wght@400;600&display=swap" rel="stylesheet">',
+        unsafe_allow_html=True,
+    )
     with open("style.css") as f:
         st.markdown(f'<style>{f.read()}</style>', unsafe_allow_html=True)
 
@@ -102,8 +114,14 @@ with st.sidebar.expander("🛠️ ", expanded=False):
 # Main layout
 # ---------------------------------------------------------------------------
 
-st.title("Fleece")
-st.subheader("Find the best card for deal saviors")
+st.markdown(
+    '<h1 style="color:#111111;font-family:Oswald,sans-serif;font-weight:700;'
+    'text-transform:uppercase;letter-spacing:1px;border-bottom:3px solid #FFD100;'
+    'padding-bottom:0.4rem;margin-bottom:0.25rem;">Fleece</h1>'
+    '<p style="color:#555555;font-family:\'Source Sans 3\',sans-serif;font-size:1rem;'
+    'margin-top:0;margin-bottom:1.25rem;">Find the best card for deal saviors</p>',
+    unsafe_allow_html=True,
+)
 st.info("💡 Navigate to the Credit Cards page to explore available cards or My Credit Cards to manage your existing cards!")
 
 API_O = st.sidebar.text_input("API-KEY", type="password")
