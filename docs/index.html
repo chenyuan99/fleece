@@ -1,0 +1,521 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Fleece — Find the best card for deal saviors</title>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --yellow: #FFD100;
+      --yellow-dark: #E6BC00;
+      --black: #1A1A1A;
+      --black-soft: #2C2C2C;
+      --white: #FFFFFF;
+      --gray: #F5F5F0;
+      --gray-mid: #9A9A9A;
+      --font: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: var(--font);
+      background: var(--black);
+      color: var(--white);
+      line-height: 1.6;
+    }
+
+    /* ── NAV ── */
+    nav {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: var(--black);
+      border-bottom: 2px solid var(--yellow);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 2rem;
+      height: 60px;
+    }
+
+    .nav-logo {
+      font-size: 1.4rem;
+      font-weight: 800;
+      letter-spacing: -0.5px;
+      color: var(--yellow);
+      text-decoration: none;
+    }
+
+    .nav-badge {
+      background: var(--yellow);
+      color: var(--black);
+      font-size: 0.7rem;
+      font-weight: 700;
+      padding: 2px 7px;
+      border-radius: 4px;
+      margin-left: 8px;
+      vertical-align: middle;
+      letter-spacing: 0.5px;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 2rem;
+      list-style: none;
+    }
+
+    .nav-links a {
+      color: var(--white);
+      text-decoration: none;
+      font-size: 0.9rem;
+      opacity: 0.8;
+      transition: opacity 0.15s;
+    }
+
+    .nav-links a:hover { opacity: 1; color: var(--yellow); }
+
+    /* ── HERO ── */
+    .hero {
+      background: var(--black);
+      padding: 6rem 2rem 5rem;
+      text-align: center;
+      border-bottom: 1px solid #2e2e2e;
+    }
+
+    .yc-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: var(--yellow);
+      color: var(--black);
+      font-size: 0.78rem;
+      font-weight: 700;
+      padding: 4px 12px;
+      border-radius: 20px;
+      margin-bottom: 1.5rem;
+      letter-spacing: 0.3px;
+    }
+
+    .yc-tag svg { width: 14px; height: 14px; }
+
+    .hero h1 {
+      font-size: clamp(2.4rem, 6vw, 4rem);
+      font-weight: 900;
+      letter-spacing: -1.5px;
+      line-height: 1.1;
+      margin-bottom: 1.2rem;
+    }
+
+    .hero h1 span { color: var(--yellow); }
+
+    .hero p {
+      font-size: 1.15rem;
+      opacity: 0.75;
+      max-width: 560px;
+      margin: 0 auto 2.5rem;
+    }
+
+    .hero-actions {
+      display: flex;
+      gap: 1rem;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    .btn {
+      display: inline-block;
+      padding: 0.75rem 1.75rem;
+      border-radius: 6px;
+      font-size: 0.95rem;
+      font-weight: 700;
+      text-decoration: none;
+      transition: transform 0.1s, box-shadow 0.1s;
+      cursor: pointer;
+      border: none;
+    }
+
+    .btn:hover { transform: translateY(-1px); box-shadow: 0 4px 16px rgba(255,209,0,0.25); }
+
+    .btn-primary {
+      background: var(--yellow);
+      color: var(--black);
+    }
+
+    .btn-secondary {
+      background: transparent;
+      color: var(--white);
+      border: 1.5px solid #444;
+    }
+
+    .btn-secondary:hover { border-color: var(--yellow); color: var(--yellow); box-shadow: none; }
+
+    /* ── INSTALL STRIP ── */
+    .install-strip {
+      background: var(--black-soft);
+      padding: 1.25rem 2rem;
+      text-align: center;
+      border-bottom: 1px solid #333;
+    }
+
+    .install-strip code {
+      background: var(--black);
+      border: 1px solid #444;
+      color: var(--yellow);
+      padding: 0.5rem 1.25rem;
+      border-radius: 6px;
+      font-size: 0.95rem;
+      font-family: "SF Mono", "Fira Code", monospace;
+      display: inline-block;
+    }
+
+    /* ── SECTION ── */
+    section {
+      padding: 5rem 2rem;
+      max-width: 1080px;
+      margin: 0 auto;
+    }
+
+    .section-label {
+      font-size: 0.75rem;
+      font-weight: 700;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      color: var(--yellow);
+      margin-bottom: 0.75rem;
+    }
+
+    section h2 {
+      font-size: clamp(1.6rem, 3vw, 2.2rem);
+      font-weight: 800;
+      letter-spacing: -0.5px;
+      margin-bottom: 1rem;
+    }
+
+    section > p {
+      opacity: 0.7;
+      max-width: 600px;
+      margin-bottom: 3rem;
+    }
+
+    /* ── FEATURE GRID ── */
+    .feature-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 1.25rem;
+    }
+
+    .feature-card {
+      background: var(--black-soft);
+      border: 1px solid #333;
+      border-radius: 10px;
+      padding: 1.75rem;
+      transition: border-color 0.15s;
+    }
+
+    .feature-card:hover { border-color: var(--yellow); }
+
+    .feature-icon {
+      font-size: 1.6rem;
+      margin-bottom: 0.75rem;
+    }
+
+    .feature-card h3 {
+      font-size: 1rem;
+      font-weight: 700;
+      margin-bottom: 0.4rem;
+    }
+
+    .feature-card p {
+      font-size: 0.875rem;
+      opacity: 0.65;
+      line-height: 1.5;
+    }
+
+    /* ── CLI DEMO ── */
+    .cli-demo {
+      background: var(--black-soft);
+      border: 1px solid #333;
+      border-radius: 10px;
+      overflow: hidden;
+    }
+
+    .cli-titlebar {
+      background: #111;
+      padding: 0.6rem 1rem;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .dot { width: 12px; height: 12px; border-radius: 50%; }
+    .dot-red   { background: #FF5F56; }
+    .dot-yellow { background: var(--yellow); }
+    .dot-green { background: #27C93F; }
+
+    .cli-body {
+      padding: 1.5rem;
+      font-family: "SF Mono", "Fira Code", monospace;
+      font-size: 0.85rem;
+      line-height: 1.8;
+    }
+
+    .cli-prompt { color: var(--yellow); }
+    .cli-cmd    { color: var(--white); }
+    .cli-output { color: #9A9A9A; }
+    .cli-key    { color: #FFD100; }
+    .cli-val    { color: #7EE8A2; }
+
+    /* ── COMMANDS ── */
+    .cmd-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+      gap: 0.75rem;
+    }
+
+    .cmd-pill {
+      background: var(--black-soft);
+      border: 1px solid #333;
+      border-radius: 8px;
+      padding: 0.75rem 1rem;
+      font-family: "SF Mono", "Fira Code", monospace;
+      font-size: 0.82rem;
+    }
+
+    .cmd-pill .cmd-name { color: var(--yellow); font-weight: 600; }
+    .cmd-pill .cmd-desc { color: #777; font-size: 0.78rem; margin-top: 2px; font-family: var(--font); }
+
+    /* ── STATS ── */
+    .stats {
+      background: var(--yellow);
+      color: var(--black);
+      padding: 4rem 2rem;
+      text-align: center;
+    }
+
+    .stats-inner {
+      max-width: 900px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 2rem;
+    }
+
+    .stat-num {
+      font-size: 2.8rem;
+      font-weight: 900;
+      letter-spacing: -1px;
+      line-height: 1;
+    }
+
+    .stat-label {
+      font-size: 0.85rem;
+      font-weight: 600;
+      opacity: 0.7;
+      margin-top: 4px;
+    }
+
+    /* ── FOOTER ── */
+    footer {
+      background: #111;
+      border-top: 2px solid var(--yellow);
+      padding: 2.5rem 2rem;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 1rem;
+    }
+
+    .footer-logo {
+      font-size: 1.2rem;
+      font-weight: 800;
+      color: var(--yellow);
+    }
+
+    .footer-links {
+      display: flex;
+      gap: 1.5rem;
+      list-style: none;
+    }
+
+    .footer-links a {
+      color: #777;
+      text-decoration: none;
+      font-size: 0.85rem;
+      transition: color 0.15s;
+    }
+
+    .footer-links a:hover { color: var(--yellow); }
+
+    .footer-copy {
+      color: #555;
+      font-size: 0.8rem;
+      width: 100%;
+      margin-top: 0.5rem;
+    }
+
+    /* ── DIVIDER ── */
+    hr.section-divider {
+      border: none;
+      border-top: 1px solid #2a2a2a;
+      max-width: 1080px;
+      margin: 0 auto;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- NAV -->
+  <nav>
+    <a class="nav-logo" href="#">Fleece<span class="nav-badge">YC S25</span></a>
+    <ul class="nav-links">
+      <li><a href="#features">Features</a></li>
+      <li><a href="#cli">CLI</a></li>
+      <li><a href="https://github.com/chenyuan99/fleece" target="_blank">GitHub</a></li>
+      <li><a href="https://pypi.org/project/fleece-cli/" target="_blank" style="color:var(--yellow)">pip install</a></li>
+    </ul>
+  </nav>
+
+  <!-- HERO -->
+  <div class="hero">
+    <div class="yc-tag">
+      <svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
+      Backed by Y Combinator · S25
+    </div>
+    <h1>Find the best card<br>for <span>deal saviors</span></h1>
+    <p>Fleece is an AI-powered credit card research assistant. Live data via Brave Search. Built for humans and AI agents alike.</p>
+    <div class="hero-actions">
+      <a class="btn btn-primary" href="https://github.com/chenyuan99/fleece" target="_blank">Get Started</a>
+      <a class="btn btn-secondary" href="#cli">See the CLI</a>
+    </div>
+  </div>
+
+  <!-- INSTALL STRIP -->
+  <div class="install-strip">
+    <code>pip install fleece-cli</code>
+  </div>
+
+  <!-- FEATURES -->
+  <section id="features">
+    <p class="section-label">What Fleece does</p>
+    <h2>Everything you need to pick the right card</h2>
+    <p>Stop guessing. Fleece pulls live issuer data and translates it into clear, actionable research — instantly.</p>
+
+    <div class="feature-grid">
+      <div class="feature-card">
+        <div class="feature-icon">💳</div>
+        <h3>Full Card Reports</h3>
+        <p>Fees, welcome offers, earning rates, credits, and benefits — all from live sources, not stale training data.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">📊</div>
+        <h3>Wallet Analysis</h3>
+        <p>Coverage maps, category overlaps, and gaps across your existing cards. Know exactly which card to swipe.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">✈️</div>
+        <h3>Transfer Partners</h3>
+        <p>Airline and hotel partners, transfer ratios, and timing — so you can plan the redemption before you apply.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">💰</div>
+        <h3>ROI Calculator</h3>
+        <p>First-year value estimates based on your actual spend: welcome bonus + earn rate + credits minus annual fee.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">📰</div>
+        <h3>Live News</h3>
+        <p>Freshness-filtered results from the past month — benefit cuts, fee increases, new perks, limited-time offers.</p>
+      </div>
+      <div class="feature-card">
+        <div class="feature-icon">🤖</div>
+        <h3>Agent-Ready</h3>
+        <p>Every command outputs clean JSON. Drop it into Claude Code, Codex, or any AI agent with <code style="font-size:0.8em;color:var(--yellow)">--json</code>.</p>
+      </div>
+    </div>
+  </section>
+
+  <hr class="section-divider">
+
+  <!-- CLI DEMO -->
+  <section id="cli">
+    <p class="section-label">CLI</p>
+    <h2>Research at the speed of your terminal</h2>
+    <p>Nine commands covering every angle of credit card research. Works standalone or piped into your AI workflow.</p>
+
+    <div class="cli-demo">
+      <div class="cli-titlebar">
+        <div class="dot dot-red"></div>
+        <div class="dot dot-yellow"></div>
+        <div class="dot dot-green"></div>
+      </div>
+      <div class="cli-body">
+        <div><span class="cli-prompt">$ </span><span class="cli-cmd">fleece wallet</span></div>
+        <div class="cli-output">Analyzing portfolio: Amex Gold · Chase Sapphire Preferred</div>
+        <br>
+        <div class="cli-output">Category coverage:</div>
+        <div><span class="cli-key">  dining        </span><span class="cli-val">4x MR  (Amex Gold)</span></div>
+        <div><span class="cli-key">  groceries     </span><span class="cli-val">4x MR  (Amex Gold, up to $25k)</span></div>
+        <div><span class="cli-key">  chase travel  </span><span class="cli-val">5x UR  (CSP)</span></div>
+        <div><span class="cli-key">  other travel  </span><span class="cli-val">2x UR  (CSP)</span></div>
+        <div><span class="cli-key">  everything else</span><span class="cli-val cli-output">  1x ← gap</span></div>
+        <br>
+        <div class="cli-output">Suggested next card: Chase Freedom Unlimited (1.5x UR catch-all)</div>
+        <br>
+        <div><span class="cli-prompt">$ </span><span class="cli-cmd">fleece roi "Amex Gold" --dining 800 --other 1200</span></div>
+        <div class="cli-output">First-year value: <span class="cli-val">$1,340</span>  (bonus $800 + earn $790 + credits $240 − fee $250)</div>
+      </div>
+    </div>
+
+    <br>
+    <div class="cmd-grid">
+      <div class="cmd-pill"><span class="cmd-name">fleece card</span><div class="cmd-desc">Full card report</div></div>
+      <div class="cmd-pill"><span class="cmd-name">fleece rates</span><div class="cmd-desc">Earning rates by category</div></div>
+      <div class="cmd-pill"><span class="cmd-name">fleece partners</span><div class="cmd-desc">Transfer partners</div></div>
+      <div class="cmd-pill"><span class="cmd-name">fleece credits</span><div class="cmd-desc">Statement credits & perks</div></div>
+      <div class="cmd-pill"><span class="cmd-name">fleece news</span><div class="cmd-desc">Recent changes</div></div>
+      <div class="cmd-pill"><span class="cmd-name">fleece compare</span><div class="cmd-desc">Side-by-side comparison</div></div>
+      <div class="cmd-pill"><span class="cmd-name">fleece wallet</span><div class="cmd-desc">Portfolio analysis</div></div>
+      <div class="cmd-pill"><span class="cmd-name">fleece roi</span><div class="cmd-desc">First-year ROI estimate</div></div>
+      <div class="cmd-pill"><span class="cmd-name">fleece recommend</span><div class="cmd-desc">Profile-based picks</div></div>
+    </div>
+  </section>
+
+  <!-- STATS -->
+  <div class="stats">
+    <div class="stats-inner">
+      <div>
+        <div class="stat-num">9</div>
+        <div class="stat-label">Research commands</div>
+      </div>
+      <div>
+        <div class="stat-num">33+</div>
+        <div class="stat-label">Issuers covered</div>
+      </div>
+      <div>
+        <div class="stat-num">&lt;30s</div>
+        <div class="stat-label">Full wallet analysis</div>
+      </div>
+      <div>
+        <div class="stat-num">0</div>
+        <div class="stat-label">Stale training data</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="footer-logo">Fleece</div>
+    <ul class="footer-links">
+      <li><a href="https://github.com/chenyuan99/fleece" target="_blank">GitHub</a></li>
+      <li><a href="https://pypi.org/project/fleece-cli/" target="_blank">PyPI</a></li>
+      <li><a href="https://github.com/chenyuan99/fleece/blob/main/LICENSE" target="_blank">MIT License</a></li>
+    </ul>
+    <div class="footer-copy">© 2026 Fleece · Built by Yuan Chen · YC S25</div>
+  </footer>
+
+</body>
+</html>
