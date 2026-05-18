@@ -20,16 +20,17 @@ Features:
 Author: @chenyuan99
 Date: May 2025
 """
-import streamlit as st
-import pandas as pd
-from PIL import Image
-import os
-import io
-import requests
-from io import BytesIO
-import json
 import datetime
-from image_service import  display_card_image
+import os
+import sys
+
+import pandas as pd
+import streamlit as st
+
+# Ensure project root is on sys.path so db.py is importable from the pages/ dir
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), ".."))
+import db
+from image_service import display_card_image
 # Set page configuration
 st.set_page_config(page_title="My Credit Cards | Fleece", layout="wide")
 
@@ -55,64 +56,14 @@ except Exception as e:
 st.title("My Credit Cards")
 st.subheader("Manage your current credit card portfolio")
 
-# File path for storing user's credit cards
-USER_CARDS_FILE = os.path.join(os.path.dirname(__file__), "..", "user_cards.json")
-
-# Function to load user's credit cards with caching
-@st.cache_data(ttl=300)  # Cache for 5 minutes
+@st.cache_data(ttl=300)
 def load_user_cards():
-    """
-    Load the user's credit cards from the JSON file with caching for improved performance.
-    
-    This function reads the user's credit cards from a JSON file and caches the result
-    for 5 minutes to avoid unnecessary file I/O operations. If the file doesn't exist
-    or there's an error reading it, an empty list is returned.
-    
-    Returns:
-        list: A list of dictionaries, each containing details about a user's credit card
-              with keys such as name, last_four, annual_fee, credit_limit, rewards,
-              expiration, image_url, and date_added.
-    
-    Performance Notes:
-        - Uses Streamlit's caching with a 5-minute TTL to balance freshness and performance
-        - Returns an empty list as fallback if the file doesn't exist or can't be read
-    """
-    if os.path.exists(USER_CARDS_FILE):
-        try:
-            with open(USER_CARDS_FILE, 'r') as f:
-                return json.load(f)
-        except Exception as e:
-            st.error(f"Error loading your cards: {e}")
-            return []
-    else:
-        return []
-
-# Function to save user's credit cards
-def save_user_cards(cards):
-    """
-    Save the user's credit cards to the JSON file.
-    
-    This function writes the user's credit cards to a JSON file with proper formatting.
-    If there's an error during the save operation, an error message is displayed and
-    False is returned.
-    
-    Args:
-        cards (list): A list of dictionaries, each containing details about a user's credit card
-    
-    Returns:
-        bool: True if the save operation was successful, False otherwise
-    
-    Note:
-        After a successful save operation, you should clear the load_user_cards cache
-        using load_user_cards.clear() to ensure fresh data is loaded on the next read.
-    """
+    """Load cards from SQLite with a 5-minute cache."""
     try:
-        with open(USER_CARDS_FILE, 'w') as f:
-            json.dump(cards, f, indent=2)
-        return True
+        return db.get_cards()
     except Exception as e:
-        st.error(f"Error saving your cards: {e}")
-        return False
+        st.error(f"Error loading your cards: {e}")
+        return []
 
 # Load user's credit cards
 user_cards = load_user_cards()
@@ -255,12 +206,10 @@ with tab1:
                         col1, col2 = st.columns(2)
                         with col1:
                             if st.button(f"Remove Card", key=f"remove_{i}"):
-                                user_cards.remove(card)
-                                if save_user_cards(user_cards):
-                                    st.success(f"Removed {card['name']} from your cards!")
-                                    # Clear cache to reload cards
-                                    load_user_cards.clear()
-                                    st.rerun()
+                                db.remove_card(card['name'])
+                                st.success(f"Removed {card['name']} from your cards!")
+                                load_user_cards.clear()
+                                st.rerun()
                         
                         with col2:
                             if st.button(f"Edit Details", key=f"edit_{i}"):
@@ -282,20 +231,18 @@ with tab1:
                 
                 submitted = st.form_submit_button("Save Changes")
                 if submitted:
-                    # Update card details
-                    user_cards[st.session_state['edit_index']]['name'] = name
-                    user_cards[st.session_state['edit_index']]['last_four'] = last_four
-                    user_cards[st.session_state['edit_index']]['annual_fee'] = annual_fee
-                    user_cards[st.session_state['edit_index']]['credit_limit'] = credit_limit
-                    user_cards[st.session_state['edit_index']]['rewards'] = rewards
-                    user_cards[st.session_state['edit_index']]['expiration'] = expiration
-                    
-                    if save_user_cards(user_cards):
-                        st.success("Card details updated successfully!")
-                        # Clear the edit state and refresh
-                        del st.session_state['edit_card']
-                        del st.session_state['edit_index']
-                        st.rerun()
+                    db.update_card(st.session_state['edit_card']['name'], {
+                        "last_four":    last_four,
+                        "annual_fee":   annual_fee,
+                        "credit_limit": credit_limit,
+                        "rewards":      rewards,
+                        "expiration":   expiration,
+                    })
+                    st.success("Card details updated successfully!")
+                    load_user_cards.clear()
+                    del st.session_state['edit_card']
+                    del st.session_state['edit_index']
+                    st.rerun()
 
 # Tab 2: Add New Card
 with tab2:
@@ -333,26 +280,23 @@ with tab2:
         
         submitted = st.form_submit_button("Add Card")
         if submitted:
-            # Create new card entry
             new_card = {
-                "name": name,
-                "last_four": last_four,
-                "annual_fee": annual_fee,
+                "name":         name,
+                "last_four":    last_four,
+                "annual_fee":   annual_fee,
                 "credit_limit": credit_limit,
-                "rewards": rewards,
-                "expiration": expiration,
-                "image_url": image_url,
-                "date_added": datetime.datetime.now().strftime("%Y-%m-%d")
+                "rewards":      rewards,
+                "expiration":   expiration,
+                "image_url":    image_url,
+                "date_added":   datetime.datetime.now().strftime("%Y-%m-%d"),
             }
-            
-            # Add to user's cards
-            user_cards.append(new_card)
-            
-            # Save updated cards
-            if save_user_cards(user_cards):
+            try:
+                db.add_card(new_card)
+                load_user_cards.clear()
                 st.success(f"Added {name} to your cards!")
-                # Switch to the My Cards tab
                 st.rerun()
+            except ValueError:
+                st.error(f'"{name}" is already in your cards.')
 
 # Add a section for card statistics and insights
 if user_cards:

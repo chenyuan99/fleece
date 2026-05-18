@@ -8,3 +8,4 @@ pydantic>=2.0
 python-dotenv
 requests
 watchdog
+typer[all]>=0.12.0

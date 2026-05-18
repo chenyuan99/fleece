@@ -130,5 +130,8 @@ dmypy.json
 
 .idea
 .env
+user_cards.json
+user_cards.json.bak
+fleece.db
 
 user_cards.json
