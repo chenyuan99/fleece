@@ -503,6 +503,8 @@
   <a class="nav-logo" href="#">Fleece</a>
   <ul class="nav-links">
     <li><a href="#features">Features</a></li>
+    <li><a href="#workflows">Workflows</a></li>
+    <li><a href="#agents">Agents</a></li>
     <li><a href="#commands">CLI</a></li>
     <li><a href="https://github.com/chenyuan99/fleece" target="_blank" class="btn-pill">GitHub</a></li>
   </ul>
@@ -584,15 +586,101 @@
   </div>
 </section>
 
+<!-- STATS STRIP -->
+<div style="background:var(--black);padding:1.5rem 2.5rem;display:flex;align-items:center;justify-content:center;gap:3rem;flex-wrap:wrap;border-top:1px solid #222;border-bottom:1px solid #222;">
+  <div style="text-align:center;">
+    <div style="font-family:var(--font-head);font-size:1.6rem;font-weight:700;color:var(--yellow);letter-spacing:-0.5px;">13</div>
+    <div style="font-size:0.78rem;color:rgba(255,255,255,0.4);margin-top:2px;text-transform:uppercase;letter-spacing:1px;">CLI commands</div>
+  </div>
+  <div style="width:1px;height:32px;background:#333;"></div>
+  <div style="text-align:center;">
+    <div style="font-family:var(--font-head);font-size:1.6rem;font-weight:700;color:var(--yellow);letter-spacing:-0.5px;">981</div>
+    <div style="font-size:0.78rem;color:rgba(255,255,255,0.4);margin-top:2px;text-transform:uppercase;letter-spacing:1px;">MCC codes bundled</div>
+  </div>
+  <div style="width:1px;height:32px;background:#333;"></div>
+  <div style="text-align:center;">
+    <div style="font-family:var(--font-head);font-size:1.6rem;font-weight:700;color:var(--yellow);letter-spacing:-0.5px;">0</div>
+    <div style="font-size:0.78rem;color:rgba(255,255,255,0.4);margin-top:2px;text-transform:uppercase;letter-spacing:1px;">keys for offline commands</div>
+  </div>
+  <div style="width:1px;height:32px;background:#333;"></div>
+  <div style="text-align:center;">
+    <div style="font-family:var(--font-head);font-size:1.6rem;font-weight:700;color:var(--yellow);letter-spacing:-0.5px;">MIT</div>
+    <div style="font-size:0.78rem;color:rgba(255,255,255,0.4);margin-top:2px;text-transform:uppercase;letter-spacing:1px;">open source</div>
+  </div>
+</div>
+
+<!-- WORKFLOWS -->
+<section class="cards-section" id="workflows" style="background:var(--gray);border-bottom:1px solid var(--border);">
+  <div style="max-width:1100px;margin:0 auto;padding:0 0 2rem;">
+    <p class="section-label" style="color:var(--mid);font-size:0.72rem;font-weight:800;letter-spacing:2px;text-transform:uppercase;margin-bottom:0.6rem;">Real workflows</p>
+    <h2 style="font-family:var(--font-head);font-size:clamp(1.75rem,3vw,2.2rem);font-weight:900;letter-spacing:-0.5px;margin-bottom:0.75rem;">What you can do with Fleece</h2>
+    <p style="font-size:1rem;color:var(--mid);max-width:540px;margin-bottom:2.5rem;">End-to-end examples — from a question to a decision.</p>
+  </div>
+
+  <div style="max-width:1100px;margin:0 auto;display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:1.25rem;">
+
+    <div style="background:var(--white);border:1.5px solid var(--border);border-radius:4px;padding:2rem;display:flex;flex-direction:column;gap:1rem;">
+      <div style="font-family:var(--font-head);font-size:0.72rem;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--yellow);background:var(--black);display:inline-block;padding:3px 10px;border-radius:3px;">At the checkout</div>
+      <p style="font-size:0.9rem;color:var(--mid);line-height:1.6;">Which card earns most at AMC Theatres?</p>
+      <div style="font-family:'Courier New',monospace;font-size:0.78rem;background:#f7f7f5;border:1px solid var(--border);border-radius:5px;padding:1rem;line-height:1.9;">
+        <div><span style="color:#999">$</span> fleece mcc 7832</div>
+        <div style="color:#999">→ Motion Picture Theaters</div>
+        <div><span style="color:#999">$</span> fleece mcc 7832 --wallet</div>
+        <div style="color:#999">→ Best card: Capital One Savor (3x)</div>
+      </div>
+    </div>
+
+    <div style="background:var(--white);border:1.5px solid var(--border);border-radius:4px;padding:2rem;display:flex;flex-direction:column;gap:1rem;">
+      <div style="font-family:var(--font-head);font-size:0.72rem;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--yellow);background:var(--black);display:inline-block;padding:3px 10px;border-radius:3px;">Card research</div>
+      <p style="font-size:0.9rem;color:var(--mid);line-height:1.6;">Is the Amex Gold worth it for a $600/mo dining spender?</p>
+      <div style="font-family:'Courier New',monospace;font-size:0.78rem;background:#f7f7f5;border:1px solid var(--border);border-radius:5px;padding:1rem;line-height:1.9;">
+        <div><span style="color:#999">$</span> fleece profile set dining_monthly 600</div>
+        <div><span style="color:#999">$</span> fleece roi "Amex Gold"</div>
+        <div style="color:#999">→ First-year value: ~$1,340</div>
+      </div>
+    </div>
+
+    <div style="background:var(--white);border:1.5px solid var(--border);border-radius:4px;padding:2rem;display:flex;flex-direction:column;gap:1rem;">
+      <div style="font-family:var(--font-head);font-size:0.72rem;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--yellow);background:var(--black);display:inline-block;padding:3px 10px;border-radius:3px;">Wallet gaps</div>
+      <p style="font-size:0.9rem;color:var(--mid);line-height:1.6;">What's missing from my Amex Gold + CSP wallet?</p>
+      <div style="font-family:'Courier New',monospace;font-size:0.78rem;background:#f7f7f5;border:1px solid var(--border);border-radius:5px;padding:1rem;line-height:1.9;">
+        <div><span style="color:#999">$</span> fleece wallet</div>
+        <div style="color:#999">→ Gap: gas (1x), entertainment (1x)</div>
+        <div><span style="color:#999">$</span> fleece mcc 5541 --wallet</div>
+        <div style="color:#999">→ Add: Citi Custom Cash (5x gas)</div>
+      </div>
+    </div>
+
+    <div style="background:var(--white);border:1.5px solid var(--border);border-radius:4px;padding:2rem;display:flex;flex-direction:column;gap:1rem;">
+      <div style="font-family:var(--font-head);font-size:0.72rem;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--yellow);background:var(--black);display:inline-block;padding:3px 10px;border-radius:3px;">Redemption</div>
+      <p style="font-size:0.9rem;color:var(--mid);line-height:1.6;">Find business class flights from JFK to Tokyo.</p>
+      <div style="font-family:'Courier New',monospace;font-size:0.78rem;background:#f7f7f5;border:1px solid var(--border);border-radius:5px;padding:1rem;line-height:1.9;">
+        <div><span style="color:#999">$</span> fleece partners "Amex Gold"</div>
+        <div style="color:#999">→ ANA, JAL, Singapore Airlines</div>
+        <div><span style="color:#999">$</span> fleece flights JFK NRT \</div>
+        <div><span style="color:#999">&nbsp;&nbsp;</span>--date 2026-06-01 --cabin business --open</div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
 <!-- ABOUT -->
 <section class="announcement">
   <div class="announcement-inner">
     <h2>About Fleece</h2>
-    <p>Fleece is a free, open-source credit card research tool built for people who take rewards seriously. Unlike chatbots that rely on stale training data, Fleece pulls live information from the web on every query — so you always get current fees, earning rates, and benefit details. The CLI is designed to work seamlessly with AI agents: every command supports <code style="font-size:0.95em;background:rgba(0,0,0,0.06);padding:1px 5px;border-radius:3px">--json</code> output and reads from stdin, so it plugs into any workflow.</p>
-    <a class="btn-arrow" href="https://github.com/chenyuan99/fleece" target="_blank" style="background:var(--black);color:var(--white);">
-      Read the docs
-      <svg viewBox="0 0 16 16" fill="none" width="14" height="14"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"/></svg>
-    </a>
+    <p>Fleece is a free, open-source credit card research tool built for people who take rewards seriously. Unlike chatbots that rely on stale training data, Fleece pulls live information from the web on every query — so you always get current fees, earning rates, and benefit details.</p>
+    <p style="margin-top:1rem;">The CLI is designed to work seamlessly with AI agents: every command supports <code style="font-size:0.95em;background:rgba(0,0,0,0.06);padding:1px 5px;border-radius:3px">--json</code> output and reads from stdin. Install it in Claude Code, OpenClaw, or Codex with a single command — or run it from your terminal.</p>
+    <div style="display:flex;gap:1rem;margin-top:2rem;flex-wrap:wrap;">
+      <a class="btn-arrow" href="https://github.com/chenyuan99/fleece" target="_blank" style="background:var(--black);color:var(--white);">
+        View on GitHub
+        <svg viewBox="0 0 16 16" fill="none" width="14" height="14"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </a>
+      <a class="btn-arrow" href="https://github.com/chenyuan99/fleece/issues" target="_blank" style="background:transparent;color:var(--black);border:1.5px solid var(--black);">
+        Open an issue
+        <svg viewBox="0 0 16 16" fill="none" width="14" height="14"><path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </a>
+    </div>
   </div>
 </section>
 
