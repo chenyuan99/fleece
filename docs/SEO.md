@@ -131,7 +131,23 @@ Tracking description changes, tag updates, and search ranking results for the `f
 
 2. **Conversational queries hit a threshold floor** — queries phrased as full sentences ("what card should I use for...") return 0 results across all skills, suggesting the registry-wide similarity is below ClawHub's cutoff for this query type. Not a fleece-specific problem.
 
-3. **Intent buckets matter** — "credit card" ranks us #13 because the top results are payment/spend skills (giving agents a card to transact). We're a research tool — different intent, different bucket. Competing in the right bucket ("credit card research", "credit card redemption") yields #1 rankings.
+3. **Intent buckets explain everything about the `credit card` ranking** — this deserves a full explanation.
+
+   ClawHub uses vector search: queries and skill descriptions are both converted into embedding vectors, and skills are ranked by cosine similarity (how close the vectors are in meaning). The word "credit card" alone is semantically dominated by the **payment intent** — *"give my agent a credit card to spend with"* — because that's the majority use case on ClawHub. The top results (`CreditClaw`, `CashClaw`, `Chase Bank`, `Shop Paper`) all say some variation of *"Give your Claw Agent a credit card — spend anywhere."*
+
+   Fleece serves a completely different intent: **research** — *"help me find the best rewards card, compare fees, analyze my wallet."* These two meanings of "credit card" live in different regions of the embedding space. Our description is semantically distant from the payment cluster no matter how many times we say "credit card."
+
+   **Analogy:** searching "Python" on a coding forum returns programming results; searching "Python" on a nature forum returns snakes. Same word, different intent, different vector neighborhood. We cannot rank #1 for "credit card" without misrepresenting what Fleece does — and we shouldn't try.
+
+   **The right strategy is owning our intent bucket:**
+
+   | Query | Intent | Our rank | Score |
+   |---|---|---|---|
+   | `credit card` | Give agent a payment card | #13 | 0.713 |
+   | `credit card research` | Find best rewards card | **#1** | 0.827 |
+   | `credit card redemption` | Redeem points/miles | **#1** | 0.786 |
+
+   Users searching "credit card research" or "credit card redemption" are exactly our audience. Users searching "credit card" generally want payment capability — not our product. Ranking #1 in the right buckets is more valuable than ranking #5 in the wrong one.
 
 4. **Tags are for filtering, not ranking** — adding tags didn't move needle on search scores but helps with tag-based browsing.
 
