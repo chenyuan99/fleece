@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		1C421BBC5ADB84E3F2B3C903 /* CreditCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = A529343561E11E145A0547A4 /* CreditCard.swift */; };
 		220DDADD3E072E2DB4DFD2F0 /* PlacesService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2B940D56E7DAE6767D1B5952 /* PlacesService.swift */; };
+		26EAE12A2BBC945D4C550890 /* WalletDetectionService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 421B143C13EC925B409964E3 /* WalletDetectionService.swift */; };
 		3B87CF9F384D042593119BAC /* CardDatabase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84525AB21DF76636B0AFC0B5 /* CardDatabase.swift */; };
 		405B50C34B02F69B2AC1F780 /* FleeceApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = FE1826DC93917C0B0B3EF296 /* FleeceApp.swift */; };
 		53C5C1AE3D2EEE381F10C91F /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = F16000FD2325ECC3C11B2E46 /* Assets.xcassets */; };
@@ -31,6 +32,7 @@
 		192F941696D50D67B574453C /* FleeceApp.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = FleeceApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		1F0F4AC23D675E1415DB4B6B /* NotificationManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationManager.swift; sourceTree = "<group>"; };
 		2B940D56E7DAE6767D1B5952 /* PlacesService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlacesService.swift; sourceTree = "<group>"; };
+		421B143C13EC925B409964E3 /* WalletDetectionService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WalletDetectionService.swift; sourceTree = "<group>"; };
 		671E0B0B4614A0153F1D0A84 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		703BF2836D6238B002869015 /* AppState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppState.swift; sourceTree = "<group>"; };
 		7F187A4598F6D209993AC22C /* NearbyPlace.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NearbyPlace.swift; sourceTree = "<group>"; };
@@ -103,6 +105,7 @@
 			children = (
 				84525AB21DF76636B0AFC0B5 /* CardDatabase.swift */,
 				B0584042D04CF23A7856F1AB /* CardRecommender.swift */,
+				421B143C13EC925B409964E3 /* WalletDetectionService.swift */,
 			);
 			path = Services;
 			sourceTree = "<group>";
@@ -210,6 +213,7 @@
 				B57F8DD66FDD8C0711E27D3B /* Recommendation.swift in Sources */,
 				9DD78194E2816122AFBDAADE /* RecommendationCardView.swift in Sources */,
 				C0A5988803B897F2948A8932 /* SettingsView.swift in Sources */,
+				26EAE12A2BBC945D4C550890 /* WalletDetectionService.swift in Sources */,
 				912E83201B7C80F87FE790C7 /* WalletView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

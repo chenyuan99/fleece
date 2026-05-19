@@ -1,6 +1,7 @@
 import SwiftUI
 import CoreLocation
 import Combine
+import PassKit
 
 @MainActor
 final class AppState: ObservableObject {
@@ -22,6 +23,10 @@ final class AppState: ObservableObject {
     @Published var selectedTab: Tab = .home
     @Published var showRecommendationSheet = false
 
+    // Network detection
+    @Published var detectedNetworks: Set<PKPaymentNetwork> = []
+    @Published var suggestedCards: [CreditCard] = []
+
     enum Tab: Hashable { case home, wallet, settings }
 
     private let placesService = PlacesService()
@@ -30,6 +35,13 @@ final class AppState: ObservableObject {
 
     init() {
         cards = loadWallet()
+        runWalletDetection()
+    }
+
+    func runWalletDetection() {
+        let result = WalletDetectionService.detect(cards: cards)
+        detectedNetworks = result.detectedNetworks
+        suggestedCards = result.suggestedCards
     }
 
     // MARK: - Location-triggered search
@@ -93,6 +105,7 @@ final class AppState: ObservableObject {
         if let place = currentPlace {
             recommendations = CardRecommender.recommend(for: place, cards: cards)
         }
+        runWalletDetection()
     }
 
     private func persistWallet() {
