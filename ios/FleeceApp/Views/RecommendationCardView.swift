@@ -126,6 +126,8 @@ struct RecommendationsSheetView: View {
 struct RecommendationRowView: View {
     let recommendation: CardRecommendation
     @EnvironmentObject var appState: AppState
+    @State private var aiExplanation: String?
+    @State private var isLoadingExplanation = false
 
     var body: some View {
         let card = recommendation.card
@@ -152,6 +154,23 @@ struct RecommendationRowView: View {
                     }
                 }
                 Text(card.issuer).font(.caption).foregroundStyle(.secondary)
+
+                // Apple Intelligence explanation — only renders on iOS 18.1+
+                // with Apple Intelligence enabled; invisible otherwise.
+                if let explanation = aiExplanation {
+                    Text(explanation)
+                        .font(.caption)
+                        .foregroundStyle(.indigo.opacity(0.8))
+                        .fixedSize(horizontal: false, vertical: true)
+                        .transition(.opacity)
+                } else if isLoadingExplanation {
+                    HStack(spacing: 4) {
+                        ProgressView().scaleEffect(0.6)
+                        Text("Analyzing…")
+                            .font(.caption2)
+                            .foregroundStyle(.tertiary)
+                    }
+                }
             }
 
             Spacer()
@@ -170,6 +189,17 @@ struct RecommendationRowView: View {
                 .onTapGesture { appState.toggleWallet(card: card) }
         }
         .padding(.vertical, 4)
+        .task(id: recommendation.card.id) {
+            await loadExplanation()
+        }
+        .animation(.easeIn(duration: 0.2), value: aiExplanation)
+    }
+
+    private func loadExplanation() async {
+        guard #available(iOS 26.0, *) else { return }
+        isLoadingExplanation = true
+        aiExplanation = await CardExplanationService.shared.explanation(for: recommendation)
+        isLoadingExplanation = false
     }
 
     private var multiplierText: String {

@@ -19,6 +19,7 @@
 		A397AA02E9CF09021A4C8B02 /* AppState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 703BF2836D6238B002869015 /* AppState.swift */; };
 		AFE04A07880B524D9183945D /* NearbyPlace.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F187A4598F6D209993AC22C /* NearbyPlace.swift */; };
 		B57F8DD66FDD8C0711E27D3B /* Recommendation.swift in Sources */ = {isa = PBXBuildFile; fileRef = A14D8916A38C72FE58C7F85A /* Recommendation.swift */; };
+		B9B17402C400AC33300E7E97 /* CardExplanationService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7682486A135077BAE1B30D71 /* CardExplanationService.swift */; };
 		BB70CF6EDE3084FE58378024 /* NotificationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F0F4AC23D675E1415DB4B6B /* NotificationManager.swift */; };
 		C0A5988803B897F2948A8932 /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1574A163081F73D8004D7C8 /* SettingsView.swift */; };
 		CE6DE7FB4B5B30A91ECE5549 /* HomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E0C048E4592793E147D70CC /* HomeView.swift */; };
@@ -35,6 +36,7 @@
 		421B143C13EC925B409964E3 /* WalletDetectionService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WalletDetectionService.swift; sourceTree = "<group>"; };
 		671E0B0B4614A0153F1D0A84 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		703BF2836D6238B002869015 /* AppState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppState.swift; sourceTree = "<group>"; };
+		7682486A135077BAE1B30D71 /* CardExplanationService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardExplanationService.swift; sourceTree = "<group>"; };
 		7F187A4598F6D209993AC22C /* NearbyPlace.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NearbyPlace.swift; sourceTree = "<group>"; };
 		84525AB21DF76636B0AFC0B5 /* CardDatabase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardDatabase.swift; sourceTree = "<group>"; };
 		8E0C048E4592793E147D70CC /* HomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeView.swift; sourceTree = "<group>"; };
@@ -104,6 +106,7 @@
 			isa = PBXGroup;
 			children = (
 				84525AB21DF76636B0AFC0B5 /* CardDatabase.swift */,
+				7682486A135077BAE1B30D71 /* CardExplanationService.swift */,
 				B0584042D04CF23A7856F1AB /* CardRecommender.swift */,
 				421B143C13EC925B409964E3 /* WalletDetectionService.swift */,
 			);
@@ -199,6 +202,7 @@
 			files = (
 				A397AA02E9CF09021A4C8B02 /* AppState.swift in Sources */,
 				3B87CF9F384D042593119BAC /* CardDatabase.swift in Sources */,
+				B9B17402C400AC33300E7E97 /* CardExplanationService.swift in Sources */,
 				FF11E3BA4C76C82DF6EE91A0 /* CardRecommender.swift in Sources */,
 				F124CDAD193AB5EDD27D24D7 /* Config.swift in Sources */,
 				908728529B78523F2F3A9BA9 /* ContentView.swift in Sources */,
