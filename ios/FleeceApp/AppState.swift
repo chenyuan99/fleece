@@ -1,4 +1,5 @@
 import SwiftUI
+import CoreLocation
 import Combine
 
 @MainActor
@@ -67,8 +68,6 @@ final class AppState: ObservableObject {
             if let best = recs.first(where: { $0.card.isInWallet }) ?? recs.first {
                 notificationManager.notify(recommendation: best)
             }
-        } catch PlacesError.missingAPIKey {
-            searchError = "Add your Google Places API key in Settings."
         } catch PlacesError.noResults {
             searchError = nil   // silently ignore; user might be outdoors
         } catch {
@@ -121,3 +120,4 @@ final class AppState: ObservableObject {
         return loc1.distance(from: loc2)
     }
 }
+

@@ -6,11 +6,8 @@ struct HomeView: View {
     @EnvironmentObject var locationManager: LocationManager
     @EnvironmentObject var notificationManager: NotificationManager
 
-    @State private var mapRegion = MKCoordinateRegion(
-        center: CLLocationCoordinate2D(latitude: 40.7128, longitude: -74.0060),
-        span: MKCoordinateSpan(latitudeDelta: 0.003, longitudeDelta: 0.003)
-    )
-    @State private var selectedPlace: NearbyPlace?
+    @State private var mapPosition: MapCameraPosition = .automatic
+    @State private var selectedPlaceID: String?
 
     var body: some View {
         NavigationStack {
@@ -21,11 +18,13 @@ struct HomeView: View {
             .navigationTitle("Fleece")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar { toolbarContent }
-            .onChange(of: locationManager.coordinate) { coord in
-                if let coord {
-                    withAnimation {
-                        mapRegion.center = coord
-                    }
+            .onChange(of: locationManager.coordinate) { _, newCoord in
+                guard let newCoord else { return }
+                withAnimation {
+                    mapPosition = .region(MKCoordinateRegion(
+                        center: newCoord,
+                        span: MKCoordinateSpan(latitudeDelta: 0.004, longitudeDelta: 0.004)
+                    ))
                 }
             }
         }
@@ -34,17 +33,19 @@ struct HomeView: View {
     // MARK: - Map
 
     private var mapLayer: some View {
-        Map(coordinateRegion: $mapRegion,
-            showsUserLocation: true,
-            annotationItems: appState.nearbyPlaces) { place in
-            MapAnnotation(coordinate: place.coordinate) {
-                PlaceAnnotationView(
-                    place: place,
-                    isSelected: selectedPlace?.id == place.id
-                )
-                .onTapGesture { selectedPlace = place }
+        Map(position: $mapPosition) {
+            UserAnnotation()
+            ForEach(appState.nearbyPlaces) { place in
+                Annotation(place.name, coordinate: place.coordinate) {
+                    PlaceAnnotationView(
+                        place: place,
+                        isSelected: selectedPlaceID == place.id
+                    )
+                    .onTapGesture { selectedPlaceID = place.id }
+                }
             }
         }
+        .mapStyle(.standard(elevation: .realistic))
         .ignoresSafeArea()
     }
 

@@ -68,10 +68,9 @@ extension MCCCategory {
             return .transit
         case .pharmacy:
             return .drugstore
-        case .movieTheater, .stadium, .musicVenue, .amusementPark,
-             .bowling, .goKart, .miniGolf, .zoo, .aquarium:
+        case .movieTheater, .stadium, .amusementPark:
             return .entertainment
-        case .store, .clothing, .fitnessCenter:
+        case .store, .fitnessCenter:
             return .shopping
         default:
             return .other

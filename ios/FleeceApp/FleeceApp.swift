@@ -17,7 +17,7 @@ struct FleeceApp: App {
                     await notificationManager.requestPermission()
                     locationManager.requestPermission()
                 }
-                .onChange(of: locationManager.coordinate) { coord in
+                .onChange(of: locationManager.coordinate) { _, coord in
                     guard let coord else { return }
                     appState.onLocationUpdate(coord,
                                               notificationManager: notificationManager)

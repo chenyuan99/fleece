@@ -1,6 +1,12 @@
 import CoreLocation
 import Combine
 
+extension CLLocationCoordinate2D: @retroactive Equatable {
+    public static func == (lhs: CLLocationCoordinate2D, rhs: CLLocationCoordinate2D) -> Bool {
+        lhs.latitude == rhs.latitude && lhs.longitude == rhs.longitude
+    }
+}
+
 @MainActor
 final class LocationManager: NSObject, ObservableObject {
     @Published var coordinate: CLLocationCoordinate2D?
@@ -34,26 +40,27 @@ final class LocationManager: NSObject, ObservableObject {
 extension LocationManager: CLLocationManagerDelegate {
     nonisolated func locationManager(_ manager: CLLocationManager,
                                      didUpdateLocations locations: [CLLocation]) {
-        guard let loc = locations.last else { return }
+        guard let coord = locations.last?.coordinate else { return }
         Task { @MainActor in
-            self.coordinate = loc.coordinate
+            self.coordinate = coord
         }
     }
 
     nonisolated func locationManagerDidChangeAuthorization(_ manager: CLLocationManager) {
+        let status = manager.authorizationStatus
         Task { @MainActor in
-            self.authorizationStatus = manager.authorizationStatus
-            if manager.authorizationStatus == .authorizedWhenInUse
-                || manager.authorizationStatus == .authorizedAlways {
-                manager.startUpdatingLocation()
+            self.authorizationStatus = status
+            if status == .authorizedWhenInUse || status == .authorizedAlways {
+                self.manager.startUpdatingLocation()
             }
         }
     }
 
     nonisolated func locationManager(_ manager: CLLocationManager,
                                      didFailWithError error: Error) {
+        let desc = error.localizedDescription
         Task { @MainActor in
-            self.lastError = error.localizedDescription
+            self.lastError = desc
         }
     }
 }
