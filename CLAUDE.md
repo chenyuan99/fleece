@@ -120,10 +120,12 @@ Installs to Claude Code, Cursor, GitHub Copilot, Gemini CLI, Windsurf, Cline, Co
 | `--all` | All of the above | — |
 
 ### ClawHub / OpenClaw (`/.agents/skills/fleece/SKILL.md`)
-Published on ClawHub as `fleece@1.5.0`. Install via `clawhub install fleece` or `bash install.sh --agents`.
+Published on ClawHub as `fleece@1.6.0`. Install via `clawhub install fleece` or `bash install.sh --agents`.
 
 ### skills.sh / Vercel Agent Skills Registry
-`SKILL.md` at repo root and `skills/fleece/SKILL.md` enable `npx skills add chenyuan99/fleece`. The frontmatter `description` must not contain embedded quotes (breaks YAML parsing) — keep it plain text.
+`SKILL.md` at repo root and `skills/fleece/SKILL.md` enable `npx skills add chenyuan99/fleece`. Installs to 55+ agents in one command.
+
+> **IMPORTANT:** The frontmatter `description` field must never contain embedded quotes — they silently break YAML parsing in both ClawHub's vector indexer and the skills.sh CLI. Always use plain unquoted text.
 
 ---
 
