@@ -81,11 +81,23 @@ Once set, profile context is automatically injected into:
 | `tools/brave_client.py` | Brave Search API client |
 | `tools/credit_card_tools.py` | LangChain tools for the chatbot |
 | `pyproject.toml` | Package config — hatchling build, `fleece` entry point |
-| `install.sh` | Installs Claude Code skills and/or agent skill |
+| `install.sh` | Installs skills for Claude Code, OpenClaw, Gemini CLI, Copilot, Cursor, Windsurf |
+| `SKILL.md` | Root-level skill file for `npx skills add chenyuan99/fleece` (skills.sh registry) |
+| `skills/fleece/SKILL.md` | skills.sh directory structure copy |
+| `GEMINI.md` | Gemini CLI project context |
+| `.github/copilot-instructions.md` | GitHub Copilot instructions |
+| `.cursor/rules/fleece.mdc` | Cursor IDE rule |
+| `.windsurfrules` | Windsurf rules |
 
 ---
 
 ## Agent Skills
+
+### Universal install (55+ agents) — recommended
+```bash
+npx skills add chenyuan99/fleece
+```
+Installs to Claude Code, Cursor, GitHub Copilot, Gemini CLI, Windsurf, Cline, Codex, Warp, Kiro, Continue, Junie, and more in one command. Requires a valid `SKILL.md` at `skills/fleece/SKILL.md` in the repo root (already present).
 
 ### Claude Code (`/.claude/skills/`)
 13 slash commands installed via `bash install.sh --claude`:
@@ -96,8 +108,22 @@ Once set, profile context is automatically injected into:
 
 **Profile:** `/fleece-profile`
 
+### Platform-specific install flags
+| Flag | Platform | File installed |
+|---|---|---|
+| `--claude` | Claude Code | `.claude/skills/fleece-*.md` |
+| `--agents` | OpenClaw / Codex | `.agents/skills/fleece/SKILL.md` |
+| `--gemini` | Gemini CLI | `GEMINI.md` |
+| `--copilot` | GitHub Copilot | `.github/copilot-instructions.md` |
+| `--cursor` | Cursor | `.cursor/rules/fleece.mdc` |
+| `--windsurf` | Windsurf | `.windsurfrules` |
+| `--all` | All of the above | — |
+
 ### ClawHub / OpenClaw (`/.agents/skills/fleece/SKILL.md`)
 Published on ClawHub as `fleece@1.5.0`. Install via `clawhub install fleece` or `bash install.sh --agents`.
+
+### skills.sh / Vercel Agent Skills Registry
+`SKILL.md` at repo root and `skills/fleece/SKILL.md` enable `npx skills add chenyuan99/fleece`. The frontmatter `description` must not contain embedded quotes (breaks YAML parsing) — keep it plain text.
 
 ---
 
