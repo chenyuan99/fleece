@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN"
+  "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <!-- Location usage descriptions — REQUIRED by App Store -->
+    <key>NSLocationWhenInUseUsageDescription</key>
+    <string>Fleece detects nearby stores to recommend the best credit card for your purchase.</string>
+    <key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
+    <string>Fleece uses background location to send card recommendations as you move between stores.</string>
+
+    <!-- URL scheme for deep-linking from notifications -->
+    <key>CFBundleURLTypes</key>
+    <array>
+        <dict>
+            <key>CFBundleURLSchemes</key>
+            <array>
+                <string>fleece</string>
+            </array>
+        </dict>
+    </array>
+</dict>
+</plist>

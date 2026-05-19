@@ -1,0 +1,166 @@
+import SwiftUI
+import MapKit
+
+struct HomeView: View {
+    @EnvironmentObject var appState: AppState
+    @EnvironmentObject var locationManager: LocationManager
+    @EnvironmentObject var notificationManager: NotificationManager
+
+    @State private var mapRegion = MKCoordinateRegion(
+        center: CLLocationCoordinate2D(latitude: 40.7128, longitude: -74.0060),
+        span: MKCoordinateSpan(latitudeDelta: 0.003, longitudeDelta: 0.003)
+    )
+    @State private var selectedPlace: NearbyPlace?
+
+    var body: some View {
+        NavigationStack {
+            ZStack(alignment: .bottom) {
+                mapLayer
+                overlayLayer
+            }
+            .navigationTitle("Fleece")
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar { toolbarContent }
+            .onChange(of: locationManager.coordinate) { coord in
+                if let coord {
+                    withAnimation {
+                        mapRegion.center = coord
+                    }
+                }
+            }
+        }
+    }
+
+    // MARK: - Map
+
+    private var mapLayer: some View {
+        Map(coordinateRegion: $mapRegion,
+            showsUserLocation: true,
+            annotationItems: appState.nearbyPlaces) { place in
+            MapAnnotation(coordinate: place.coordinate) {
+                PlaceAnnotationView(
+                    place: place,
+                    isSelected: selectedPlace?.id == place.id
+                )
+                .onTapGesture { selectedPlace = place }
+            }
+        }
+        .ignoresSafeArea()
+    }
+
+    // MARK: - Overlay
+
+    @ViewBuilder
+    private var overlayLayer: some View {
+        VStack(spacing: 0) {
+            if locationManager.authorizationStatus == .denied ||
+               locationManager.authorizationStatus == .restricted {
+                locationDeniedBanner
+            }
+
+            if let place = appState.currentPlace {
+                CurrentPlaceBanner(place: place)
+                    .transition(.move(edge: .bottom).combined(with: .opacity))
+            }
+
+            if !appState.recommendations.isEmpty {
+                recommendationsScroll
+                    .transition(.move(edge: .bottom).combined(with: .opacity))
+            }
+        }
+        .animation(.spring(response: 0.4), value: appState.currentPlace?.id)
+        .animation(.spring(response: 0.4), value: appState.recommendations.count)
+    }
+
+    private var recommendationsScroll: some View {
+        ScrollView(.horizontal, showsIndicators: false) {
+            HStack(spacing: 12) {
+                ForEach(appState.recommendations.prefix(5)) { rec in
+                    RecommendationCardView(recommendation: rec)
+                }
+            }
+            .padding(.horizontal, 16)
+            .padding(.vertical, 12)
+        }
+        .background(.ultraThinMaterial)
+    }
+
+    private var locationDeniedBanner: some View {
+        HStack {
+            Image(systemName: "location.slash.fill")
+            Text("Location access denied. Enable it in Settings.")
+                .font(.footnote)
+            Spacer()
+            Button("Settings") {
+                if let url = URL(string: UIApplication.openSettingsURLString) {
+                    UIApplication.shared.open(url)
+                }
+            }
+            .font(.footnote).bold()
+        }
+        .padding()
+        .background(Color.red.opacity(0.9))
+        .foregroundColor(.white)
+    }
+
+    // MARK: - Toolbar
+
+    @ToolbarContentBuilder
+    private var toolbarContent: some ToolbarContent {
+        ToolbarItem(placement: .navigationBarTrailing) {
+            Button {
+                appState.refresh(coord: locationManager.coordinate,
+                                 notificationManager: notificationManager)
+            } label: {
+                if appState.isSearching {
+                    ProgressView().tint(.indigo)
+                } else {
+                    Image(systemName: "arrow.clockwise")
+                }
+            }
+        }
+    }
+}
+
+// MARK: - Sub-views
+
+struct CurrentPlaceBanner: View {
+    let place: NearbyPlace
+
+    var body: some View {
+        HStack {
+            Text(place.category.emoji)
+                .font(.title2)
+            VStack(alignment: .leading, spacing: 2) {
+                Text(place.name)
+                    .font(.headline)
+                    .lineLimit(1)
+                Text(place.category.rawValue)
+                    .font(.caption)
+                    .foregroundStyle(.secondary)
+            }
+            Spacer()
+        }
+        .padding(.horizontal, 16)
+        .padding(.vertical, 10)
+        .background(.ultraThinMaterial)
+    }
+}
+
+struct PlaceAnnotationView: View {
+    let place: NearbyPlace
+    let isSelected: Bool
+
+    var body: some View {
+        ZStack {
+            Circle()
+                .fill(isSelected ? Color.indigo : Color.white)
+                .frame(width: 36, height: 36)
+                .shadow(radius: 3)
+            Text(place.category.emoji)
+                .font(.system(size: 18))
+        }
+        .scaleEffect(isSelected ? 1.3 : 1.0)
+        .animation(.spring(response: 0.3), value: isSelected)
+    }
+}
