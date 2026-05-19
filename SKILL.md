@@ -3,7 +3,7 @@ name: fleece
 description: Credit card research and redemption CLI. Looks up rewards rates, annual fees, welcome bonuses, statement credits, and transfer partners for Chase, Amex, Citi, Capital One, Bilt, and all major US issuers. Compare cards, analyze wallet gaps, estimate ROI, get recommendations, look up merchant category codes, and search award flights and hotels. Install with pip install fleece-cli.
 metadata:
   author: chenyuan99
-  version: "1.5.0"
+  version: "1.6.0"
 ---
 
 # Fleece — Credit Card Research & Redemption
@@ -24,7 +24,7 @@ Live US credit card data via Brave Search. All commands output JSON for programm
 
 ## Spending profile
 
-The user's spending profile is stored in `fleece.db` and automatically injected into `fleece wallet`, `fleece roi`, and `fleece recommend`. Set it up once and all research commands become personalised.
+The user's spending profile is stored in `fleece.db` and automatically injected into `fleece roi` and `fleece recommend`. Set it up once and research commands become personalised.
 
 ```bash
 # Set profile fields (no API key needed)
@@ -47,7 +47,6 @@ Once set, spend values are pulled automatically:
 ```bash
 # No need to pass --dining or --travel flags
 fleece roi "Amex Gold"
-fleece wallet
 fleece recommend "travel rewards"
 ```
 
@@ -56,8 +55,9 @@ fleece recommend "travel rewards"
 The bundled MCC dataset (981 codes, offline) enables a precise end-to-end flow:
 
 ```
-fleece wallet          → identify category gaps
-fleece mcc 5411        → confirm "Grocery Stores, Supermarkets"
+fleece wallet            → see which cards you have
+fleece cards add "..."   → add a card to your wallet
+fleece mcc 5411          → confirm "Grocery Stores, Supermarkets"
 fleece mcc 5411 --wallet → find best card for that exact merchant type
 fleece recommend "grocery stores, gas, transit"  → suggest a card to fill the gap
 ```
@@ -125,11 +125,23 @@ fleece compare "<card A>" "<card B>" --json
 fleece compare "<card A>" "<card B>" --aspects "fees,rewards,credits" --json
 ```
 
-### Portfolio / wallet analysis
+### Wallet — show saved cards (no API key)
 ```bash
-fleece wallet "<card 1>" "<card 2>" "<card 3>" --json
+fleece wallet --json
 ```
-Returns coverage map, overlaps, gaps, and next-card suggestions.
+Returns the list of cards saved in the local database. No API key required.
+
+JSON output:
+```json
+{"cards": [{"name": "Amex Gold", "annual_fee": "$250", "date_added": "2026-05-19"}]}
+```
+
+Manage the wallet with the `cards` subcommand:
+```bash
+fleece cards list                              # list with annual fees
+fleece cards add "Chase Sapphire Preferred" --fee "$95"
+fleece cards remove "Amex Gold"
+```
 
 ### First-year ROI
 ```bash
@@ -171,11 +183,6 @@ The primary argument on any single-card command accepts `-` to read from stdin:
 ```bash
 echo "Chase Sapphire Preferred" | fleece card - --json
 echo "high dining spend" | fleece recommend - --json
-```
-
-The `wallet` command accepts `-` as its sole argument to read newline-delimited card names:
-```bash
-printf "Amex Gold\nChase Freedom Unlimited\nBilt\n" | fleece wallet - --json
 ```
 
 ## Coverage
