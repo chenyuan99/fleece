@@ -1,5 +1,4 @@
 import SwiftUI
-import PassKit
 
 struct WalletView: View {
     @EnvironmentObject var appState: AppState
@@ -10,28 +9,6 @@ struct WalletView: View {
     var body: some View {
         NavigationStack {
             List {
-                // ── Detected networks banner ─────────────────────────
-                if !appState.detectedNetworks.isEmpty {
-                    Section {
-                        NetworkDetectionBanner(networks: appState.detectedNetworks)
-                    }
-                }
-
-                // ── Suggested from Apple Wallet ───────────────────────
-                if !appState.suggestedCards.isEmpty {
-                    Section {
-                        ForEach(appState.suggestedCards) { card in
-                            CardRowView(card: card, style: .suggested)
-                        }
-                    } header: {
-                        Label("Detected in Apple Wallet", systemImage: "wallet.pass.fill")
-                    } footer: {
-                        Text("These cards match payment networks found in your Apple Wallet. Tap + to confirm.")
-                            .font(.caption)
-                    }
-                }
-
-                // ── My wallet ─────────────────────────────────────────
                 if !walletCards.isEmpty {
                     Section("My Wallet (\(walletCards.count))") {
                         ForEach(walletCards) { card in
@@ -40,10 +17,12 @@ struct WalletView: View {
                     }
                 }
 
-                // ── All other cards ───────────────────────────────────
-                if !availableCards.isEmpty {
-                    Section("All Cards") {
-                        ForEach(availableCards) { card in
+                // Suggested cards (detected via Apple Wallet networks) shown first,
+                // then remaining cards — no detection UI exposed to the user.
+                let addSection = appState.suggestedCards + availableCards
+                if !addSection.isEmpty {
+                    Section("Add to Wallet") {
+                        ForEach(addSection) { card in
                             CardRowView(card: card, style: .available)
                         }
                     }
@@ -51,53 +30,13 @@ struct WalletView: View {
             }
             .listStyle(.insetGrouped)
             .navigationTitle("Wallet")
-            .toolbar {
-                ToolbarItem(placement: .navigationBarTrailing) {
-                    Button {
-                        appState.runWalletDetection()
-                    } label: {
-                        Image(systemName: "arrow.clockwise")
-                    }
-                }
-            }
         }
-    }
-}
-
-// MARK: - Network Detection Banner
-
-struct NetworkDetectionBanner: View {
-    let networks: Set<PKPaymentNetwork>
-
-    var body: some View {
-        VStack(alignment: .leading, spacing: 10) {
-            HStack(spacing: 6) {
-                Image(systemName: "wave.3.right.circle.fill")
-                    .foregroundColor(.indigo)
-                Text("Networks detected in Apple Wallet")
-                    .font(.subheadline).fontWeight(.semibold)
-            }
-            HStack(spacing: 8) {
-                ForEach(Array(networks), id: \.rawValue) { network in
-                    HStack(spacing: 4) {
-                        Text(network.emoji).font(.caption)
-                        Text(network.displayName)
-                            .font(.caption).fontWeight(.medium)
-                    }
-                    .padding(.horizontal, 10).padding(.vertical, 5)
-                    .background(Color.indigo.opacity(0.1))
-                    .foregroundColor(.indigo)
-                    .clipShape(Capsule())
-                }
-            }
-        }
-        .padding(.vertical, 4)
     }
 }
 
 // MARK: - Card Row
 
-enum CardRowStyle { case suggested, inWallet, available }
+enum CardRowStyle { case inWallet, available }
 
 struct CardRowView: View {
     let card: CreditCard
@@ -112,14 +51,6 @@ struct CardRowView: View {
                 HStack(spacing: 6) {
                     Text(card.name)
                         .font(.subheadline).fontWeight(.medium)
-                    if style == .suggested {
-                        Label("Detected", systemImage: "wave.3.right")
-                            .font(.system(size: 9, weight: .semibold))
-                            .foregroundColor(.indigo)
-                            .padding(.horizontal, 6).padding(.vertical, 2)
-                            .background(Color.indigo.opacity(0.1))
-                            .clipShape(Capsule())
-                    }
                 }
                 HStack(spacing: 6) {
                     Text(card.issuer)

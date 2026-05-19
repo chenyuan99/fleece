@@ -22,6 +22,13 @@ struct FleeceApp: App {
                     appState.onLocationUpdate(coord,
                                               notificationManager: notificationManager)
                 }
+                .onOpenURL { url in
+                    switch url.host {
+                    case "wallet":   appState.selectedTab = .wallet
+                    case "settings": appState.selectedTab = .settings
+                    default:         appState.selectedTab = .home
+                    }
+                }
         }
     }
 }
