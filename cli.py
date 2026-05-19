@@ -253,33 +253,73 @@ def compare(
 
 @app.command()
 def wallet(
-    as_json: JsonOpt = False,
+    api_key:   ApiKeyOpt  = None,
+    as_json:   JsonOpt    = False,
+    no_dotenv: NoDotenv   = False,
 ):
-    """Show all cards currently saved in your wallet.
+    """Portfolio analysis — category coverage map, overlaps, gaps, and next-card suggestions.
 
-    No API key required — reads from the local database. Add cards with:
-      fleece cards add "<name>"
+    Fetches live earning-rate data for every card saved in your wallet, then
+    returns structured research so an agent (or you) can compute the full
+    coverage map. Requires BRAVE_API_KEY.
+
+    Add cards first with: fleece cards add "<name>"
 
     Examples:
       fleece wallet
       fleece wallet --json
     """
+    from tools.brave_client import search_and_format
     import db as _db
 
-    cards = _db.get_cards()
-    if not cards:
+    card_list = _db.get_card_names()
+    if not card_list:
+        msg = "Wallet is empty. Add cards with: fleece cards add \"<name>\""
         if as_json:
-            typer.echo(json.dumps({"cards": []}))
+            typer.echo(json.dumps({"ok": False, "error": msg}))
         else:
-            typer.echo("Your wallet is empty. Add cards with: fleece cards add \"<name>\"")
-        return
+            typer.echo(msg)
+        raise typer.Exit(code=1)
+
+    key     = _resolve_key(api_key, no_dotenv)
+    wrapper = _get_wrapper(key)
+    profile_ctx = _db.profile_as_context()
+
+    cards_research: dict[str, str] = {}
+    try:
+        for name in card_list:
+            cards_research[name] = search_and_format(
+                wrapper,
+                f'"{name}" credit card earning rates categories spend multiplier 2025',
+                max_results=2,
+            )
+    except Exception as e:
+        _error_exit(str(e), code=1)
+
+    analysis_prompt = (
+        "Using the research above, compute a wallet analysis:\n"
+        "1. Category coverage map — list each spend category and which card earns the most there (show multiplier)\n"
+        "2. Overlaps — categories where two or more cards earn a bonus (redundant coverage)\n"
+        "3. Gaps — everyday categories with no bonus multiplier across any card (1x on everything)\n"
+        "4. Top 1-2 cards that would best complement this wallet"
+    )
+    if profile_ctx:
+        analysis_prompt += f"\n\nUser profile: {profile_ctx}\nTailor gap analysis and card suggestions to this profile."
 
     if as_json:
-        typer.echo(json.dumps({"cards": cards}))
+        typer.echo(json.dumps({
+            "command": "wallet",
+            "cards": card_list,
+            "research": cards_research,
+            "profile": profile_ctx or None,
+            "analysis_prompt": analysis_prompt,
+            "ok": True,
+            "error": None,
+        }))
     else:
-        typer.echo(f"Your wallet ({len(cards)} card{'s' if len(cards) != 1 else ''}):\n")
-        for card in cards:
-            typer.echo(f"  • {card['name']}")
+        parts = [f"### {name}\n{research}" for name, research in cards_research.items()]
+        typer.echo("\n\n".join(parts))
+        typer.echo(f"\n\n{analysis_prompt}")
 
 
 @app.command()

@@ -24,7 +24,7 @@ Live US credit card data via Brave Search. All commands output JSON for programm
 
 ## Spending profile
 
-The user's spending profile is stored in `fleece.db` and automatically injected into `fleece roi` and `fleece recommend`. Set it up once and research commands become personalised.
+The user's spending profile is stored in `fleece.db` and automatically injected into `fleece wallet`, `fleece roi`, and `fleece recommend`. Set it up once and research commands become personalised.
 
 ```bash
 # Set profile fields (no API key needed)
@@ -55,8 +55,7 @@ fleece recommend "travel rewards"
 The bundled MCC dataset (981 codes, offline) enables a precise end-to-end flow:
 
 ```
-fleece wallet            → see which cards you have
-fleece cards add "..."   → add a card to your wallet
+fleece wallet            → coverage map, overlaps, gaps, next-card suggestions
 fleece mcc 5411          → confirm "Grocery Stores, Supermarkets"
 fleece mcc 5411 --wallet → find best card for that exact merchant type
 fleece recommend "grocery stores, gas, transit"  → suggest a card to fill the gap
@@ -125,20 +124,32 @@ fleece compare "<card A>" "<card B>" --json
 fleece compare "<card A>" "<card B>" --aspects "fees,rewards,credits" --json
 ```
 
-### Wallet — show saved cards (no API key)
+### Portfolio / wallet analysis
 ```bash
 fleece wallet --json
 ```
-Returns the list of cards saved in the local database. No API key required.
+Fetches live earning-rate data for every card in the local wallet DB, then
+returns structured research for computing a coverage map. Requires BRAVE_API_KEY.
 
 JSON output:
 ```json
-{"cards": [{"name": "Amex Gold", "annual_fee": "$250", "date_added": "2026-05-19"}]}
+{
+  "command": "wallet",
+  "cards": ["Amex Gold", "Chase Sapphire Preferred"],
+  "research": {
+    "Amex Gold": "<snippet>",
+    "Chase Sapphire Preferred": "<snippet>"
+  },
+  "profile": "dining $500/mo, travel $300/mo ...",
+  "analysis_prompt": "Using the research above, compute: 1. Category coverage map ...",
+  "ok": true,
+  "error": null
+}
 ```
 
-Manage the wallet with the `cards` subcommand:
+Manage the wallet with the `cards` subcommand (no API key needed):
 ```bash
-fleece cards list                              # list with annual fees
+fleece cards list                              # list saved cards with annual fees
 fleece cards add "Chase Sapphire Preferred" --fee "$95"
 fleece cards remove "Amex Gold"
 ```

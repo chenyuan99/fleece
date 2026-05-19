@@ -506,7 +506,7 @@
     </div>
     <div class="sidebar-group">
       <div class="sidebar-group-label">Wallet</div>
-      <a href="#cmd-wallet">wallet <span class="offline-badge">offline</span></a>
+      <a href="#cmd-wallet">wallet</a>
       <a href="#cmd-cards-list">cards list <span class="offline-badge">offline</span></a>
       <a href="#cmd-cards-add">cards add <span class="offline-badge">offline</span></a>
       <a href="#cmd-cards-remove">cards remove <span class="offline-badge">offline</span></a>
@@ -729,19 +729,25 @@
       <div class="cmd-block" id="cmd-wallet">
         <div class="cmd-block-header">
           <span class="cmd-name">fleece wallet</span>
-          <span class="cmd-tag cmd-tag-offline">offline</span>
+          <span class="cmd-tag cmd-tag-research">requires api key</span>
         </div>
-        <p class="cmd-desc">Show every card currently saved in your wallet. No API key required — reads directly from the local database.</p>
+        <p class="cmd-desc">Portfolio analysis — fetches live earning-rate data for every card in your wallet and returns structured research for computing a category coverage map, overlaps, gaps, and next-card suggestions. Cards are read from the local database; add them first with <code>fleece cards add</code>.</p>
         <div class="cmd-usage">fleece wallet [OPTIONS]</div>
+        <table class="args-table">
+          <tr><th>Argument / Option</th><th>Required</th><th>Description</th></tr>
+          <tr><td>--json, -j</td><td class="optional">optional</td><td>Returns structured JSON with per-card research, profile context, and an <code>analysis_prompt</code> field ready for an agent to synthesize.</td></tr>
+        </table>
         <div class="example-block">
           <div><span class="prompt">$</span> <span class="cmd-text">fleece wallet</span></div>
-          <div><span class="output">Your wallet (3 cards):</span></div>
+          <div><span class="output">### Amex Gold</span></div>
+          <div><span class="output">4x dining, 4x US supermarkets, 3x flights ...</span></div>
+          <div><span class="output">### Chase Sapphire Preferred</span></div>
+          <div><span class="output">3x dining, 2x travel, 1x other ...</span></div>
           <div><span class="output"></span></div>
-          <div><span class="output">  • Chase Sapphire Preferred</span></div>
-          <div><span class="output">  • Amex Gold</span></div>
-          <div><span class="output">  • Citi Double Cash</span></div>
+          <div><span class="output">Using the research above, compute a wallet analysis:</span></div>
+          <div><span class="output">1. Category coverage map ...</span></div>
           <div style="margin-top:0.5rem;"><span class="prompt">$</span> <span class="cmd-text">fleece wallet --json</span></div>
-          <div><span class="output">{"cards": [{"name": "Chase Sapphire Preferred", ...}]}</span></div>
+          <div><span class="output">{"command": "wallet", "cards": [...], "research": {...}, "analysis_prompt": "...", "ok": true}</span></div>
         </div>
       </div>
 
