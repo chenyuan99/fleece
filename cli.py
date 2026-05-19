@@ -209,60 +209,25 @@ def compare(
 
 @app.command()
 def wallet(
-    cards:        Annotated[Optional[list[str]], typer.Argument(help="Card names (space-separated). Omit to use saved profile. Use '-' as sole arg to read from stdin.")] = None,
-    from_profile: FromProfileOpt = False,
-    api_key:      ApiKeyOpt  = None,
-    as_json:      JsonOpt    = False,
-    no_dotenv:    NoDotenv   = False,
+    as_json: JsonOpt = False,
 ):
-    """Portfolio analysis — category coverage map, overlaps, gaps, and next-card suggestions.
-
-    Card names can come from three sources (in priority order):
-    1. Arguments passed directly
-    2. --from-profile / -p  (reads user_cards.json)
-    3. No args + saved profile exists (auto-loads profile)
-    """
-    from tools.brave_client import search_and_format
-
-    # Resolve card list
-    if cards and cards != ["-"]:
-        card_list = cards
-    elif cards == ["-"]:
-        card_list = [line.strip() for line in sys.stdin if line.strip()]
-    else:
-        # No args passed — fall back to saved profile
-        card_list = _profile_card_names()
-        if not card_list:
-            _error_exit(
-                "No cards provided and user_cards.json is empty. "
-                "Pass card names as arguments or add cards with: python cli.py cards add \"<name>\"",
-                code=1,
-            )
-
-    key     = _resolve_key(api_key, no_dotenv)
-    wrapper = _get_wrapper(key)
-    parts   = []
-
-    try:
-        for name in card_list:
-            result = search_and_format(wrapper, f'"{name}" earning rates categories benefits 2025', max_results=2)
-            parts.append(f"### {name}\n{result}")
-    except Exception as e:
-        _error_exit(str(e), code=1)
-
+    """Show the cards currently in your wallet."""
     import db as _db
-    profile_ctx = _db.profile_as_context()
 
-    combined = "\n\n".join(parts)
-    combined += "\n\nBased on the above, identify:\n"
-    combined += "1. Category coverage map\n"
-    combined += "2. Overlapping benefits or redundant categories\n"
-    combined += "3. Gaps — categories with no bonus multiplier\n"
-    combined += "4. Top 1-2 cards that would complement this portfolio"
-    if profile_ctx:
-        combined += f"\n\nUser profile context: {profile_ctx}"
-        combined += "\nTailor the gap analysis and recommendations to this profile."
-    _emit(combined, as_json, "wallet", ", ".join(card_list))
+    cards = _db.get_cards()
+    if not cards:
+        if as_json:
+            typer.echo(json.dumps({"cards": []}))
+        else:
+            typer.echo("Your wallet is empty. Add cards with: fleece cards add \"<name>\"")
+        return
+
+    if as_json:
+        typer.echo(json.dumps({"cards": cards}))
+    else:
+        typer.echo(f"Your wallet ({len(cards)} card{'s' if len(cards) != 1 else ''}):\n")
+        for card in cards:
+            typer.echo(f"  • {card['name']}")
 
 
 @app.command()
