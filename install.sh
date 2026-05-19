@@ -35,30 +35,65 @@ install_agents() {
   echo "✓ Agent skill installed to $TARGET/SKILL.md"
 }
 
+install_gemini() {
+  src="$SCRIPT_DIR/GEMINI.md"
+  [ "$(realpath "$src")" = "$(realpath "GEMINI.md" 2>/dev/null)" ] && return
+  cp "$src" "GEMINI.md"
+  echo "✓ Gemini CLI context installed to GEMINI.md"
+}
+
+install_copilot() {
+  mkdir -p ".github"
+  src="$SCRIPT_DIR/.github/copilot-instructions.md"
+  dest=".github/copilot-instructions.md"
+  [ "$(realpath "$src")" = "$(realpath "$dest" 2>/dev/null)" ] && return
+  cp "$src" "$dest"
+  echo "✓ GitHub Copilot instructions installed to $dest"
+}
+
+install_cursor() {
+  mkdir -p ".cursor/rules"
+  src="$SCRIPT_DIR/.cursor/rules/fleece.mdc"
+  dest=".cursor/rules/fleece.mdc"
+  [ "$(realpath "$src")" = "$(realpath "$dest" 2>/dev/null)" ] && return
+  cp "$src" "$dest"
+  echo "✓ Cursor rule installed to $dest"
+}
+
+install_windsurf() {
+  src="$SCRIPT_DIR/.windsurfrules"
+  [ "$(realpath "$src")" = "$(realpath ".windsurfrules" 2>/dev/null)" ] && return
+  cp "$src" ".windsurfrules"
+  echo "✓ Windsurf rules installed to .windsurfrules"
+}
+
 auto_detect() {
   INSTALLED=0
-  if [ -d ".claude" ]; then
-    install_claude
-    INSTALLED=1
-  fi
-  if [ -d ".agents" ]; then
-    install_agents
-    INSTALLED=1
-  fi
+  if [ -d ".claude" ];    then install_claude;   INSTALLED=1; fi
+  if [ -d ".agents" ];    then install_agents;   INSTALLED=1; fi
+  if [ -d ".gemini" ] || command -v gemini &>/dev/null; then install_gemini;   INSTALLED=1; fi
+  if [ -d ".github" ];    then install_copilot;  INSTALLED=1; fi
+  if [ -d ".cursor" ];    then install_cursor;   INSTALLED=1; fi
+  if [ -d ".windsurf" ] || [ -f ".windsurfrules" ]; then install_windsurf; INSTALLED=1; fi
   if [ "$INSTALLED" -eq 0 ]; then
-    echo "No .claude or .agents directory found. Pass --claude, --agents, or --all."
+    echo "No agent directory detected. Pass --all to install everything."
     exit 1
   fi
 }
 
 case "${1:-auto}" in
-  --claude) install_claude ;;
-  --agents) install_agents ;;
-  --all)    install_claude; install_agents ;;
-  auto)     auto_detect ;;
-  *)        echo "Usage: bash install.sh [--claude|--agents|--all]"; exit 1 ;;
+  --claude)   install_claude ;;
+  --agents)   install_agents ;;
+  --gemini)   install_gemini ;;
+  --copilot)  install_copilot ;;
+  --cursor)   install_cursor ;;
+  --windsurf) install_windsurf ;;
+  --all)      install_claude; install_agents; install_gemini; install_copilot; install_cursor; install_windsurf ;;
+  auto)       auto_detect ;;
+  *)          echo "Usage: bash install.sh [--claude|--agents|--gemini|--copilot|--cursor|--windsurf|--all]"; exit 1 ;;
 esac
 
 echo ""
-echo "BRAVE_API_KEY is optional — mcc, flights, and hotels work without it."
+echo ""
+echo "BRAVE_API_KEY is optional — mcc, flights, hotels, and profile work without it."
 echo "Set BRAVE_API_KEY in your environment or .env file to enable live research commands."

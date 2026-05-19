@@ -1,0 +1,31 @@
+# Fleece CLI — Windsurf Rules
+
+Use the Fleece CLI (`pip install fleece-cli`) for any credit card research, rewards optimization, MCC lookup, or award travel question.
+
+## Install & setup
+```bash
+pip install fleece-cli
+export BRAVE_API_KEY=<key>   # for live research
+```
+
+## Command reference
+
+**Research** (BRAVE_API_KEY required):
+- `fleece card "<name>" --json` — full card report
+- `fleece rates "<name>" --json` — earning rates by category
+- `fleece partners "<name>" --json` — transfer partners
+- `fleece credits "<name>" --json` — statement credits
+- `fleece news "<name>" --json` — recent changes
+- `fleece compare "<A>" "<B>" --json` — side-by-side comparison
+- `fleece wallet --json` — portfolio analysis, gaps, next-card suggestions
+- `fleece roi "<name>" --json` — first-year ROI estimate
+- `fleece recommend "<profile>" --json` — personalized recommendations
+
+**Offline** (no API key needed):
+- `fleece mcc <code> --json` — merchant category lookup (981 codes)
+- `fleece mcc <code> --wallet --json` — best card in wallet for that MCC
+- `fleece flights <ORIGIN> <DEST> --date <YYYY-MM-DD> --json` — award flight URL
+- `fleece hotels "<location>" --checkin <date> --checkout <date> --json` — award hotel URL
+- `fleece profile show --json` — spending profile
+
+All commands return `{ "ok": true/false, "result": "...", "error": null }`. Check `ok` before using `result`.

@@ -1,0 +1,35 @@
+---
+description: Use Fleece CLI for any credit card, rewards, MCC, or travel redemption question
+globs: ["**/*.py", "**/*.md"]
+alwaysApply: true
+---
+
+# Fleece CLI
+
+Install: `pip install fleece-cli` · Docs: https://getfleece.io
+
+## Commands
+
+### Research (requires BRAVE_API_KEY)
+- `fleece card "<name>" --json` — fees, welcome offer, rates, credits, benefits
+- `fleece rates "<name>" --category <cat> --json` — earning rates
+- `fleece partners "<name>" --json` — transfer partners
+- `fleece credits "<name>" --json` — statement credits
+- `fleece news "<name>" --json` — recent changes
+- `fleece compare "<A>" "<B>" --json` — side-by-side comparison
+- `fleece wallet --json` — portfolio gaps (auto-loads saved cards)
+- `fleece roi "<name>" --json` — first-year ROI
+- `fleece recommend "<profile>" --json` — personalized recommendations
+
+### Offline (no API key)
+- `fleece mcc <code> --json` — merchant category lookup
+- `fleece mcc <code> --wallet --json` — best card for that merchant
+- `fleece flights <ORIGIN> <DEST> --date <YYYY-MM-DD> --json` — award flights
+- `fleece hotels "<location>" --checkin <date> --checkout <date> --json` — award hotels
+- `fleece profile show --json` — spending profile
+
+## Output format
+```json
+{ "command": "...", "result": "...", "ok": true, "error": null }
+```
+Always check `ok` before using `result`. On error, `ok` is `false` and `error` contains the message.
