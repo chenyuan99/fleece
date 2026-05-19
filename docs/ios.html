@@ -186,7 +186,11 @@
 
 <!-- NAV -->
 <nav>
-  <a class="nav-logo" href="/">Fleece</a>
+  <a class="nav-logo" href="/" style="display:flex;align-items:center;gap:10px;">
+    <img src="assets/ios/icon.png" alt="Fleece"
+         style="width:32px;height:32px;border-radius:7px;flex-shrink:0;" />
+    Fleece
+  </a>
   <button class="nav-toggle" aria-label="Toggle navigation" aria-expanded="false">
     <span></span><span></span><span></span>
   </button>
@@ -203,11 +207,7 @@
 <section class="hero">
   <div class="hero-inner">
     <div>
-      <div style="display:flex;align-items:center;gap:14px;margin-bottom:1.25rem;">
-        <img src="assets/ios/icon.png" alt="Fleece app icon"
-             style="width:64px;height:64px;border-radius:16px;box-shadow:0 4px 16px rgba(0,0,0,0.4);flex-shrink:0;" />
-        <div class="hero-badge" style="margin-bottom:0;">📱 Now on iPhone</div>
-      </div>
+      <div class="hero-badge">📱 Now on iPhone</div>
       <h1>Best card at <span>every store</span></h1>
       <p>Fleece detects where you are, maps the store to a merchant category, and pushes the best card to use — before you tap to pay. Free. No API key. Powered by Apple MapKit.</p>
       <div class="hero-actions">
