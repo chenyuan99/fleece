@@ -11,6 +11,7 @@
 		220DDADD3E072E2DB4DFD2F0 /* PlacesService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2B940D56E7DAE6767D1B5952 /* PlacesService.swift */; };
 		3B87CF9F384D042593119BAC /* CardDatabase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84525AB21DF76636B0AFC0B5 /* CardDatabase.swift */; };
 		405B50C34B02F69B2AC1F780 /* FleeceApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = FE1826DC93917C0B0B3EF296 /* FleeceApp.swift */; };
+		53C5C1AE3D2EEE381F10C91F /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = F16000FD2325ECC3C11B2E46 /* Assets.xcassets */; };
 		908728529B78523F2F3A9BA9 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 671E0B0B4614A0153F1D0A84 /* ContentView.swift */; };
 		912E83201B7C80F87FE790C7 /* WalletView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F39205E9FDF1B6C7D4B6FC4F /* WalletView.swift */; };
 		9DD78194E2816122AFBDAADE /* RecommendationCardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 97100C4883875904157BD4D6 /* RecommendationCardView.swift */; };
@@ -30,7 +31,6 @@
 		192F941696D50D67B574453C /* FleeceApp.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = FleeceApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		1F0F4AC23D675E1415DB4B6B /* NotificationManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationManager.swift; sourceTree = "<group>"; };
 		2B940D56E7DAE6767D1B5952 /* PlacesService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlacesService.swift; sourceTree = "<group>"; };
-		473D7391F3D4227EA87F8CF7 /* FleeceApp.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = FleeceApp.entitlements; sourceTree = "<group>"; };
 		671E0B0B4614A0153F1D0A84 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		703BF2836D6238B002869015 /* AppState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppState.swift; sourceTree = "<group>"; };
 		7F187A4598F6D209993AC22C /* NearbyPlace.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NearbyPlace.swift; sourceTree = "<group>"; };
@@ -44,6 +44,7 @@
 		BD349E07A432AB028C10E2FD /* MCCCategory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MCCCategory.swift; sourceTree = "<group>"; };
 		D0EE83ABED88C6D4A08C623B /* Config.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Config.swift; sourceTree = "<group>"; };
 		E1574A163081F73D8004D7C8 /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
+		F16000FD2325ECC3C11B2E46 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		F39205E9FDF1B6C7D4B6FC4F /* WalletView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WalletView.swift; sourceTree = "<group>"; };
 		FE1826DC93917C0B0B3EF296 /* FleeceApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FleeceApp.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -110,9 +111,9 @@
 			isa = PBXGroup;
 			children = (
 				703BF2836D6238B002869015 /* AppState.swift */,
+				F16000FD2325ECC3C11B2E46 /* Assets.xcassets */,
 				D0EE83ABED88C6D4A08C623B /* Config.swift */,
 				671E0B0B4614A0153F1D0A84 /* ContentView.swift */,
-				473D7391F3D4227EA87F8CF7 /* FleeceApp.entitlements */,
 				FE1826DC93917C0B0B3EF296 /* FleeceApp.swift */,
 				508419218E9E14780B30B462 /* Managers */,
 				61E7B8E69C1A80C4E33BA81E /* Models */,
@@ -130,6 +131,7 @@
 			buildConfigurationList = A12633A59FC1F32CAD046AE1 /* Build configuration list for PBXNativeTarget "FleeceApp" */;
 			buildPhases = (
 				9930C162330617BEB1BC9AD9 /* Sources */,
+				9749D9528E7CEB80DA845E7E /* Resources */,
 			);
 			buildRules = (
 			);
@@ -153,6 +155,7 @@
 				TargetAttributes = {
 					468F627EE4E953A86CB08F03 = {
 						DevelopmentTeam = "";
+						ProvisioningStyle = Automatic;
 					};
 				};
 			};
@@ -174,6 +177,17 @@
 			);
 		};
 /* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		9749D9528E7CEB80DA845E7E /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				53C5C1AE3D2EEE381F10C91F /* Assets.xcassets in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		9930C162330617BEB1BC9AD9 /* Sources */ = {
@@ -237,6 +251,7 @@
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				COPY_PHASE_STRIP = NO;
+				CURRENT_PROJECT_VERSION = 1;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_PREVIEWS = YES;
@@ -250,6 +265,7 @@
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				MARKETING_VERSION = 1.0.0;
 				MTL_ENABLE_DEBUG_INFO = NO;
 				MTL_FAST_MATH = YES;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -264,9 +280,12 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGNING_ALLOWED = YES;
 				CODE_SIGN_ENTITLEMENTS = FleeceApp/FleeceApp.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
+				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = "";
+				ENABLE_TESTABILITY = NO;
 				INFOPLIST_FILE = FleeceApp/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
 				LD_RUNPATH_SEARCH_PATHS = (
@@ -275,6 +294,7 @@
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = io.getfleece.app;
 				SDKROOT = iphoneos;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Release;
@@ -313,6 +333,7 @@
 				CLANG_WARN_UNREACHABLE_CODE = YES;
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				COPY_PHASE_STRIP = NO;
+				CURRENT_PROJECT_VERSION = 1;
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				ENABLE_PREVIEWS = YES;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
@@ -332,6 +353,7 @@
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				MARKETING_VERSION = 1.0.0;
 				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
 				MTL_FAST_MATH = YES;
 				ONLY_ACTIVE_ARCH = YES;
@@ -347,8 +369,10 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGNING_ALLOWED = YES;
 				CODE_SIGN_ENTITLEMENTS = FleeceApp/FleeceApp.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
+				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = "";
 				INFOPLIST_FILE = FleeceApp/Info.plist;
 				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
