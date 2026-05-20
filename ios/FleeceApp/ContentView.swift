@@ -14,12 +14,15 @@ struct ContentView: View {
                 .tabItem { Label("Wallet", systemImage: "creditcard.fill") }
                 .tag(AppState.Tab.wallet)
 
+            AskView()
+                .tabItem { Label("Ask", systemImage: "bubble.left.and.bubble.right.fill") }
+                .tag(AppState.Tab.ask)
+
             SettingsView()
                 .tabItem { Label("Settings", systemImage: "gear") }
                 .tag(AppState.Tab.settings)
         }
         .tint(.indigo)
-        // Deep-link from notification → recommendations sheet
         .sheet(isPresented: $appState.showRecommendationSheet) {
             if let place = appState.currentPlace {
                 RecommendationsSheetView(

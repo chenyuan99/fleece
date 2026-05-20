@@ -1,0 +1,108 @@
+#if canImport(FoundationModels)
+import FoundationModels
+#endif
+import Foundation
+
+@MainActor
+final class ChatService: ObservableObject {
+    @Published var messages: [ChatMessage] = []
+    @Published var isThinking = false
+    @Published var error: String?
+
+    private var cards: [CreditCard] = []
+
+    // Store session as Any? — avoids @available on stored property
+    private var _sessionAny: Any?
+
+    func setCards(_ cards: [CreditCard]) {
+        self.cards = cards
+        _sessionAny = nil  // reset session when wallet changes
+    }
+
+    func send(_ text: String) async {
+        guard !text.trimmingCharacters(in: .whitespaces).isEmpty else { return }
+        messages.append(ChatMessage(user: text))
+        isThinking = true
+        error = nil
+
+        if #available(iOS 26.0, *) {
+            await sendWithAI(text)
+        } else {
+            messages.append(ChatMessage(
+                answer: "AI chat requires iOS 26 with Apple Intelligence enabled.",
+                followUp: nil
+            ))
+        }
+        isThinking = false
+    }
+
+    func clear() {
+        messages = []
+        _sessionAny = nil
+    }
+
+    // MARK: - iOS 26
+
+    @available(iOS 26.0, *)
+    private var session: LanguageModelSession {
+        if let s = _sessionAny as? LanguageModelSession { return s }
+        let s = makeSession()
+        _sessionAny = s
+        return s
+    }
+
+    @available(iOS 26.0, *)
+    private func makeSession() -> LanguageModelSession {
+        let profile = SpendingProfile.load()
+        let instructions = """
+        You are a concise credit card expert for the Fleece app.
+        Always call get_wallet_cards before making card recommendations.
+        Use get_card_roi when the user asks about value or whether a card is worth it.
+        Never invent card names, rates, or fees — only use values returned by tools.
+        Keep answers under 40 words. Be direct and specific.
+        \(profile.isEmpty ? "" : "\nUser spending profile: \(profile.summary)")
+        """
+        return LanguageModelSession(
+            tools: [
+                GetWalletCardsTool(cards: cards),
+                LookupMCCTool(),
+                GetCardROITool(),
+            ],
+            instructions: instructions
+        )
+    }
+
+    @available(iOS 26.0, *)
+    private func sendWithAI(_ text: String) async {
+        guard SystemLanguageModel.default.isAvailable else {
+            messages.append(ChatMessage(
+                answer: "Enable Apple Intelligence in Settings → Apple Intelligence & Siri.",
+                followUp: nil
+            ))
+            return
+        }
+        do {
+            let response = try await session.respond(to: text, generating: FleeceResponse.self)
+            let r = response.content
+
+            // Persist spend data silently
+            var profile = SpendingProfile.load()
+            var updated = false
+            if let v = r.diningMonthly    { profile.diningMonthly = v;    updated = true }
+            if let v = r.groceriesMonthly { profile.groceriesMonthly = v; updated = true }
+            if let v = r.travelMonthly    { profile.travelMonthly = v;    updated = true }
+            if let v = r.gasMonthly       { profile.gasMonthly = v;       updated = true }
+            if updated { profile.save() }
+
+            messages.append(ChatMessage(
+                answer: r.answer,
+                recommendedCard: r.recommendedCard,
+                effectiveRate: r.effectiveRate,
+                followUp: r.followUp
+            ))
+        } catch {
+            self.error = error.localizedDescription
+            messages.append(ChatMessage(answer: "Something went wrong. Try again.", followUp: nil))
+        }
+    }
+}

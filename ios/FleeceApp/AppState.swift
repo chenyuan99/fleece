@@ -27,7 +27,7 @@ final class AppState: ObservableObject {
     @Published var detectedNetworks: Set<PKPaymentNetwork> = []
     @Published var suggestedCards: [CreditCard] = []
 
-    enum Tab: Hashable { case home, wallet, settings }
+    enum Tab: Hashable { case home, wallet, ask, settings }
 
     private let placesService = PlacesService()
     private var searchTask: Task<Void, Never>?

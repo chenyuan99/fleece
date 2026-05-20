@@ -25,6 +25,7 @@ struct FleeceApp: App {
                 .onOpenURL { url in
                     switch url.host {
                     case "wallet":   appState.selectedTab = .wallet
+                    case "ask":      appState.selectedTab = .ask
                     case "settings": appState.selectedTab = .settings
                     default:         appState.selectedTab = .home
                     }
