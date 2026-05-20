@@ -141,3 +141,110 @@ Lightweight `<10 MB` version that activates via NFC or QR at a merchant — show
 - Small: card name + multiplier + category emoji
 - Medium: card chip + place name + reward rate
 - Lock screen: single line "Use Amex Gold · 4x Dining"
+
+---
+
+## Dynamic Island / Live Activity
+
+When the user enters a store, start a `LiveActivity` showing the best card in the Dynamic Island and on the lock screen. Ends automatically when the user leaves the area.
+
+- Compact leading: category emoji + card name abbreviation
+- Compact trailing: multiplier e.g. "4x"
+- Expanded: full card chip + place name + reward rate
+- Requires `ActivityKit` framework + `NSSupportsLiveActivities` in Info.plist
+- iPhone 14 Pro and later only
+
+---
+
+## Siri / App Intents
+
+### "What's my best card for dining?"
+`AppIntent` that returns the top dining card from the user's wallet. Surfaces in Siri, Spotlight, and Shortcuts app.
+
+```swift
+struct BestCardIntent: AppIntent {
+    static var title: LocalizedStringResource = "Best card for category"
+    @Parameter(title: "Category") var category: MCCCategoryEntity
+    func perform() async throws -> some ReturnsValue<String> { ... }
+}
+```
+
+### "Add Amex Gold to my Fleece wallet"
+Second intent for adding a card by name — useful for onboarding via Siri.
+
+---
+
+## Onboarding Flow
+
+First-launch walkthrough shown once before the main UI:
+
+1. **Welcome** — "Fleece finds your best card at every store"
+2. **Location permission** — explain why location is needed, request `whenInUse`
+3. **Notification permission** — explain push notifications, request authorization
+4. **Add your first card** — inline mini wallet picker (top 3 most popular cards)
+5. **Done** — land on Home tab with map ready
+
+Store completion in `UserDefaults("onboardingComplete")`. Skip entirely on re-install if wallet already has cards.
+
+---
+
+## Accessibility
+
+### VoiceOver
+- Add `accessibilityLabel` to all card chips: "Amex Gold, best card, 4x Dining, 7.2% back"
+- Add `accessibilityHint` to map tap: "Double tap to search for places at this location"
+- `accessibilityValue` on wallet toggle buttons: "In wallet" / "Not in wallet"
+
+### Dynamic Type
+- Card chip text currently uses fixed font sizes — switch to `scaledFont` so text grows with user's preferred text size setting
+
+---
+
+## CarPlay
+
+Read-only CarPlay scene showing current place + best card on the car's display — no interaction required, updates automatically as the user drives.
+
+- `CPInformationTemplate` with place name, card name, multiplier
+- Requires `com.apple.developer.carplay-information` entitlement
+
+---
+
+## watchOS Companion
+
+Standalone Apple Watch app (or complication) showing the best card for the current location.
+
+- Complication: card name + multiplier (e.g. "Amex Gold 4x")
+- App: full place + ranked card list
+- Shares wallet data with iPhone via `WatchConnectivity`
+
+---
+
+## Spotlight Search
+
+Register cards with `CoreSpotlight` so searching "Amex Gold" or "Chase dining" in Spotlight opens the card detail in Fleece.
+
+```swift
+let item = CSSearchableItem(uniqueIdentifier: card.id.uuidString,
+                             domainIdentifier: "cards",
+                             attributeSet: attributes)
+CSSearchableIndex.default().indexSearchableItems([item])
+```
+
+---
+
+## Share Enhancement
+
+Current share text is plain string. Improvements:
+- Use `ShareLink(item:subject:message:)` with a structured subject line
+- Generate a card-branded image (card color + multiplier) via `ImageRenderer` and share as image
+- Deep link back to Fleece: `fleece://card/<id>` in the share body
+
+---
+
+## TestFlight
+
+Once Apple Developer account is active, distribute to beta testers via TestFlight before App Store submission:
+1. Archive with `ios/release.sh <TEAM_ID>`
+2. Upload to App Store Connect
+3. Add internal testers (up to 100 with no review)
+4. External testers require a brief Beta App Review (~1–2 days)
