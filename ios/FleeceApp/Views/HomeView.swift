@@ -198,7 +198,7 @@ struct PlaceAnnotationView: View {
     var body: some View {
         ZStack {
             Circle()
-                .fill(isSelected ? Color.indigo : Color.white)
+                .fill(isSelected ? Color.indigo : Color(.systemBackground))
                 .frame(width: 36, height: 36)
                 .shadow(radius: 3)
             Text(place.category.emoji)
