@@ -48,16 +48,7 @@ Currently detection fires on launch and silently sorts the "Add to Wallet" list.
 ## Maps & Place Detection
 
 ### Fix manual map tap (MKLocalPointsOfInterestRequest)
-See `ios-known-issues.md` issue #1. Replace `MKLocalSearch.Request` with `MKLocalPointsOfInterestRequest(coordinateRegion:)` which anchors strictly to the passed region rather than drifting toward device GPS.
-
-```swift
-let region = MKCoordinateRegion(center: coord,
-                                 latitudinalMeters: 300,
-                                 longitudinalMeters: 300)
-let request = MKLocalPointsOfInterestRequest(coordinateRegion: region)
-request.pointOfInterestFilter = .includingAll
-let search = MKLocalSearch(request: request)
-```
+✅ Fixed — replaced `MKLocalSearch.Request` + `naturalLanguageQuery` with `MKLocalPointsOfInterestRequest(coordinateRegion:)`. Banner and card recommendations now update correctly when tapping anywhere on the map.
 
 ### Real-time place tracking
 Use `CLLocationManager.startMonitoringSignificantLocationChanges()` for background location updates — fires a notification when you arrive at a new type of merchant without the user having the app open.

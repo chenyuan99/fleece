@@ -4,7 +4,7 @@
 
 ## 1. Manual map tap does not update place banner or card recommendations
 
-**Status:** Open  
+**Status:** ✅ Fixed  
 **Affected build:** all current builds  
 **Affects:** Simulator and physical device  
 
@@ -21,14 +21,11 @@ Tapping the map drops the native red `Marker` pin at the tapped coordinate, but 
 ### Root cause hypothesis
 `MKLocalSearch` with `naturalLanguageQuery: "point of interest"` appears to anchor results to the device's current GPS location rather than the `region.center` passed in the request when running on the iOS 26 simulator. The search returns the same prominent landmark (Point Reyes National Seashore) regardless of the tapped coordinate.
 
-### Potential fixes to investigate
-- Switch query to `resultTypes = .pointOfInterest` with no `naturalLanguageQuery` and a tighter region
-- Use `MKLocalPointsOfInterestRequest(coordinateRegion:)` instead of `MKLocalSearch.Request` — introduced in iOS 14, anchors strictly to the given region
-- Test on physical device where GPS and map data are real — may work correctly outside the simulator
-- Add console logging to confirm the coordinate passed to `PlacesService` matches the tapped point
+### Root cause
+`MKLocalSearch.Request` with `naturalLanguageQuery` treats the region as a hint and anchors results to the device's GPS location, ignoring the tapped coordinate.
 
-### Workaround
-Use the GPS auto-detect flow — walk to or simulate a location and the banner updates automatically via `LocationManager`.
+### Fix applied
+Replaced `MKLocalSearch.Request` + `naturalLanguageQuery` with `MKLocalPointsOfInterestRequest(coordinateRegion:)` which anchors strictly to the passed region. No natural language query — returns all POIs within the given radius of the tapped point.
 
 ---
 

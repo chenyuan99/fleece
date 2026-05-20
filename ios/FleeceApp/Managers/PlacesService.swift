@@ -14,7 +14,6 @@ enum PlacesError: LocalizedError {
 }
 
 actor PlacesService {
-    /// Returns the nearest point-of-interest within `radius` meters using MapKit (free, no API key).
     func nearestPlace(at coord: CLLocationCoordinate2D,
                       radius: Int = Config.detectionRadius) async throws -> NearbyPlace {
         let items = try await searchItems(at: coord, radius: radius, limit: 1)
@@ -22,7 +21,6 @@ actor PlacesService {
         return first
     }
 
-    /// Returns up to `limit` nearby places for map pins.
     func nearbyPlaces(at coord: CLLocationCoordinate2D,
                       radius: Int = 200,
                       limit: Int = 10) async throws -> [NearbyPlace] {
@@ -34,23 +32,30 @@ actor PlacesService {
     private func searchItems(at coord: CLLocationCoordinate2D,
                               radius: Int,
                               limit: Int) async throws -> [NearbyPlace] {
-        let request = MKLocalSearch.Request()
-        request.naturalLanguageQuery = "point of interest"
-        request.region = MKCoordinateRegion(
+        let region = MKCoordinateRegion(
             center: coord,
             latitudinalMeters: Double(radius),
             longitudinalMeters: Double(radius)
         )
+
+        // MKLocalPointsOfInterestRequest anchors strictly to the given region —
+        // unlike MKLocalSearch.Request with naturalLanguageQuery which treats the
+        // region as a hint and drifts toward the device's GPS location.
+        let request = MKLocalPointsOfInterestRequest(coordinateRegion: region)
         request.pointOfInterestFilter = .includingAll
-        request.resultTypes = .pointOfInterest
 
         do {
             let response = try await MKLocalSearch(request: request).start()
-            return Array(response.mapItems.prefix(limit).map { $0.toNearbyPlace() })
+            let items = response.mapItems.prefix(limit).map { $0.toNearbyPlace() }
+            guard !items.isEmpty else { throw PlacesError.noResults }
+            return Array(items)
+        } catch let error as PlacesError {
+            throw error
         } catch {
-            // MKError.placemarkNotFound == no results, not a hard failure
             let mkErr = error as? MKError
-            if mkErr?.code == .placemarkNotFound { throw PlacesError.noResults }
+            if mkErr?.code == .placemarkNotFound || mkErr?.code == .unknown {
+                throw PlacesError.noResults
+            }
             throw PlacesError.searchFailed(error)
         }
     }
