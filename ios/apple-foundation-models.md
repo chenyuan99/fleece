@@ -76,101 +76,138 @@ let response = try await session.respond(
 
 ## Planned Tools for Fleece
 
+Three tools — all offline, all grounded in local data, zero hallucination risk on facts.
+
+> **Why only three?**
+> We deliberately excluded a `GetSpendingProfileTool`. iOS has no way to auto-detect
+> spending from transactions without a backend + bank aggregation API (Plaid etc.),
+> which kills our privacy-first, no-server stance. Manual entry in a settings screen
+> would work technically, but users won't keep it updated.
+>
+> Better: let the model ask conversationally. The user says "I spend $600/month on dining"
+> once and the model carries it in the context window for all subsequent calculations in
+> that session. The context window *is* the spending profile.
+
+---
+
 ### `GetWalletCardsTool`
-Returns the user's current wallet cards so the model knows what's available without hallucinating card names.
+Returns the user's current wallet cards so the model knows what's available without hallucinating card names or multipliers.
 
 ```swift
 @available(iOS 26.0, *)
 struct GetWalletCardsTool: Tool {
     static let name = "get_wallet_cards"
-    static let description = "Returns all credit cards currently in the user's Fleece wallet"
+    static let description = "Returns all credit cards currently in the user's Fleece wallet with their reward multipliers per category"
     var cards: [CreditCard]   // injected at session creation
 
     func call(context: ToolContext) async throws -> ToolOutput {
-        let summary = cards.filter(\.isInWallet).map { card in
-            "\(card.name) (\(card.issuer)) — base \(card.baseMultiplier)x, " +
-            card.categoryMultipliers.map { "\($0.value)x \($0.key)" }.joined(separator: ", ")
+        let wallet = cards.filter(\.isInWallet)
+        guard !wallet.isEmpty else { return ToolOutput("No cards in wallet.") }
+        let summary = wallet.map { card in
+            "\(card.name) (\(card.issuer), $\(card.annualFee)/yr, \(card.pointsProgram)): " +
+            card.categoryMultipliers.sorted { $0.value > $1.value }
+                .map { "\(Int($0.value))x \($0.key)" }.joined(separator: ", ") +
+            ", \(card.baseMultiplier)x everything else"
         }.joined(separator: "\n")
-        return ToolOutput(summary.isEmpty ? "No cards in wallet." : summary)
+        return ToolOutput(summary)
     }
 }
 ```
 
-### `GetNearbyPlacesTool`
-Fetches the current nearest merchant via `MKLocalSearch` so the model always has up-to-date location context.
+### `LookupMCCTool`
+Looks up a merchant category code from the 981 bundled codes — fully offline. Lets the model answer "What category is MCC 5812?" without relying on training data.
 
 ```swift
 @available(iOS 26.0, *)
-struct GetNearbyPlacesTool: Tool {
-    static let name = "get_nearby_place"
-    static let description = "Returns the nearest merchant at the user's current location"
-    var coordinate: CLLocationCoordinate2D
+struct LookupMCCTool: Tool {
+    static let name = "lookup_mcc"
+    static let description = "Returns the merchant category name for a 4-digit MCC code. Use when the user mentions a specific store type or merchant code."
+
+    @Parameter(description: "4-digit MCC code e.g. '5812'")
+    var code: String
 
     func call(context: ToolContext) async throws -> ToolOutput {
-        let place = try await PlacesService().nearestPlace(at: coordinate)
-        return ToolOutput(
-            "Nearest place: \(place.name), category: \(place.category.rawValue) " +
-            "(MCC codes: \(place.category.mccCodes.joined(separator: ", ")))"
-        )
+        // MCCCategory already has mccCodes arrays — reverse-lookup
+        for category in MCCCategory.allCases {
+            if category.mccCodes.contains(code) {
+                return ToolOutput("MCC \(code) → \(category.rawValue) \(category.emoji)")
+            }
+        }
+        return ToolOutput("MCC \(code) not found in local database.")
     }
 }
 ```
 
 ### `GetCardROITool`
-Calculates first-year ROI for a card using the user's spending profile — enables the model to answer "Is the Amex Gold worth the $325 fee for me?"
+Calculates first-year net value for any card in `CardDatabase` given spend numbers the model has extracted from the conversation. Grounds ROI answers in local math — no Brave search needed for the 9 cards in the database.
 
 ```swift
 @available(iOS 26.0, *)
 struct GetCardROITool: Tool {
     static let name = "get_card_roi"
-    static let description = "Estimates first-year net value for a card given monthly spend"
+    static let description = "Calculates first-year net value for a card given monthly spend amounts. Use after the user mentions their spending habits."
 
-    @Parameter(description: "Card name")
+    @Parameter(description: "Card name e.g. 'Amex Gold'")
     var cardName: String
-    @Parameter(description: "Monthly dining spend in USD")
+    @Parameter(description: "Monthly dining spend in USD (0 if unknown)")
     var diningMonthly: Double
-    @Parameter(description: "Monthly grocery spend in USD")
+    @Parameter(description: "Monthly grocery spend in USD (0 if unknown)")
     var groceriesMonthly: Double
+    @Parameter(description: "Monthly travel spend in USD (0 if unknown)")
+    var travelMonthly: Double
+    @Parameter(description: "Monthly gas spend in USD (0 if unknown)")
+    var gasMonthly: Double
+    @Parameter(description: "Monthly other spend in USD (0 if unknown)")
+    var otherMonthly: Double
 
     func call(context: ToolContext) async throws -> ToolOutput {
         guard let card = CardDatabase.all.first(where: {
             $0.name.localizedCaseInsensitiveContains(cardName)
-        }) else { return ToolOutput("Card not found.") }
+        }) else { return ToolOutput("Card '\(cardName)' not found in local database.") }
 
-        let diningRate  = card.multiplier(for: .dining)  * card.pointValueCents / 100
-        let groceryRate = card.multiplier(for: .groceries) * card.pointValueCents / 100
-        let annualValue = (diningMonthly * diningRate + groceriesMonthly * groceryRate) * 12
-        let net         = annualValue - Double(card.annualFee)
+        let spend: [(MCCCategory, Double)] = [
+            (.dining, diningMonthly),
+            (.groceries, groceriesMonthly),
+            (.hotels, travelMonthly),   // broad travel proxy
+            (.gas, gasMonthly),
+            (.other, otherMonthly),
+        ]
+        let annualRewards = spend.reduce(0.0) { sum, pair in
+            let (category, monthly) = pair
+            let rate = card.multiplier(for: category) * card.pointValueCents / 100
+            return sum + (monthly * rate * 12)
+        }
+        let net = annualRewards - Double(card.annualFee)
 
         return ToolOutput(
-            "\(card.name): annual rewards ≈ $\(String(format: "%.0f", annualValue)), " +
-            "net after $\(card.annualFee) fee = $\(String(format: "%.0f", net))"
+            "\(card.name) ($\(card.annualFee)/yr, \(card.pointsProgram)): " +
+            "annual rewards ≈ $\(String(format: "%.0f", annualRewards)), " +
+            "net after fee = \(net >= 0 ? "+" : "")$\(String(format: "%.0f", net))"
         )
     }
 }
-```
 
 ---
 
 ## Wiring It Together — Multi-tool Session
 
-With all three tools the model can answer complex, personalised questions without hallucinating:
-
 ```swift
 @available(iOS 26.0, *)
-func askFleece(question: String, coord: CLLocationCoordinate2D, cards: [CreditCard]) async -> String? {
+func askFleece(question: String, cards: [CreditCard]) async -> String? {
     guard SystemLanguageModel.default.isAvailable else { return nil }
 
     let session = LanguageModelSession(
         tools: [
             GetWalletCardsTool(cards: cards),
-            GetNearbyPlacesTool(coordinate: coord),
-            GetCardROITool()
+            LookupMCCTool(),
+            GetCardROITool(),
         ],
         instructions: """
         You are a concise credit card expert for the Fleece app.
-        Use the provided tools to get real data before answering.
-        Keep answers under 40 words. Never invent card names or rates.
+        Always call get_wallet_cards before making recommendations.
+        Extract spending amounts from the conversation — never ask the
+        user to fill in a form. Keep answers under 50 words.
+        Never invent card names, rates, or fees not returned by tools.
         """
     )
 
@@ -179,15 +216,21 @@ func askFleece(question: String, coord: CLLocationCoordinate2D, cards: [CreditCa
 }
 ```
 
-**Example interaction:**
+**Example interaction — spending info managed by model in context:**
 ```
-User:  "Am I using the right card here?"
-Model: [calls get_nearby_place] → "Ippudo Ramen, Dining"
-       [calls get_wallet_cards]  → "Amex Gold (4x Dining), Chase CFU (3x Dining)"
-       [synthesises]
-       "Yes — Amex Gold earns 4x MR (7.2¢/dollar) at this restaurant.
-        That's your best wallet card for Dining."
+User:  "I spend about $600/month on dining. Is Amex Gold worth it?"
+Model: [calls get_wallet_cards]          → current wallet
+       [calls get_card_roi(dining=600)]  → "$193 net after $325 fee"
+       "Yes — at $600/mo dining you net +$193/yr after the fee.
+        Worth it if you use the dining credits."
+
+User:  "What about for groceries too? I spend $400/month."
+Model: [calls get_card_roi(dining=600, groceries=400)]
+       → "$385 net — model remembered $600 dining from earlier"
+       "Even better — +$385/yr net with both categories."
 ```
+
+The model carries `dining=$600` forward automatically — no profile screen, no settings, no stale data.
 
 ---
 
