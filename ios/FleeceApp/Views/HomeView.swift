@@ -1,5 +1,6 @@
 import SwiftUI
 import MapKit
+import UIKit
 
 struct HomeView: View {
     @EnvironmentObject var appState: AppState
@@ -61,6 +62,7 @@ struct HomeView: View {
                 SpatialTapGesture()
                     .onEnded { value in
                         guard let coord = proxy.convert(value.location, from: .local) else { return }
+                        UIImpactFeedbackGenerator(style: .light).impactOccurred()
                         pinnedCoordinate = coord
                         appState.searchAt(coord: coord, notificationManager: notificationManager)
                     }
@@ -104,6 +106,10 @@ struct HomeView: View {
         .animation(.spring(response: 0.4), value: appState.currentPlace?.id)
         .animation(.spring(response: 0.4), value: appState.recommendations.count)
         .animation(.easeInOut(duration: 0.2), value: appState.isSearching)
+        .onChange(of: appState.currentPlace?.id) { _, _ in
+            guard appState.currentPlace != nil else { return }
+            UINotificationFeedbackGenerator().notificationOccurred(.success)
+        }
     }
 
     private var recommendationsScroll: some View {
