@@ -84,6 +84,19 @@ struct HomeView: View {
                 locationDeniedBanner
             }
 
+            if appState.isSearching {
+                HStack(spacing: 8) {
+                    ProgressView().tint(.black).scaleEffect(0.85)
+                    Text("Finding nearby places…")
+                        .font(.subheadline).fontWeight(.medium)
+                }
+                .padding(.horizontal, 16).padding(.vertical, 10)
+                .background(.ultraThinMaterial)
+                .clipShape(Capsule())
+                .padding(.top, 8)
+                .transition(.opacity)
+            }
+
             if let place = appState.currentPlace {
                 CurrentPlaceBanner(place: place)
                     .transition(.move(edge: .bottom).combined(with: .opacity))
@@ -96,6 +109,7 @@ struct HomeView: View {
         }
         .animation(.spring(response: 0.4), value: appState.currentPlace?.id)
         .animation(.spring(response: 0.4), value: appState.recommendations.count)
+        .animation(.easeInOut(duration: 0.2), value: appState.isSearching)
     }
 
     private var recommendationsScroll: some View {

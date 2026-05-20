@@ -61,12 +61,13 @@ final class AppState: ObservableObject {
     }
 
     private func searchPlaces(at coord: CLLocationCoordinate2D,
-                               notificationManager: NotificationManager) async {
+                               notificationManager: NotificationManager,
+                               radius: Int = Config.detectionRadius) async {
         isSearching = true
         searchError = nil
         do {
-            async let nearest = placesService.nearestPlace(at: coord)
-            async let nearby  = placesService.nearbyPlaces(at: coord)
+            async let nearest = placesService.nearestPlace(at: coord, radius: radius)
+            async let nearby  = placesService.nearbyPlaces(at: coord, radius: max(radius, 200))
 
             let (place, pins) = try await (nearest, nearby)
 
@@ -97,12 +98,14 @@ final class AppState: ObservableObject {
         onLocationUpdate(coord, notificationManager: notificationManager)
     }
 
-    // Search at an arbitrary tapped coordinate (bypasses debounce)
+    // Search at an arbitrary tapped coordinate (bypasses debounce, larger radius)
     func searchAt(coord: CLLocationCoordinate2D,
                   notificationManager: NotificationManager) {
         searchTask?.cancel()
         searchTask = Task {
-            await searchPlaces(at: coord, notificationManager: notificationManager)
+            await searchPlaces(at: coord,
+                               notificationManager: notificationManager,
+                               radius: 300)   // wider net for manual taps
         }
     }
 
