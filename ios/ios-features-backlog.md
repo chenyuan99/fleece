@@ -126,7 +126,7 @@ Pending Apple Developer Program approval (`cysbc1999@gmail.com`). Once active:
 4. Submit for review
 
 ### Privacy policy page
-Required by Apple for any app using location. Can be a simple `docs/privacy.html` hosted at `getfleece.io/privacy`.
+✅ Done — hosted at **https://getfleece.io/privacy-policy**. Use this URL in the App Store Connect privacy policy field.
 
 ### App Clip
 Lightweight `<10 MB` version that activates via NFC or QR at a merchant — shows the best card for that specific store without requiring the full app install.
