@@ -16,7 +16,9 @@ final class ChatService: ObservableObject {
 
     func setCards(_ cards: [CreditCard]) {
         self.cards = cards
-        _sessionAny = nil  // reset session when wallet changes
+        // Do NOT reset the session here — the model calls GetWalletCardsTool
+        // live on every relevant turn, so fresh wallet data is always fetched.
+        // Destroying the session would wipe the conversation transcript.
     }
 
     func send(_ text: String) async {

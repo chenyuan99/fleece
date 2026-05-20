@@ -31,8 +31,10 @@ struct AskView: View {
                 }
             }
         }
-        .onAppear { chat.setCards(appState.cards) }
-        .onChange(of: appState.cards) { _, cards in chat.setCards(cards) }
+        .onAppear { chat.setCards(appState.cards) }  // initial load only
+        .onChange(of: appState.cards.filter(\.isInWallet).map(\.id)) { _, _ in
+            chat.setCards(appState.cards)              // only when wallet membership changes
+        }
     }
 
     // MARK: - Message list
