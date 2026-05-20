@@ -117,6 +117,10 @@ struct HomeView: View {
             HStack(spacing: 12) {
                 ForEach(appState.recommendations.prefix(5)) { rec in
                     RecommendationCardView(recommendation: rec)
+                        .onTapGesture {
+                            UIImpactFeedbackGenerator(style: .light).impactOccurred()
+                            appState.showRecommendationSheet = true
+                        }
                 }
             }
             .padding(.horizontal, 16)
