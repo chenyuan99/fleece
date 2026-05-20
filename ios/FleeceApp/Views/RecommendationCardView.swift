@@ -103,11 +103,31 @@ struct RecommendationsSheetView: View {
             .navigationTitle("Card Recommendation")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
+                ToolbarItem(placement: .navigationBarLeading) {
+                    if let best = recommendations.first {
+                        ShareLink(item: shareText(best)) {
+                            Image(systemName: "square.and.arrow.up")
+                        }
+                    }
+                }
                 ToolbarItem(placement: .navigationBarTrailing) {
                     Button("Done") { dismiss() }
                 }
             }
         }
+    }
+
+    private func shareText(_ rec: CardRecommendation) -> String {
+        let mult = rec.multiplier == rec.multiplier.rounded()
+            ? "\(Int(rec.multiplier))x"
+            : String(format: "%.1fx", rec.multiplier)
+        let rate = String(format: "%.1f%%", rec.effectiveRate)
+        return """
+        \(rec.category.emoji) \(place.name)
+        Use \(rec.card.name) · \(mult) \(rec.category.rawValue) = \(rate) back (\(rec.card.pointsProgram))
+
+        via Fleece · getfleece.io/ios
+        """
     }
 
     private var placeHeader: some View {
