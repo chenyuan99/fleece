@@ -8,8 +8,6 @@ struct SettingsView: View {
                     LabeledContent("Version", value: "1.0.0")
                     LabeledContent("Location data", value: "Apple MapKit (free)")
                     LabeledContent("Cards database", value: "9 major US issuers")
-                    Link("fleece CLI on PyPI",
-                         destination: URL(string: "https://pypi.org/project/fleece-cli/")!)
                 }
 
                 Section {
