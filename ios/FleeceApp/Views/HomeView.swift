@@ -8,6 +8,7 @@ struct HomeView: View {
 
     @State private var mapPosition: MapCameraPosition = .automatic
     @State private var selectedPlaceID: String?
+    @State private var pinnedCoordinate: CLLocationCoordinate2D?
 
     var body: some View {
         NavigationStack {
@@ -20,6 +21,7 @@ struct HomeView: View {
             .toolbar { toolbarContent }
             .onChange(of: locationManager.coordinate) { _, newCoord in
                 guard let newCoord else { return }
+                pinnedCoordinate = nil   // clear manual pin on GPS update
                 withAnimation {
                     mapPosition = .region(MKCoordinateRegion(
                         center: newCoord,
@@ -33,20 +35,43 @@ struct HomeView: View {
     // MARK: - Map
 
     private var mapLayer: some View {
-        Map(position: $mapPosition) {
-            UserAnnotation()
-            ForEach(appState.nearbyPlaces) { place in
-                Annotation(place.name, coordinate: place.coordinate) {
-                    PlaceAnnotationView(
-                        place: place,
-                        isSelected: selectedPlaceID == place.id
-                    )
-                    .onTapGesture { selectedPlaceID = place.id }
+        MapReader { proxy in
+            Map(position: $mapPosition) {
+                UserAnnotation()
+
+                // Manual pin dropped by tapping the map
+                if let pin = pinnedCoordinate {
+                    Annotation("", coordinate: pin) {
+                        ZStack {
+                            Circle()
+                                .fill(Color.yellow)
+                                .frame(width: 20, height: 20)
+                                .shadow(radius: 3)
+                            Circle()
+                                .stroke(Color.black, lineWidth: 2)
+                                .frame(width: 20, height: 20)
+                        }
+                    }
+                }
+
+                ForEach(appState.nearbyPlaces) { place in
+                    Annotation(place.name, coordinate: place.coordinate) {
+                        PlaceAnnotationView(
+                            place: place,
+                            isSelected: selectedPlaceID == place.id
+                        )
+                        .onTapGesture { selectedPlaceID = place.id }
+                    }
                 }
             }
+            .mapStyle(.standard(elevation: .realistic))
+            .ignoresSafeArea()
+            .onTapGesture { screenPoint in
+                guard let coord = proxy.convert(screenPoint, from: .local) else { return }
+                pinnedCoordinate = coord
+                appState.searchAt(coord: coord, notificationManager: notificationManager)
+            }
         }
-        .mapStyle(.standard(elevation: .realistic))
-        .ignoresSafeArea()
     }
 
     // MARK: - Overlay

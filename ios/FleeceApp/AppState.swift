@@ -97,6 +97,15 @@ final class AppState: ObservableObject {
         onLocationUpdate(coord, notificationManager: notificationManager)
     }
 
+    // Search at an arbitrary tapped coordinate (bypasses debounce)
+    func searchAt(coord: CLLocationCoordinate2D,
+                  notificationManager: NotificationManager) {
+        searchTask?.cancel()
+        searchTask = Task {
+            await searchPlaces(at: coord, notificationManager: notificationManager)
+        }
+    }
+
     // MARK: - Wallet persistence
 
     func toggleWallet(card: CreditCard) {
