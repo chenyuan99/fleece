@@ -3,6 +3,15 @@ import SwiftUI
 struct ContentView: View {
     @EnvironmentObject var appState: AppState
     @EnvironmentObject var locationManager: LocationManager
+    @AppStorage("colorScheme") private var schemePref: String = "system"
+
+    private var preferredColorScheme: ColorScheme? {
+        switch schemePref {
+        case "light": return .light
+        case "dark":  return .dark
+        default:      return nil
+        }
+    }
 
     var body: some View {
         TabView(selection: $appState.selectedTab) {
@@ -23,6 +32,7 @@ struct ContentView: View {
                 .tag(AppState.Tab.settings)
         }
         .tint(.indigo)
+        .preferredColorScheme(preferredColorScheme)
         .sheet(isPresented: $appState.showRecommendationSheet) {
             if let place = appState.currentPlace {
                 RecommendationsSheetView(
