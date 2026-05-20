@@ -57,11 +57,14 @@ struct HomeView: View {
             }
             .mapStyle(.standard(elevation: .realistic))
             .ignoresSafeArea()
-            .onTapGesture { screenPoint in
-                guard let coord = proxy.convert(screenPoint, from: .local) else { return }
-                pinnedCoordinate = coord
-                appState.searchAt(coord: coord, notificationManager: notificationManager)
-            }
+            .simultaneousGesture(
+                SpatialTapGesture()
+                    .onEnded { value in
+                        guard let coord = proxy.convert(value.location, from: .local) else { return }
+                        pinnedCoordinate = coord
+                        appState.searchAt(coord: coord, notificationManager: notificationManager)
+                    }
+            )
         }
     }
 
