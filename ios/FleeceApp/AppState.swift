@@ -62,7 +62,8 @@ final class AppState: ObservableObject {
 
     private func searchPlaces(at coord: CLLocationCoordinate2D,
                                notificationManager: NotificationManager,
-                               radius: Int = Config.detectionRadius) async {
+                               radius: Int = Config.detectionRadius,
+                               notify: Bool = true) async {
         isSearching = true
         searchError = nil
         do {
@@ -71,14 +72,12 @@ final class AppState: ObservableObject {
 
             let (place, pins) = try await (nearest, nearby)
 
-            // Build recommendations
             let recs = CardRecommender.recommend(for: place, cards: cards)
-            currentPlace   = place
+            currentPlace    = place
             recommendations = recs
-            nearbyPlaces   = pins
+            nearbyPlaces    = pins
 
-            // Fire notification for best wallet card
-            if let best = recs.first(where: { $0.card.isInWallet }) ?? recs.first {
+            if notify, let best = recs.first(where: { $0.card.isInWallet }) ?? recs.first {
                 notificationManager.notify(recommendation: best)
             }
         } catch PlacesError.noResults {
@@ -98,14 +97,15 @@ final class AppState: ObservableObject {
         onLocationUpdate(coord, notificationManager: notificationManager)
     }
 
-    // Search at an arbitrary tapped coordinate (bypasses debounce, larger radius)
+    // Search at an arbitrary tapped coordinate (bypasses debounce, larger radius, no notification)
     func searchAt(coord: CLLocationCoordinate2D,
                   notificationManager: NotificationManager) {
         searchTask?.cancel()
         searchTask = Task {
             await searchPlaces(at: coord,
                                notificationManager: notificationManager,
-                               radius: 300)   // wider net for manual taps
+                               radius: 300,
+                               notify: false)
         }
     }
 
