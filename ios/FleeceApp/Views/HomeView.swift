@@ -39,19 +39,10 @@ struct HomeView: View {
             Map(position: $mapPosition) {
                 UserAnnotation()
 
-                // Manual pin dropped by tapping the map
+                // Manual pin — native drop pin style
                 if let pin = pinnedCoordinate {
-                    Annotation("", coordinate: pin) {
-                        ZStack {
-                            Circle()
-                                .fill(Color.yellow)
-                                .frame(width: 20, height: 20)
-                                .shadow(radius: 3)
-                            Circle()
-                                .stroke(Color.black, lineWidth: 2)
-                                .frame(width: 20, height: 20)
-                        }
-                    }
+                    Marker("Search here", coordinate: pin)
+                        .tint(.red)
                 }
 
                 ForEach(appState.nearbyPlaces) { place in
