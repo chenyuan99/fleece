@@ -9,7 +9,12 @@ struct WalletView: View {
     var body: some View {
         NavigationStack {
             List {
-                if !walletCards.isEmpty {
+                // Empty state banner — shown until at least one card is added
+                if walletCards.isEmpty {
+                    Section {
+                        EmptyWalletBanner()
+                    }
+                } else {
                     Section("My Wallet (\(walletCards.count))") {
                         ForEach(walletCards) { card in
                             CardRowView(card: card, style: .inWallet)
@@ -31,6 +36,29 @@ struct WalletView: View {
             .listStyle(.insetGrouped)
             .navigationTitle("Wallet")
         }
+    }
+}
+
+// MARK: - Empty State
+
+struct EmptyWalletBanner: View {
+    var body: some View {
+        VStack(spacing: 16) {
+            Image(systemName: "creditcard.and.123")
+                .font(.system(size: 44))
+                .foregroundStyle(.secondary)
+
+            VStack(spacing: 6) {
+                Text("Your wallet is empty")
+                    .font(.headline)
+                Text("Add your cards below to get\npersonalised recommendations at every store.")
+                    .font(.subheadline)
+                    .foregroundStyle(.secondary)
+                    .multilineTextAlignment(.center)
+            }
+        }
+        .frame(maxWidth: .infinity)
+        .padding(.vertical, 32)
     }
 }
 
