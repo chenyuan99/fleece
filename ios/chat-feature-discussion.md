@@ -16,7 +16,7 @@ A chat tab would answer a different class of questions:
 
 These are research questions, not real-time questions. The CLI already handles them (`fleece roi`, `fleece compare`, `fleece recommend`). A chat tab would bring that capability to iOS natively, powered entirely on-device via Foundation Models tool calling.
 
-The `apple-foundation-models.md` doc has the full tool calling architecture ready to build on.
+The `apple-foundation-models.md` doc has the full tool calling architecture ready to build on — four tools: `GetWalletCardsTool`, `LookupMCCTool`, `GetCardROITool`, and `UpdateSpendingProfileTool` (silently persists spend amounts to `UserDefaults` so the model never asks the same question twice).
 
 ---
 

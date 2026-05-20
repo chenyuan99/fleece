@@ -98,7 +98,13 @@ Show the actual card artwork in the wallet using `AsyncImage` loaded from card i
 Sync wallet selection across iPhone, iPad, and Mac using `NSUbiquitousKeyValueStore` or CloudKit so the user's card setup carries over to new devices.
 
 ### Spending profile
-Port the CLI `fleece profile` feature to iOS — let users set `dining_monthly`, `groceries_monthly`, etc. and use those values to personalise ROI estimates shown per card.
+Port the CLI `fleece profile` feature to iOS — stored in `UserDefaults` (same pattern as CLI's SQLite profile). Fields: `dining_monthly`, `groceries_monthly`, `travel_monthly`, `gas_monthly`, `other_monthly`.
+
+Two entry points:
+1. **Automatically** — the chat's `UpdateSpendingProfileTool` saves amounts the user mentions in conversation silently, no form required
+2. **Manually** — a Profile screen in Settings lets the user view and edit stored values (equivalent to `fleece profile show` / `fleece profile set`)
+
+The stored profile is injected into the `LanguageModelSession` system prompt at session creation so the model starts every chat already knowing the user's spend — no repeated questions.
 
 ---
 

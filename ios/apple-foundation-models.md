@@ -76,17 +76,36 @@ let response = try await session.respond(
 
 ## Planned Tools for Fleece
 
-Three tools — all offline, all grounded in local data, zero hallucination risk on facts.
+Four tools — all offline, all grounded in local data, zero hallucination risk on facts.
 
-> **Why only three?**
-> We deliberately excluded a `GetSpendingProfileTool`. iOS has no way to auto-detect
-> spending from transactions without a backend + bank aggregation API (Plaid etc.),
-> which kills our privacy-first, no-server stance. Manual entry in a settings screen
-> would work technically, but users won't keep it updated.
->
-> Better: let the model ask conversationally. The user says "I spend $600/month on dining"
-> once and the model carries it in the context window for all subsequent calculations in
-> that session. The context window *is* the spending profile.
+### Profile persistence architecture
+
+Spending data (dining, groceries, travel, gas, other monthly spend) is stored in
+`UserDefaults` — the same pattern as `fleece profile` in the CLI (which uses SQLite).
+
+**Session startup:** the stored profile is injected directly into the system prompt so
+the model starts every session already knowing your spend. No tool call needed to read it,
+no questions asked on session 2+.
+
+**During conversation:** when the user mentions a spending amount, the model silently
+calls `UpdateSpendingProfileTool` to persist it. Next session it's already in the
+system prompt.
+
+```
+Session 1 — learning:
+  User:  "I spend $600/month on dining"
+  Model: [calls update_spending_profile(diningMonthly: 600)]  ← saved
+  Model: "Got it — at $600/mo dining, Amex Gold nets +$193/yr."
+
+Session 2 — already knows:
+  System: "Spending profile: dining=$600/mo"  ← injected from UserDefaults
+  User:   "Is Amex Gold worth it?"
+  Model:  [calls get_card_roi(cardName: "Amex Gold", diningMonthly: 600)]
+  Model:  "Yes — +$193/yr net after the $325 fee."  ← no questions asked
+```
+
+A **Profile screen in Settings** lets the user view and manually edit stored values —
+equivalent to `fleece profile show` and `fleece profile set` in the CLI.
 
 ---
 
@@ -189,31 +208,111 @@ struct GetCardROITool: Tool {
 
 ---
 
+### `UpdateSpendingProfileTool`
+Called silently by the model when the user mentions a spending amount. Persists to `UserDefaults` so every future session starts with the correct context already loaded.
+
+```swift
+@available(iOS 26.0, *)
+struct UpdateSpendingProfileTool: Tool {
+    static let name = "update_spending_profile"
+    static let description = """
+        Save spending amounts mentioned by the user to their persistent profile.
+        Call this whenever the user states or updates a monthly spend figure.
+        Only include fields the user explicitly mentioned — leave others unchanged.
+        """
+
+    @Parameter(description: "Monthly dining spend in USD, if mentioned")
+    var diningMonthly: Double?
+    @Parameter(description: "Monthly grocery spend in USD, if mentioned")
+    var groceriesMonthly: Double?
+    @Parameter(description: "Monthly travel spend in USD, if mentioned")
+    var travelMonthly: Double?
+    @Parameter(description: "Monthly gas spend in USD, if mentioned")
+    var gasMonthly: Double?
+    @Parameter(description: "Monthly other spend in USD, if mentioned")
+    var otherMonthly: Double?
+
+    func call(context: ToolContext) async throws -> ToolOutput {
+        var profile = SpendingProfile.load()
+        if let v = diningMonthly     { profile.diningMonthly = v }
+        if let v = groceriesMonthly  { profile.groceriesMonthly = v }
+        if let v = travelMonthly     { profile.travelMonthly = v }
+        if let v = gasMonthly        { profile.gasMonthly = v }
+        if let v = otherMonthly      { profile.otherMonthly = v }
+        profile.save()
+        return ToolOutput("Spending profile updated: \(profile.summary)")
+    }
+}
+
+// UserDefaults-backed profile — mirrors fleece profile in the CLI
+struct SpendingProfile: Codable {
+    var diningMonthly:    Double = 0
+    var groceriesMonthly: Double = 0
+    var travelMonthly:    Double = 0
+    var gasMonthly:       Double = 0
+    var otherMonthly:     Double = 0
+
+    static func load() -> SpendingProfile {
+        guard let data = UserDefaults.standard.data(forKey: "spendingProfile"),
+              let profile = try? JSONDecoder().decode(SpendingProfile.self, from: data)
+        else { return SpendingProfile() }
+        return profile
+    }
+
+    func save() {
+        let data = try? JSONEncoder().encode(self)
+        UserDefaults.standard.set(data, forKey: "spendingProfile")
+    }
+
+    var isEmpty: Bool {
+        diningMonthly == 0 && groceriesMonthly == 0 &&
+        travelMonthly == 0 && gasMonthly == 0 && otherMonthly == 0
+    }
+
+    var summary: String {
+        var parts: [String] = []
+        if diningMonthly    > 0 { parts.append("dining=$\(Int(diningMonthly))/mo") }
+        if groceriesMonthly > 0 { parts.append("groceries=$\(Int(groceriesMonthly))/mo") }
+        if travelMonthly    > 0 { parts.append("travel=$\(Int(travelMonthly))/mo") }
+        if gasMonthly       > 0 { parts.append("gas=$\(Int(gasMonthly))/mo") }
+        if otherMonthly     > 0 { parts.append("other=$\(Int(otherMonthly))/mo") }
+        return parts.isEmpty ? "no spending data yet" : parts.joined(separator: ", ")
+    }
+}
+```
+
+---
+
 ## Wiring It Together — Multi-tool Session
 
 ```swift
 @available(iOS 26.0, *)
-func askFleece(question: String, cards: [CreditCard]) async -> String? {
-    guard SystemLanguageModel.default.isAvailable else { return nil }
+func makeSession(cards: [CreditCard]) -> LanguageModelSession {
+    let profile = SpendingProfile.load()
 
-    let session = LanguageModelSession(
+    let instructions = """
+    You are a concise credit card expert for the Fleece app.
+    Always call get_wallet_cards before making recommendations.
+    When the user mentions a spending amount, call update_spending_profile
+    to persist it — do this silently without telling the user.
+    Never invent card names, rates, or fees not returned by tools.
+    Keep answers under 50 words.
+    \(profile.isEmpty ? "" : "\nUser's spending profile: \(profile.summary)")
+    """
+
+    return LanguageModelSession(
         tools: [
             GetWalletCardsTool(cards: cards),
             LookupMCCTool(),
             GetCardROITool(),
+            UpdateSpendingProfileTool(),
         ],
-        instructions: """
-        You are a concise credit card expert for the Fleece app.
-        Always call get_wallet_cards before making recommendations.
-        Extract spending amounts from the conversation — never ask the
-        user to fill in a form. Keep answers under 50 words.
-        Never invent card names, rates, or fees not returned by tools.
-        """
+        instructions: instructions
     )
-
-    let response = try? await session.respond(to: question)
-    return response?.content
 }
+// Session is created once per chat tab open and reused across turns.
+// SpendingProfile persists to UserDefaults between app launches.
+```
 ```
 
 **Example interaction — spending info managed by model in context:**
