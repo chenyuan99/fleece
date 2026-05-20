@@ -1,11 +1,18 @@
 import SwiftUI
 
 struct SettingsView: View {
+
+    private var appVersion: String {
+        let version = Bundle.main.infoDictionary?["CFBundleShortVersionString"] as? String ?? "—"
+        let build   = Bundle.main.infoDictionary?["CFBundleVersion"] as? String ?? "—"
+        return "\(version) (\(build))"
+    }
+
     var body: some View {
         NavigationStack {
             Form {
                 Section("About") {
-                    LabeledContent("Version", value: "1.0.0")
+                    LabeledContent("Version", value: appVersion)
                     LabeledContent("Location data", value: "Apple MapKit (free)")
                     LabeledContent("Cards database", value: "9 major US issuers")
                 }
