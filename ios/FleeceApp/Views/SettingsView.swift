@@ -11,7 +11,6 @@ struct SettingsView: View {
         return "\(version) (\(build))"
     }
 
-    // Evaluated once at render time — safe on all OS versions
     private var aiStatus: AIStatus {
         if #available(iOS 26.0, *) {
             return SystemLanguageModel.default.isAvailable ? .enabled : .disabled
@@ -27,6 +26,8 @@ struct SettingsView: View {
                     LabeledContent("Location data", value: "Apple MapKit (free)")
                     LabeledContent("Cards database", value: "9 major US issuers")
                 }
+
+                SpendingProfileSection()
 
                 Section {
                     HStack {
@@ -54,11 +55,9 @@ struct SettingsView: View {
                             .font(.title3)
                         VStack(alignment: .leading, spacing: 2) {
                             Text(aiStatus.title)
-                                .font(.subheadline)
-                                .fontWeight(.medium)
+                                .font(.subheadline).fontWeight(.medium)
                             Text(aiStatus.subtitle)
-                                .font(.caption)
-                                .foregroundStyle(.secondary)
+                                .font(.caption).foregroundStyle(.secondary)
                         }
                     }
                     .padding(.vertical, 2)
@@ -69,6 +68,85 @@ struct SettingsView: View {
                 }
             }
             .navigationTitle("Settings")
+        }
+    }
+}
+
+// MARK: - Spending Profile Section
+
+struct SpendingProfileSection: View {
+    @State private var profile = SpendingProfile.load()
+
+    private let fields: [(emoji: String, label: String, keyPath: WritableKeyPath<SpendingProfile, Double>)] = [
+        ("🍽️", "Dining",     \.diningMonthly),
+        ("🛒", "Groceries",  \.groceriesMonthly),
+        ("✈️", "Travel",     \.travelMonthly),
+        ("⛽", "Gas",        \.gasMonthly),
+        ("💳", "Other",      \.otherMonthly),
+    ]
+
+    var body: some View {
+        Section {
+            ForEach(fields, id: \.label) { field in
+                SpendRow(
+                    emoji: field.emoji,
+                    label: field.label,
+                    value: Binding(
+                        get: { profile[keyPath: field.keyPath] },
+                        set: { profile[keyPath: field.keyPath] = $0; profile.save() }
+                    )
+                )
+            }
+
+            if !profile.isEmpty {
+                Button(role: .destructive) {
+                    profile = SpendingProfile()
+                    profile.save()
+                } label: {
+                    Label("Clear spending profile", systemImage: "trash")
+                        .font(.subheadline)
+                }
+            }
+        } header: {
+            Text("Spending Profile")
+        } footer: {
+            Text(profile.isEmpty
+                 ? "Tell the Ask tab your monthly spend and Fleece saves it here automatically. You can also enter values manually."
+                 : "Used by the Ask tab to calculate card ROI without asking every session.")
+        }
+    }
+}
+
+struct SpendRow: View {
+    let emoji: String
+    let label: String
+    @Binding var value: Double
+    @State private var text: String = ""
+    @FocusState private var focused: Bool
+
+    var body: some View {
+        HStack {
+            Text(emoji).frame(width: 24)
+            Text(label).frame(maxWidth: .infinity, alignment: .leading)
+            TextField("$0", text: $text)
+                .keyboardType(.decimalPad)
+                .multilineTextAlignment(.trailing)
+                .focused($focused)
+                .foregroundColor(value > 0 ? .primary : .secondary)
+                .frame(width: 80)
+                .onChange(of: focused) { _, isFocused in
+                    if !isFocused {
+                        value = Double(text.replacingOccurrences(of: "$", with: "")) ?? 0
+                        text = value > 0 ? "$\(Int(value))" : ""
+                    }
+                }
+            Text("/mo").font(.caption).foregroundStyle(.secondary)
+        }
+        .onAppear {
+            text = value > 0 ? "$\(Int(value))" : ""
+        }
+        .onChange(of: value) { _, v in
+            if !focused { text = v > 0 ? "$\(Int(v))" : "" }
         }
     }
 }
