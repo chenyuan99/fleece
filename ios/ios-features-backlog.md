@@ -4,6 +4,29 @@ Planned features, ideas discussed during development, and deferred work.
 
 ---
 
+## History Page
+
+### What it would show
+A log of past card recommendations — places visited, card suggested, category, estimated reward rate.
+
+### Why we're not building it yet
+A history page is only valuable if it shows *value captured*, not just places visited. To do that usefully it needs two things we don't have:
+
+1. **Confirmation the user actually used the recommended card.** There's no way to know this without Apple Pay integration (which exposes card network + merchant post-transaction) or manual user input — both add significant friction.
+2. **Transaction amount.** Without it we can't calculate real earned value (e.g. "$4.80 MR on a $60 dinner"). A history of recommendations without dollar amounts is just a worse version of the iPhone's Maps recents list.
+
+Without those two signals, history is a log of *suggestions that may or may not have been acted on* — low signal, adds complexity, and competes with better-designed native apps (Maps, Wallet). The current three-tab layout (Nearby / Wallet / Settings) is clean and focused; a fourth tab with low-value data would dilute it.
+
+### When to revisit
+Once Apple Pay integration is in place (see PassKit section). Post-transaction callbacks from Apple Pay can provide card used + merchant + amount — at that point history becomes a genuine value-captured ledger and is worth building.
+
+### What good looks like when we do build it
+- Per-transaction row: merchant name, category emoji, card used, points earned, cash value
+- Weekly/monthly summary: total points earned, estimated cash value, top merchant categories
+- "Missed value" indicator: if user paid with a suboptimal card, show what they left on the table
+
+---
+
 ## PassKit
 
 ### Lock screen pass / Wallet pass
