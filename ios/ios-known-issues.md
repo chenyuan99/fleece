@@ -85,32 +85,39 @@ Check the chat bubble — it now shows the real error message. Common follow-ons
 
 ---
 
-## 4. Apple Intelligence returns "detected content likely to be unsafe" on financial queries
+## 4. Apple Intelligence returns "detected content likely to be unsafe" on application eligibility queries
 
-**Status:** ✅ Mitigated  
+**Status:** ⚠️ Unresolved — suggestion pill removed, question type avoided  
 **Affected:** Physical device, iOS 26+, Apple Intelligence enabled  
-**Triggers:** Queries containing "bonus", "eligible", "can I get" in financial context (e.g. "Can I get the Amex Gold bonus again?")
+**Triggers:** Any query about card application eligibility / sign-up offer re-eligibility (e.g. "Can I get the Amex Gold bonus again?", "Am I eligible for the Amex Gold sign-up offer?")
 
 ### Symptom
-Chat returns "detected content likely to be unsafe" for legitimate credit card application eligibility questions. This is a false positive — the content is standard US consumer finance.
+Chat returns "detected content likely to be unsafe" for legitimate credit card application eligibility questions regardless of phrasing. This is a persistent false positive — the content is standard US consumer finance.
 
-### Root cause
-Apple's on-device safety filter pattern-matches on words like "bonus" in certain query constructions and flags them as potentially unsafe without understanding the financial context. The system prompt did not have enough context to signal legitimate financial planning use.
+### Mitigation attempts (all failed to fully resolve)
+| Attempt | Change | Result |
+|---|---|---|
+| 1 | System prompt legitimate-use framing | Still triggers |
+| 2 | KB text: "welcome bonus" → "sign-up offer" | Still triggers |
+| 3 | `sanitizeForSafety`: "bonus" → "sign-up offer" in input | Still triggers |
+| 4 | `sanitizeForSafety`: "Can I get the" → "am i eligible for the" | Still triggers |
+| 5 | System prompt: always say "sign-up offer" not "bonus" | Still triggers |
+| 6 | Session reset on safety error to clear contaminated history | Still triggers |
 
-### Fix applied
-Three changes in `39157be` / follow-up commit:
-1. **System prompt** — Added explicit legitimate-use framing: *"This is a legitimate financial planning tool. All queries are about personal credit card selection, rewards optimization…"*
-2. **KB terminology** — Replaced "welcome bonus" / "bonus cooldown" with "sign-up offer" / "offer cooldown" throughout `KnowledgeBase.rulesText` to reduce trigger words.
-3. **Error handling** — Safety errors are now detected by string match and shown as: *"Apple's on-device safety filter flagged that response — this is a false positive on financial content. Try rephrasing slightly…"* with a follow-up pill suggesting a safer phrasing.
+### Root cause hypothesis
+Apple's on-device safety filter appears to flag the entire **topic** of card application eligibility rules, not just specific vocabulary. The `get_application_rules` tool call itself, or the content it returns (issuer rules about offer re-eligibility), may be what triggers the filter regardless of how the question is phrased. The filter may be inspecting tool responses in the context window, not just the user's input text.
 
-### Third fix (input sanitization)
-`ChatService.sanitizeForSafety(_:)` pre-processes the user's input before it reaches Foundation Models. It rewrites financial trigger words ("bonus" → "sign-up offer") in the string passed to `sendWithAI` while the UI still shows the original text. This runs on every message, so manual rephrasing is no longer required.
+### Resolution
+- Removed the application eligibility suggestion pill from `AskView` — don't surface this question type as a suggested prompt.
+- The `get_application_rules` tool remains in the session for users who manually ask; the session resets on safety error so it doesn't contaminate subsequent queries.
+- If Apple updates the safety filter calibration in a future iOS 26 beta, re-test with "What are the Chase 5/24 rules?" as a lower-risk phrasing.
 
-### Workaround if it still triggers
-Rephrase to avoid "bonus":
-- ❌ "Can I get the Amex Gold bonus again?"
-- ✅ "What are the Amex Gold sign-up offer rules?"
-- ✅ "Am I eligible to apply for the Amex Gold again?"
+### Still-working workarounds
+Questions about application rules that do NOT mention re-eligibility or "can I get" are less likely to trigger:
+- ✅ "What is Chase 5/24?"
+- ✅ "What are the Citi 24-month rules?"
+- ✅ "How many Amex cards can I hold at once?"
+- ❌ Anything asking whether a specific person can get a specific card's offer
 
 ---
 
