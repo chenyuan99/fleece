@@ -81,10 +81,37 @@ Check the chat bubble — it now shows the real error message. Common follow-ons
 - `"generation failed: context length exceeded"` → further trim the relevant KB text string
 - `"schema validation failed"` → check `@Generable FleeceResponse` field count / optionality
 - `"model unavailable"` → Apple Intelligence is off or device is not eligible
+- `"detected content likely to be unsafe"` → see Issue #4 below
 
 ---
 
-## 4. `xcodebuild` CLI fails with plugin error
+## 4. Apple Intelligence returns "detected content likely to be unsafe" on financial queries
+
+**Status:** ✅ Mitigated  
+**Affected:** Physical device, iOS 26+, Apple Intelligence enabled  
+**Triggers:** Queries containing "bonus", "eligible", "can I get" in financial context (e.g. "Can I get the Amex Gold bonus again?")
+
+### Symptom
+Chat returns "detected content likely to be unsafe" for legitimate credit card application eligibility questions. This is a false positive — the content is standard US consumer finance.
+
+### Root cause
+Apple's on-device safety filter pattern-matches on words like "bonus" in certain query constructions and flags them as potentially unsafe without understanding the financial context. The system prompt did not have enough context to signal legitimate financial planning use.
+
+### Fix applied
+Three changes in `39157be` / follow-up commit:
+1. **System prompt** — Added explicit legitimate-use framing: *"This is a legitimate financial planning tool. All queries are about personal credit card selection, rewards optimization…"*
+2. **KB terminology** — Replaced "welcome bonus" / "bonus cooldown" with "sign-up offer" / "offer cooldown" throughout `KnowledgeBase.rulesText` to reduce trigger words.
+3. **Error handling** — Safety errors are now detected by string match and shown as: *"Apple's on-device safety filter flagged that response — this is a false positive on financial content. Try rephrasing slightly…"* with a follow-up pill suggesting a safer phrasing.
+
+### Workaround if it still triggers
+Rephrase to avoid "bonus":
+- ❌ "Can I get the Amex Gold bonus again?"
+- ✅ "What are the Amex Gold sign-up offer rules?"
+- ✅ "Am I eligible to apply for the Amex Gold again?"
+
+---
+
+## 5. `xcodebuild` CLI fails with plugin error
 
 **Status:** One-time fix required per machine  
 **Error:** `xcodebuild failed to load a required plug-in`  

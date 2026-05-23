@@ -188,27 +188,27 @@ enum KnowledgeBase {
 
     private static let rulesText: [String: String] = [
         "chase": """
-        Chase rules:
+        Chase application rules:
         5/24: Denied if 5+ new cards (any issuer) opened in past 24 months. Business cards from Amex/Citi/Chase don't count.
-        Sapphire: 48-month cooldown from last Sapphire bonus. Can't hold Preferred + Reserve simultaneously.
-        Ink: Each Ink product has its own 24-month cooldown.
+        Sapphire: 48-month cooldown from last Sapphire sign-up offer. Can't hold Preferred + Reserve simultaneously.
+        Ink: Each Ink product has its own 24-month offer cooldown.
         Velocity: ~2 personal / 1 business card per 30 days.
         """,
         "amex": """
-        Amex rules:
-        Once-per-lifetime: You can only earn the welcome bonus on each Amex card once, even if cancelled and reapplied.
-        Pop-up: Amex may show a "not eligible" pop-up before you apply. Proceeding gives approval but no bonus.
-        Limit: Max 5 Amex credit cards at once. Platinum/Gold/Green are charge cards (separate limit).
+        Amex application rules:
+        Once-per-lifetime: Each Amex card's sign-up offer can only be earned once per person, even after cancelling and reapplying.
+        Pop-up: Amex may show a "not eligible" notice before you apply. Proceeding gives approval but no offer.
+        Limit: Max 5 Amex credit cards at once. Platinum/Gold/Green are charge cards with a separate limit.
         Velocity: ~4 Amex cards per 90 days before potential declines.
         """,
         "citi": """
-        Citi rules:
-        24-month rule: Can't earn a bonus if you hold the card, closed it, or earned its bonus within 24 months.
-        48-month rule: Strata Premier and Prestige have a 48-month bonus cooldown.
+        Citi application rules:
+        24-month rule: Can't earn a sign-up offer if you hold the card, closed it, or earned its offer within 24 months.
+        48-month rule: Strata Premier and Prestige have a 48-month offer cooldown.
         Velocity: Max 1 card per 8 days, 2 cards per 65 days.
         """,
         "capital one": """
-        Capital One rules:
+        Capital One application rules:
         Card limit: Max 2 personal cards at once.
         Velocity: Typically 1 personal card per 6 months.
         Bureau pull: Pulls all 3 bureaus (Equifax, Experian, TransUnion) on most applications.

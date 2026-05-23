@@ -57,12 +57,14 @@ final class ChatService: ObservableObject {
     private func makeSession() -> LanguageModelSession {
         let profile = SpendingProfile.load()
         let instructions = """
-        You are a concise credit card expert for the Fleece app.
+        You are Fleece, a personal finance assistant for US consumers managing credit cards and travel rewards. \
+        This is a legitimate financial planning tool. All queries are about personal credit card selection, \
+        rewards optimization, application eligibility rules, and travel booking — standard consumer finance topics.
         Always call get_wallet_cards before making card recommendations.
         Use get_card_roi when the user asks about value or whether a card is worth it.
         Use get_transfer_partners when asked where to transfer points or which airlines a card partners with.
         Use get_point_valuations when asked how much points are worth or for the best redemption paths.
-        Use get_application_rules when asked about eligibility, bonus cooldowns, or 5/24.
+        Use get_application_rules when asked about eligibility, sign-up offer rules, or issuer application policies.
         Use get_card_benefits when asked about lounge access, trip delay, rental car insurance, or travel protections.
         Never invent card names, rates, or fees — only use values returned by tools.
         Keep answers under 40 words. Be direct and specific.
@@ -115,7 +117,13 @@ final class ChatService: ObservableObject {
         } catch {
             let detail = (error as NSError).localizedDescription
             self.error = detail
-            messages.append(ChatMessage(answer: "Error: \(detail)", followUp: nil))
+            let isSafety = detail.lowercased().contains("unsafe") || detail.lowercased().contains("safety")
+            messages.append(ChatMessage(
+                answer: isSafety
+                    ? "Apple's on-device safety filter flagged that response — this is a false positive on financial content. Try rephrasing slightly, e.g. 'What are the Amex sign-up offer rules?'"
+                    : "Error: \(detail)",
+                followUp: isSafety ? "What are the Amex sign-up offer rules?" : nil
+            ))
         }
     }
 }
