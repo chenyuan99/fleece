@@ -7,8 +7,8 @@ import Foundation
 // MARK: - Intent
 
 struct AskFleeceIntent: AppIntent {
-    nonisolated(unsafe) static let title: LocalizedStringResource = "Ask Fleece"
-    nonisolated(unsafe) static let description = IntentDescription(
+    static let title: LocalizedStringResource = "Ask Fleece"
+    static let description = IntentDescription(
         "Ask Fleece a question about credit card rewards, transfer partners, lounge access, or travel benefits.",
         categoryName: "Finance"
     )
@@ -96,8 +96,8 @@ struct FleeceShortcuts: AppShortcutsProvider {
         AppShortcut(
             intent: AskFleeceIntent(),
             phrases: [
-                "Ask \(.applicationName) \(\.$question)",
-                "Ask \(.applicationName) about \(\.$question)",
+                "Ask \(.applicationName)",
+                "Ask \(.applicationName) a question",
             ],
             shortTitle: "Ask Fleece",
             systemImageName: "creditcard"
