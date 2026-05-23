@@ -7,8 +7,8 @@ import Foundation
 // MARK: - Intent
 
 struct AskFleeceIntent: AppIntent {
-    static var title: LocalizedStringResource = "Ask Fleece"
-    static var description = IntentDescription(
+    nonisolated(unsafe) static let title: LocalizedStringResource = "Ask Fleece"
+    nonisolated(unsafe) static let description = IntentDescription(
         "Ask Fleece a question about credit card rewards, transfer partners, lounge access, or travel benefits.",
         categoryName: "Finance"
     )
@@ -92,7 +92,7 @@ private extension AskFleeceIntent {
 // MARK: - Siri voice shortcuts
 
 struct FleeceShortcuts: AppShortcutsProvider {
-    static var appShortcuts: [AppShortcut] {[
+    static var appShortcuts: [AppShortcut] {
         AppShortcut(
             intent: AskFleeceIntent(),
             phrases: [
@@ -101,6 +101,6 @@ struct FleeceShortcuts: AppShortcutsProvider {
             ],
             shortTitle: "Ask Fleece",
             systemImageName: "creditcard"
-        ),
-    ]}
+        )
+    }
 }
