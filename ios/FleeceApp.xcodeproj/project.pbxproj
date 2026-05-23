@@ -28,6 +28,7 @@
 		C0A5988803B897F2948A8932 /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1574A163081F73D8004D7C8 /* SettingsView.swift */; };
 		CE6DE7FB4B5B30A91ECE5549 /* HomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E0C048E4592793E147D70CC /* HomeView.swift */; };
 		D21A293DDD1537BE304C9EEB /* ChatService.swift in Sources */ = {isa = PBXBuildFile; fileRef = EFECFC9447870006ADE29884 /* ChatService.swift */; };
+		D2FBD543A71A669CF6D06097 /* AskFleeceIntent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7EE28953FBEE5C7E87656FAB /* AskFleeceIntent.swift */; };
 		F124CDAD193AB5EDD27D24D7 /* Config.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0EE83ABED88C6D4A08C623B /* Config.swift */; };
 		FA016056AEFC70D8E9152F97 /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = 45FE76A687A76480310D39FA /* PrivacyInfo.xcprivacy */; };
 		FA1E9FAF3FC6498E9E83544B /* LocationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = A8C835494BFD291E239CA71C /* LocationManager.swift */; };
@@ -37,16 +38,17 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		192F941696D50D67B574453C /* FleeceApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = FleeceApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		192F941696D50D67B574453C /* FleeceApp.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = FleeceApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		1A52757C7417778C5A65ADA9 /* SpendingProfile.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpendingProfile.swift; sourceTree = "<group>"; };
 		1F0F4AC23D675E1415DB4B6B /* NotificationManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationManager.swift; sourceTree = "<group>"; };
 		23B438EF779764E83E4A1ACB /* ChatTools.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatTools.swift; sourceTree = "<group>"; };
 		2B940D56E7DAE6767D1B5952 /* PlacesService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlacesService.swift; sourceTree = "<group>"; };
 		421B143C13EC925B409964E3 /* WalletDetectionService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WalletDetectionService.swift; sourceTree = "<group>"; };
-		45FE76A687A76480310D39FA /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
+		45FE76A687A76480310D39FA /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; path = PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
 		671E0B0B4614A0153F1D0A84 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		703BF2836D6238B002869015 /* AppState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppState.swift; sourceTree = "<group>"; };
 		7682486A135077BAE1B30D71 /* CardExplanationService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardExplanationService.swift; sourceTree = "<group>"; };
+		7EE28953FBEE5C7E87656FAB /* AskFleeceIntent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AskFleeceIntent.swift; sourceTree = "<group>"; };
 		7F187A4598F6D209993AC22C /* NearbyPlace.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NearbyPlace.swift; sourceTree = "<group>"; };
 		808C9052807DB401623BAC58 /* KnowledgeBase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KnowledgeBase.swift; sourceTree = "<group>"; };
 		84525AB21DF76636B0AFC0B5 /* CardDatabase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardDatabase.swift; sourceTree = "<group>"; };
@@ -103,6 +105,14 @@
 			path = Models;
 			sourceTree = "<group>";
 		};
+		96012B39DAC8C5B5FC8324B2 /* Intents */ = {
+			isa = PBXGroup;
+			children = (
+				7EE28953FBEE5C7E87656FAB /* AskFleeceIntent.swift */,
+			);
+			path = Intents;
+			sourceTree = "<group>";
+		};
 		AED3B4DF5B249CCD6C1F4B87 /* Products */ = {
 			isa = PBXGroup;
 			children = (
@@ -142,6 +152,7 @@
 				671E0B0B4614A0153F1D0A84 /* ContentView.swift */,
 				FE1826DC93917C0B0B3EF296 /* FleeceApp.swift */,
 				45FE76A687A76480310D39FA /* PrivacyInfo.xcprivacy */,
+				96012B39DAC8C5B5FC8324B2 /* Intents */,
 				508419218E9E14780B30B462 /* Managers */,
 				61E7B8E69C1A80C4E33BA81E /* Models */,
 				B92A49DD448BB4AC0243FEF0 /* Services */,
@@ -181,6 +192,7 @@
 				LastUpgradeCheck = 1600;
 				TargetAttributes = {
 					468F627EE4E953A86CB08F03 = {
+						DevelopmentTeam = UHR6VA2R4D;
 						ProvisioningStyle = Automatic;
 					};
 				};
@@ -222,6 +234,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				A397AA02E9CF09021A4C8B02 /* AppState.swift in Sources */,
+				D2FBD543A71A669CF6D06097 /* AskFleeceIntent.swift in Sources */,
 				295016FCF109574F2F37A284 /* AskView.swift in Sources */,
 				3B87CF9F384D042593119BAC /* CardDatabase.swift in Sources */,
 				B9B17402C400AC33300E7E97 /* CardExplanationService.swift in Sources */,
@@ -319,7 +332,7 @@
 				CODE_SIGN_ENTITLEMENTS = FleeceApp/FleeceApp.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = 982H87JFFG;
+				DEVELOPMENT_TEAM = UHR6VA2R4D;
 				ENABLE_TESTABILITY = NO;
 				INFOPLIST_FILE = FleeceApp/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = Fleece;
@@ -409,7 +422,7 @@
 				CODE_SIGN_ENTITLEMENTS = FleeceApp/FleeceApp.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = 982H87JFFG;
+				DEVELOPMENT_TEAM = UHR6VA2R4D;
 				INFOPLIST_FILE = FleeceApp/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = Fleece;
 				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
