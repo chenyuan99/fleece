@@ -34,10 +34,12 @@ struct SettingsView: View {
                 Section("About") {
                     LabeledContent("Version", value: appVersion)
                     LabeledContent("Location data", value: "Apple MapKit (free)")
-                    LabeledContent("Cards database", value: "9 major US issuers")
+                    LabeledContent("Cards database", value: "25 cards, 7 issuers")
                 }
 
                 SpendingProfileSection()
+
+                TravelPreferencesSection()
 
                 Section {
                     HStack {
@@ -157,6 +159,48 @@ struct SpendRow: View {
         }
         .onChange(of: value) { _, v in
             if !focused { text = v > 0 ? "$\(Int(v))" : "" }
+        }
+    }
+}
+
+// MARK: - Travel Preferences Section
+
+struct TravelPreferencesSection: View {
+    @State private var profile = SpendingProfile.load()
+
+    private static let airlinePrograms = [
+        "Air Canada Aeroplan", "Alaska Mileage Plan", "American AAdvantage",
+        "Air France/KLM Flying Blue", "Delta SkyMiles", "Emirates Skywards",
+        "JetBlue TrueBlue", "Singapore KrisFlyer", "Southwest Rapid Rewards",
+        "Turkish Miles&Smiles", "United MileagePlus", "Virgin Atlantic",
+    ]
+
+    private static let hotelPrograms = [
+        "Hilton Honors", "World of Hyatt", "IHG One Rewards",
+        "Marriott Bonvoy", "Wyndham Rewards",
+    ]
+
+    var body: some View {
+        Section {
+            Picker("Airline Program", selection: Binding(
+                get: { profile.preferredAirlinePartner },
+                set: { profile.preferredAirlinePartner = $0; profile.save() }
+            )) {
+                Text("None").tag("")
+                ForEach(Self.airlinePrograms, id: \.self) { Text($0).tag($0) }
+            }
+
+            Picker("Hotel Program", selection: Binding(
+                get: { profile.preferredHotelPartner },
+                set: { profile.preferredHotelPartner = $0; profile.save() }
+            )) {
+                Text("None").tag("")
+                ForEach(Self.hotelPrograms, id: \.self) { Text($0).tag($0) }
+            }
+        } header: {
+            Text("Loyalty Programs")
+        } footer: {
+            Text("Tailor transfer partner and redemption recommendations to your preferred programs.")
         }
     }
 }

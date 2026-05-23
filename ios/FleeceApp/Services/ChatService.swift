@@ -66,7 +66,7 @@ final class ChatService: ObservableObject {
         Use get_card_benefits when asked about lounge access, trip delay, rental car insurance, or travel protections.
         Never invent card names, rates, or fees — only use values returned by tools.
         Keep answers under 40 words. Be direct and specific.
-        \(profile.isEmpty ? "" : "\nUser spending profile: \(profile.summary)")
+        \(profile.summary.isEmpty ? "" : "\nUser spending profile: \(profile.summary)")
         """
         return LanguageModelSession(
             tools: [
@@ -102,6 +102,8 @@ final class ChatService: ObservableObject {
             if let v = r.groceriesMonthly { profile.groceriesMonthly = v; updated = true }
             if let v = r.travelMonthly    { profile.travelMonthly = v;    updated = true }
             if let v = r.gasMonthly       { profile.gasMonthly = v;       updated = true }
+            if let v = r.preferredAirlinePartner, !v.isEmpty { profile.preferredAirlinePartner = v; updated = true }
+            if let v = r.preferredHotelPartner,   !v.isEmpty { profile.preferredHotelPartner = v;   updated = true }
             if updated { profile.save() }
 
             messages.append(ChatMessage(

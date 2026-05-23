@@ -1,11 +1,13 @@
 import Foundation
 
 struct SpendingProfile: Codable {
-    var diningMonthly:    Double = 0
-    var groceriesMonthly: Double = 0
-    var travelMonthly:    Double = 0
-    var gasMonthly:       Double = 0
-    var otherMonthly:     Double = 0
+    var diningMonthly:          Double = 0
+    var groceriesMonthly:       Double = 0
+    var travelMonthly:          Double = 0
+    var gasMonthly:             Double = 0
+    var otherMonthly:           Double = 0
+    var preferredAirlinePartner: String = ""
+    var preferredHotelPartner:   String = ""
 
     private static let key = "fleeceSpendingProfile"
 
@@ -26,10 +28,12 @@ struct SpendingProfile: Codable {
     }
 
     var summary: String {
-        [(diningMonthly, "dining"), (groceriesMonthly, "groceries"),
-         (travelMonthly, "travel"), (gasMonthly, "gas"), (otherMonthly, "other")]
+        var parts = [(diningMonthly, "dining"), (groceriesMonthly, "groceries"),
+                     (travelMonthly, "travel"), (gasMonthly, "gas"), (otherMonthly, "other")]
             .filter { $0.0 > 0 }
             .map { "$\(Int($0.0))/mo \($0.1)" }
-            .joined(separator: ", ")
+        if !preferredAirlinePartner.isEmpty { parts.append("preferred airline: \(preferredAirlinePartner)") }
+        if !preferredHotelPartner.isEmpty   { parts.append("preferred hotel: \(preferredHotelPartner)") }
+        return parts.joined(separator: ", ")
     }
 }

@@ -188,6 +188,10 @@ struct FleeceResponse {
     var travelMonthly: Double?
     @Guide(description: "Monthly gas spend in USD if user mentioned it this turn, else nil")
     var gasMonthly: Double?
+    @Guide(description: "Preferred airline loyalty program if user mentioned it this turn e.g. 'United MileagePlus', else nil")
+    var preferredAirlinePartner: String?
+    @Guide(description: "Preferred hotel loyalty program if user mentioned it this turn e.g. 'World of Hyatt', else nil")
+    var preferredHotelPartner: String?
 }
 
 #endif
