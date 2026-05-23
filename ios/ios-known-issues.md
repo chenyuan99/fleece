@@ -121,7 +121,34 @@ Questions about application rules that do NOT mention re-eligibility or "can I g
 
 ---
 
-## 5. `xcodebuild` CLI fails with plugin error
+## 5. Foundation Models is on-device only — no developer API for Apple's cloud LLM
+
+**Status:** Platform limitation (not a Fleece bug)  
+**Affected:** All builds using the Foundation Models framework
+
+### Summary
+The `Foundation Models` framework gives developers access exclusively to Apple's **on-device 3B-parameter model**. Apple's larger cloud-based models (used by Siri for complex system tasks) run on **Private Cloud Compute (PCC)** but Apple does not expose a public PCC API for third-party developers. If the device lacks Apple Intelligence hardware (pre-A17 Pro / pre-M1) or the user has Apple Intelligence disabled, the framework returns an error — there is no automatic cloud fallback.
+
+### Implications for Fleece
+The 3B on-device model handles simple retrieval well (wallet lookups, lounge access, transfer partners) but struggles with multi-step reasoning across several tool calls. Queries that require the model to combine results from `get_application_rules` + `get_point_valuations` in a single response are at the edge of what the model can reliably handle.
+
+### Workarounds considered
+
+| Option | Pros | Cons |
+|---|---|---|
+| **Tool-augmented on-device** (current) | Free, private, no user setup | 3B model; context window ~4K tokens |
+| **BYOK cloud fallback** (OpenAI/Anthropic) | Powerful; user pays own tokens | User must generate and paste an API key; data leaves device |
+| **App developer-paid cloud API** | Seamless UX | Cost at scale; App Review scrutiny |
+
+### If a BYOK fallback is added later
+1. Store the user's API key in **Keychain**, never `UserDefaults`.
+2. Add a "Validate Key" button that fires a 1-token test call before saving.
+3. Route complex requests to the cloud model when `SystemLanguageModel.default.isAvailable == false` or when the on-device model returns a safety error.
+4. Declare data-sharing clearly in App Privacy labels.
+
+---
+
+## 6. `xcodebuild` CLI fails with plugin error
 
 **Status:** One-time fix required per machine  
 **Error:** `xcodebuild failed to load a required plug-in`  
