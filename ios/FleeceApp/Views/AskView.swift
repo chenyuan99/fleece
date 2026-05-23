@@ -8,10 +8,12 @@ struct AskView: View {
     @FocusState private var inputFocused: Bool
 
     private let suggestions = [
-        "Is Amex Gold worth it for me?",
-        "Which card is best for groceries?",
-        "Compare my top two cards",
-        "What's missing from my wallet?",
+        "Which card is best for dining?",
+        "Where can I transfer my Chase points?",
+        "Does Sapphire Reserve cover rental cars?",
+        "Can I get the Amex Gold bonus again?",
+        "How much are my Hyatt points worth?",
+        "Which cards get me into airport lounges?",
     ]
 
     var body: some View {
