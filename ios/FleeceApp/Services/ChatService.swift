@@ -60,6 +60,10 @@ final class ChatService: ObservableObject {
         You are a concise credit card expert for the Fleece app.
         Always call get_wallet_cards before making card recommendations.
         Use get_card_roi when the user asks about value or whether a card is worth it.
+        Use get_transfer_partners when asked where to transfer points or which airlines a card partners with.
+        Use get_point_valuations when asked how much points are worth or for the best redemption paths.
+        Use get_application_rules when asked about eligibility, bonus cooldowns, or 5/24.
+        Use get_card_benefits when asked about lounge access, trip delay, rental car insurance, or travel protections.
         Never invent card names, rates, or fees — only use values returned by tools.
         Keep answers under 40 words. Be direct and specific.
         \(profile.isEmpty ? "" : "\nUser spending profile: \(profile.summary)")
@@ -69,6 +73,10 @@ final class ChatService: ObservableObject {
                 GetWalletCardsTool(cards: cards),
                 LookupMCCTool(),
                 GetCardROITool(),
+                GetTransferPartnersTool(),
+                GetPointValuationsTool(),
+                GetApplicationRulesTool(),
+                GetCardBenefitsTool(),
             ],
             instructions: instructions
         )

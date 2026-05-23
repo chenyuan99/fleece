@@ -31,6 +31,34 @@ struct ROIArguments {
     var otherMonthly: Double
 }
 
+@available(iOS 26.0, *)
+@Generable
+struct TransferPartnerArguments {
+    @Guide(description: "Points program: 'Chase UR', 'Amex MR', 'Capital One Miles', 'Citi ThankYou', or 'Bilt'")
+    var program: String
+}
+
+@available(iOS 26.0, *)
+@Generable
+struct ValuationArguments {
+    @Guide(description: "Points program: 'Chase UR', 'Amex MR', 'Capital One Miles', 'Citi ThankYou', or 'Bilt'")
+    var program: String
+}
+
+@available(iOS 26.0, *)
+@Generable
+struct ApplicationRulesArguments {
+    @Guide(description: "Card issuer: 'Chase', 'Amex', 'Citi', or 'Capital One'")
+    var issuer: String
+}
+
+@available(iOS 26.0, *)
+@Generable
+struct CardBenefitsArguments {
+    @Guide(description: "Card name e.g. 'Sapphire Reserve', 'Amex Platinum', 'Venture X', 'Bilt'")
+    var cardName: String
+}
+
 // MARK: - Tools
 
 @available(iOS 26.0, *)
@@ -94,6 +122,48 @@ struct GetCardROITool: Tool {
         return "\(card.name) ($\(card.annualFee)/yr, \(card.pointsProgram)): " +
                "annual rewards ≈ $\(String(format: "%.0f", annualRewards)), " +
                "net = \(net >= 0 ? "+" : "")$\(String(format: "%.0f", net))"
+    }
+}
+
+// MARK: - KB-backed tools
+
+@available(iOS 26.0, *)
+struct GetTransferPartnersTool: Tool {
+    let name = "get_transfer_partners"
+    let description = "Returns airline and hotel transfer partners with ratios and transfer times for a given points program (Chase UR, Amex MR, Capital One Miles, Citi ThankYou, Bilt). Call when the user asks where they can transfer points or which airlines a card partners with."
+
+    func call(arguments: TransferPartnerArguments) async throws -> String {
+        KnowledgeBase.transferPartners(for: arguments.program)
+    }
+}
+
+@available(iOS 26.0, *)
+struct GetPointValuationsTool: Tool {
+    let name = "get_point_valuations"
+    let description = "Returns cents-per-point estimates for each redemption path in a given program. Call when the user asks how much points are worth, whether a program is good, or wants to compare redemption value."
+
+    func call(arguments: ValuationArguments) async throws -> String {
+        KnowledgeBase.pointValuations(for: arguments.program)
+    }
+}
+
+@available(iOS 26.0, *)
+struct GetApplicationRulesTool: Tool {
+    let name = "get_application_rules"
+    let description = "Returns issuer-specific application rules: Chase 5/24, Amex once-per-lifetime bonus, Citi 24/48-month cooldowns, Capital One card limits. Call when the user asks about eligibility, whether they can get a bonus again, or application strategy."
+
+    func call(arguments: ApplicationRulesArguments) async throws -> String {
+        KnowledgeBase.applicationRules(for: arguments.issuer)
+    }
+}
+
+@available(iOS 26.0, *)
+struct GetCardBenefitsTool: Tool {
+    let name = "get_card_benefits"
+    let description = "Returns lounge access and travel protection details (trip cancellation, trip delay, rental car CDW, baggage) for a specific card. Call when the user asks about insurance, lounge access, protections, or whether a card covers rental cars or trip delays."
+
+    func call(arguments: CardBenefitsArguments) async throws -> String {
+        KnowledgeBase.cardBenefits(for: arguments.cardName)
     }
 }
 

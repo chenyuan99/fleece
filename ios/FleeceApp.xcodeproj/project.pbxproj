@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		0080F60AEE4F4E92DB3A2BD3 /* KnowledgeBase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 808C9052807DB401623BAC58 /* KnowledgeBase.swift */; };
 		1C421BBC5ADB84E3F2B3C903 /* CreditCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = A529343561E11E145A0547A4 /* CreditCard.swift */; };
 		220DDADD3E072E2DB4DFD2F0 /* PlacesService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2B940D56E7DAE6767D1B5952 /* PlacesService.swift */; };
 		26EAE12A2BBC945D4C550890 /* WalletDetectionService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 421B143C13EC925B409964E3 /* WalletDetectionService.swift */; };
@@ -28,6 +29,7 @@
 		CE6DE7FB4B5B30A91ECE5549 /* HomeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8E0C048E4592793E147D70CC /* HomeView.swift */; };
 		D21A293DDD1537BE304C9EEB /* ChatService.swift in Sources */ = {isa = PBXBuildFile; fileRef = EFECFC9447870006ADE29884 /* ChatService.swift */; };
 		F124CDAD193AB5EDD27D24D7 /* Config.swift in Sources */ = {isa = PBXBuildFile; fileRef = D0EE83ABED88C6D4A08C623B /* Config.swift */; };
+		FA016056AEFC70D8E9152F97 /* PrivacyInfo.xcprivacy in Resources */ = {isa = PBXBuildFile; fileRef = 45FE76A687A76480310D39FA /* PrivacyInfo.xcprivacy */; };
 		FA1E9FAF3FC6498E9E83544B /* LocationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = A8C835494BFD291E239CA71C /* LocationManager.swift */; };
 		FBC72D5C48515AB330BEEEBE /* MCCCategory.swift in Sources */ = {isa = PBXBuildFile; fileRef = BD349E07A432AB028C10E2FD /* MCCCategory.swift */; };
 		FD9D32D56D343B34079D41EE /* ChatMessage.swift in Sources */ = {isa = PBXBuildFile; fileRef = B3D19C4B82DDA34743959D95 /* ChatMessage.swift */; };
@@ -35,16 +37,18 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		192F941696D50D67B574453C /* FleeceApp.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = FleeceApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		192F941696D50D67B574453C /* FleeceApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = FleeceApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		1A52757C7417778C5A65ADA9 /* SpendingProfile.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpendingProfile.swift; sourceTree = "<group>"; };
 		1F0F4AC23D675E1415DB4B6B /* NotificationManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationManager.swift; sourceTree = "<group>"; };
 		23B438EF779764E83E4A1ACB /* ChatTools.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatTools.swift; sourceTree = "<group>"; };
 		2B940D56E7DAE6767D1B5952 /* PlacesService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlacesService.swift; sourceTree = "<group>"; };
 		421B143C13EC925B409964E3 /* WalletDetectionService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WalletDetectionService.swift; sourceTree = "<group>"; };
+		45FE76A687A76480310D39FA /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
 		671E0B0B4614A0153F1D0A84 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		703BF2836D6238B002869015 /* AppState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppState.swift; sourceTree = "<group>"; };
 		7682486A135077BAE1B30D71 /* CardExplanationService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardExplanationService.swift; sourceTree = "<group>"; };
 		7F187A4598F6D209993AC22C /* NearbyPlace.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NearbyPlace.swift; sourceTree = "<group>"; };
+		808C9052807DB401623BAC58 /* KnowledgeBase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = KnowledgeBase.swift; sourceTree = "<group>"; };
 		84525AB21DF76636B0AFC0B5 /* CardDatabase.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardDatabase.swift; sourceTree = "<group>"; };
 		8E0C048E4592793E147D70CC /* HomeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeView.swift; sourceTree = "<group>"; };
 		97100C4883875904157BD4D6 /* RecommendationCardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RecommendationCardView.swift; sourceTree = "<group>"; };
@@ -123,6 +127,7 @@
 				B0584042D04CF23A7856F1AB /* CardRecommender.swift */,
 				EFECFC9447870006ADE29884 /* ChatService.swift */,
 				23B438EF779764E83E4A1ACB /* ChatTools.swift */,
+				808C9052807DB401623BAC58 /* KnowledgeBase.swift */,
 				421B143C13EC925B409964E3 /* WalletDetectionService.swift */,
 			);
 			path = Services;
@@ -136,6 +141,7 @@
 				D0EE83ABED88C6D4A08C623B /* Config.swift */,
 				671E0B0B4614A0153F1D0A84 /* ContentView.swift */,
 				FE1826DC93917C0B0B3EF296 /* FleeceApp.swift */,
+				45FE76A687A76480310D39FA /* PrivacyInfo.xcprivacy */,
 				508419218E9E14780B30B462 /* Managers */,
 				61E7B8E69C1A80C4E33BA81E /* Models */,
 				B92A49DD448BB4AC0243FEF0 /* Services */,
@@ -175,7 +181,6 @@
 				LastUpgradeCheck = 1600;
 				TargetAttributes = {
 					468F627EE4E953A86CB08F03 = {
-						DevelopmentTeam = "";
 						ProvisioningStyle = Automatic;
 					};
 				};
@@ -205,6 +210,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				53C5C1AE3D2EEE381F10C91F /* Assets.xcassets in Resources */,
+				FA016056AEFC70D8E9152F97 /* PrivacyInfo.xcprivacy in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -228,6 +234,7 @@
 				1C421BBC5ADB84E3F2B3C903 /* CreditCard.swift in Sources */,
 				405B50C34B02F69B2AC1F780 /* FleeceApp.swift in Sources */,
 				CE6DE7FB4B5B30A91ECE5549 /* HomeView.swift in Sources */,
+				0080F60AEE4F4E92DB3A2BD3 /* KnowledgeBase.swift in Sources */,
 				FA1E9FAF3FC6498E9E83544B /* LocationManager.swift in Sources */,
 				FBC72D5C48515AB330BEEEBE /* MCCCategory.swift in Sources */,
 				AFE04A07880B524D9183945D /* NearbyPlace.swift in Sources */,
@@ -312,9 +319,10 @@
 				CODE_SIGN_ENTITLEMENTS = FleeceApp/FleeceApp.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = "";
+				DEVELOPMENT_TEAM = 982H87JFFG;
 				ENABLE_TESTABILITY = NO;
 				INFOPLIST_FILE = FleeceApp/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = Fleece;
 				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
@@ -401,8 +409,9 @@
 				CODE_SIGN_ENTITLEMENTS = FleeceApp/FleeceApp.entitlements;
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = "";
+				DEVELOPMENT_TEAM = 982H87JFFG;
 				INFOPLIST_FILE = FleeceApp/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = Fleece;
 				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
