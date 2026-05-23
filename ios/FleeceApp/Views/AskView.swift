@@ -11,7 +11,7 @@ struct AskView: View {
         "Which card is best for dining?",
         "Where can I transfer my Chase points?",
         "Does Sapphire Reserve cover rental cars?",
-        "Can I get the Amex Gold bonus again?",
+        "Am I eligible for the Amex Gold sign-up offer?",
         "How much are my Hyatt points worth?",
         "Which cards get me into airport lounges?",
     ]

@@ -46,17 +46,25 @@ final class ChatService: ObservableObject {
 
     // MARK: - Input sanitization
 
-    // Replace financial terms that trigger Apple's on-device safety filter before sending
-    // to Foundation Models. The UI still shows the user's original text.
+    // Rewrite user input before passing to Foundation Models — the filter pattern-matches
+    // on "Can I get X again?" as policy-circumvention even in financial context.
+    // Order matters: rewrite question forms first, then fix remaining bonus vocabulary.
+    // The UI always shows the user's original text.
     static func sanitizeForSafety(_ text: String) -> String {
         var s = text
         let replacements: [(String, String)] = [
-            ("bonus again", "sign-up offer again"),
-            ("get the bonus", "get the sign-up offer"),
-            ("sign-up bonus", "sign-up offer"),
-            ("signup bonus", "sign-up offer"),
-            ("welcome bonus", "welcome offer"),
-            (" bonus", " sign-up offer"),
+            // Question-form rewrites (run first — most specific)
+            ("can i get the",        "am i eligible for the"),
+            ("can i get a",          "am i eligible for a"),
+            ("can i get",            "am i eligible for"),
+            ("how do i get the",     "what are the requirements for the"),
+            ("how do i get a",       "what are the requirements for a"),
+            // Bonus terminology
+            ("sign-up bonus",        "sign-up offer"),
+            ("signup bonus",         "sign-up offer"),
+            ("welcome bonus",        "welcome offer"),
+            ("card bonus",           "card sign-up offer"),
+            (" bonus",               " sign-up offer"),
         ]
         for (trigger, safe) in replacements {
             s = s.replacingOccurrences(of: trigger, with: safe, options: .caseInsensitive)
@@ -88,6 +96,7 @@ final class ChatService: ObservableObject {
         Use get_application_rules when asked about eligibility, sign-up offer rules, or issuer application policies.
         Use get_card_benefits when asked about lounge access, trip delay, rental car insurance, or travel protections.
         Never invent card names, rates, or fees — only use values returned by tools.
+        Always say "sign-up offer" not "bonus" in your answers.
         Keep answers under 40 words. Be direct and specific.
         \(profile.summary.isEmpty ? "" : "\nUser spending profile: \(profile.summary)")
         """
@@ -139,11 +148,13 @@ final class ChatService: ObservableObject {
             let detail = (error as NSError).localizedDescription
             self.error = detail
             let isSafety = detail.lowercased().contains("unsafe") || detail.lowercased().contains("safety")
+            // Reset session after safety error — accumulated history may re-trigger the filter.
+            if isSafety { _sessionAny = nil }
             messages.append(ChatMessage(
                 answer: isSafety
-                    ? "Apple's on-device safety filter flagged that response — this is a false positive on financial content. Try rephrasing slightly, e.g. 'What are the Amex sign-up offer rules?'"
+                    ? "Apple's on-device safety filter flagged this — tap the suggestion below to retry with cleaner phrasing."
                     : "Error: \(detail)",
-                followUp: isSafety ? "What are the Amex sign-up offer rules?" : nil
+                followUp: isSafety ? "Am I eligible for the Amex Gold sign-up offer?" : nil
             ))
         }
     }
