@@ -5,13 +5,34 @@ rewards currency, or annual fee tier before reading the detail files.
 
 ## Files in this KB
 
+### Card Reference
 | File | Contents |
 |---|---|
 | `kb/card/personal.md` | 13 personal credit cards — Chase, Amex, Citi, Capital One, Bilt, Wells Fargo |
 | `kb/card/business.md` | 11 Chase-issued business cards — Ink, Sapphire Business, United, Southwest, IHG, Hyatt |
 
-All entries use the same schema:
-`annual_fee` · `earn_rates` · `spend_cap` · `travel_portal_bonus` (or `chase_travel_bonus`) · `rewards_currency` · `notable_perks`
+Card entries use the schema: `annual_fee` · `earn_rates` · `spend_cap` · `travel_portal_bonus` · `rewards_currency` · `notable_perks`
+
+### Transfer Partners
+| File | Contents |
+|---|---|
+| `kb/transfer/partners.md` | Full partner matrix for UR, MR, Capital One, Citi TYP, and Bilt — ratios, transfer times, notes, overlap table |
+
+### Application Rules
+| File | Contents |
+|---|---|
+| `kb/rules/application.md` | Chase 5/24, Amex once-per-lifetime, Citi 24/48-month, Capital One velocity and card limits; hard-pull bureau by issuer |
+
+### Redemption
+| File | Contents |
+|---|---|
+| `kb/redemption/valuations.md` | Cents-per-point estimates by program and redemption path; best-use quick reference; hotel and airline mile valuations |
+
+### Benefits
+| File | Contents |
+|---|---|
+| `kb/benefits/lounge-access.md` | Centurion, Priority Pass, Capital One, Chase Sapphire, United Club, Delta Sky Club — access rules and guest policies by card |
+| `kb/benefits/travel-protections.md` | Trip cancellation, delay, baggage, rental car CDW, cell phone protection — amounts and triggers by card |
 
 ---
 
