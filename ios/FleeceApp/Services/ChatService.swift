@@ -113,8 +113,9 @@ final class ChatService: ObservableObject {
                 followUp: r.followUp
             ))
         } catch {
-            self.error = error.localizedDescription
-            messages.append(ChatMessage(answer: "Something went wrong. Try again.", followUp: nil))
+            let detail = (error as NSError).localizedDescription
+            self.error = detail
+            messages.append(ChatMessage(answer: "Error: \(detail)", followUp: nil))
         }
     }
 }

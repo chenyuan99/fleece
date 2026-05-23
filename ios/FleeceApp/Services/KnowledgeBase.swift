@@ -143,72 +143,39 @@ enum KnowledgeBase {
 
     private static let valuationText: [String: String] = [
         "chase ur": """
-        Chase Ultimate Rewards (UR) valuations:
-        Floor: 1.0 cpp (cash back) — never redeem for less
-        Portal: 1.25 cpp with Sapphire Preferred; 1.5 cpp with Sapphire Reserve
-        Best uses:
-          • World of Hyatt: 1.7–2.2 cpp (top pick)
-          • Virgin Atlantic → ANA/Delta One: 1.5–2.0 cpp
-          • Singapore KrisFlyer: 1.5–2.0 cpp
-          • Air Canada Aeroplan: 1.3–1.6 cpp
-          • Air France/KLM Flying Blue: 1.3–1.5 cpp (higher during Promo Rewards)
-          • United MileagePlus: 1.2–1.5 cpp
-          • British Airways Avios: 0.8–1.5 cpp (short-haul great; long-haul with surcharges poor)
-        Blended average (travel redeemer): ~1.5–1.8 cpp
+        Chase UR valuations:
+        Floor: 1.0 cpp cash back. Portal: 1.5 cpp (CSR) / 1.25 cpp (CSP).
+        Best: Hyatt 1.7–2.2 cpp, Virgin Atlantic→ANA/Delta 1.5–2.0 cpp, Singapore 1.5–2.0 cpp.
+        Good: Aeroplan 1.3–1.6 cpp, Flying Blue 1.3–1.5 cpp, United 1.2–1.5 cpp.
+        Blended average: ~1.5–1.8 cpp.
         """,
         "amex mr": """
-        American Express Membership Rewards (MR) valuations:
-        Floor: 0.6 cpp (statement credit) — never redeem this way
-        Portal: 1.0 cpp via Amex Travel — avoid unless no other option
-        Best uses:
-          • ANA Mileage Club: 1.5–2.2 cpp (Japan/round-the-world business class)
-          • Virgin Atlantic → ANA/Delta One: 1.5–2.0 cpp
-          • Singapore KrisFlyer: 1.5–2.0 cpp
-          • Cathay Pacific Asia Miles: 1.4–1.8 cpp
-          • Air France/KLM Flying Blue: 1.3–1.7 cpp (transfer bonuses push higher)
-          • Avianca LifeMiles: 1.3–1.6 cpp
-          • Delta SkyMiles: 0.9–1.2 cpp (dynamic pricing; avoid premium cabin)
-          • Hilton Honors (1:2 ratio): 0.8–1.0 cpp
-        Blended average (travel redeemer): ~1.3–1.8 cpp
+        Amex MR valuations:
+        Floor: 0.6 cpp statement credit — avoid. Portal: 1.0 cpp — avoid.
+        Best: ANA 1.5–2.2 cpp, Virgin Atlantic→ANA/Delta 1.5–2.0 cpp, Singapore 1.5–2.0 cpp.
+        Good: Cathay 1.4–1.8 cpp, Flying Blue 1.3–1.7 cpp. Avoid Delta (dynamic pricing).
+        Blended average: ~1.3–1.8 cpp.
         """,
         "capital one": """
         Capital One Miles valuations:
-        Floor: 0.5 cpp (statement credit) — avoid
-        Portal: 1.0 cpp via Capital One Travel (reasonable floor)
-        Best uses:
-          • Turkish Miles&Smiles: 1.5–2.2 cpp (Star Alliance business class, low mile prices)
-          • Virgin Atlantic Flying Club: 1.5–2.0 cpp (ANA/Delta)
-          • Avianca LifeMiles: 1.3–1.6 cpp
-          • Singapore KrisFlyer: 1.4–1.8 cpp
-          • Air France/KLM Flying Blue: 1.3–1.5 cpp
-          • EVA Air (2:1.5 ratio): effectively below 1:1; niche use only
-        Blended average (travel redeemer): ~1.2–1.6 cpp
+        Floor: 0.5 cpp — avoid. Portal: 1.0 cpp.
+        Best: Turkish Miles&Smiles 1.5–2.2 cpp, Virgin Atlantic 1.5–2.0 cpp.
+        Good: Avianca 1.3–1.6 cpp, Singapore 1.4–1.8 cpp, Flying Blue 1.3–1.5 cpp.
+        Blended average: ~1.2–1.6 cpp.
         """,
         "citi": """
-        Citi ThankYou Points valuations:
-        Floor: 0.5–1.0 cpp (cash/statement credit) — avoid
-        Portal: 1.0 cpp via Citi Travel
-        Best uses:
-          • Turkish Miles&Smiles: 1.5–2.2 cpp (best Citi use; Star Alliance business class)
-          • Virgin Atlantic Flying Club: 1.5–2.0 cpp
-          • Singapore KrisFlyer: 1.4–1.8 cpp
-          • EVA Air: 1.3–1.6 cpp (Citi transfers at 1:1, better than Capital One's 2:1.5)
-          • Air France/KLM Flying Blue: 1.3–1.5 cpp
-        Blended average (travel redeemer): ~1.2–1.6 cpp
+        Citi ThankYou valuations:
+        Floor: 0.5–1.0 cpp — avoid. Portal: 1.0 cpp.
+        Best: Turkish Miles&Smiles 1.5–2.2 cpp, Virgin Atlantic 1.5–2.0 cpp.
+        Good: Singapore 1.4–1.8 cpp, EVA Air 1.3–1.6 cpp (Citi transfers 1:1, better than C1's 2:1.5).
+        Blended average: ~1.2–1.6 cpp.
         """,
         "bilt": """
-        Bilt Rewards valuations:
-        Floor: 1.0 cpp (rent/statement credit) — better floor than most programs
-        Portal: 1.25 cpp via Bilt Travel
-        Best uses:
-          • World of Hyatt: 1.7–2.2 cpp (only no-fee card with Hyatt as partner)
-          • Turkish Miles&Smiles: 1.5–2.2 cpp
-          • Virgin Atlantic Flying Club: 1.5–2.0 cpp (ANA/Delta)
-          • Alaska Mileage Plan: 1.4–1.6 cpp (domestic sweet spots)
-          • American AAdvantage: 1.2–1.5 cpp
-          • Hilton Honors (1:1 ratio): 0.8–1.0 cpp (better ratio than Amex's 1:2)
-        Blended average (travel redeemer): ~1.4–1.8 cpp
-        Note: Rent Day (1st of each month) doubles all earn rates for 24 hours.
+        Bilt valuations:
+        Floor: 1.0 cpp rent/statement credit. Portal: 1.25 cpp.
+        Best: Hyatt 1.7–2.2 cpp (unique — only no-fee card with Hyatt), Turkish 1.5–2.2 cpp.
+        Good: Alaska 1.4–1.6 cpp, Virgin Atlantic 1.5–2.0 cpp.
+        Blended average: ~1.4–1.8 cpp. Rent Day (1st of month) doubles earn rates.
         """,
     ]
 
@@ -221,39 +188,30 @@ enum KnowledgeBase {
 
     private static let rulesText: [String: String] = [
         "chase": """
-        Chase application rules:
-        5/24 Rule: Chase denies most cards if you've opened 5+ new credit cards (any issuer) in the past 24 months.
-          • Counts: all personal cards from any issuer that appear on your personal credit report
-          • Does NOT count: most business cards (Amex, Citi, Chase Ink, Capital One Spark) — don't appear on personal report
-          • Does NOT count: authorized user additions (generally)
-        Sapphire cooldown: Cannot receive a Sapphire welcome bonus if you received one on any Sapphire card in the past 48 months. Cannot hold both Sapphire Preferred and Sapphire Reserve simultaneously.
-        Ink cooldown: Each Ink product has its own 24-month cooldown clock from last bonus received.
-        Velocity: ~2 personal cards per 30 days; ~1 business card per 30 days (observed, not published).
-        Hard pull bureau: Experian (varies by state).
+        Chase rules:
+        5/24: Denied if 5+ new cards (any issuer) opened in past 24 months. Business cards from Amex/Citi/Chase don't count.
+        Sapphire: 48-month cooldown from last Sapphire bonus. Can't hold Preferred + Reserve simultaneously.
+        Ink: Each Ink product has its own 24-month cooldown.
+        Velocity: ~2 personal / 1 business card per 30 days.
         """,
         "amex": """
-        American Express application rules:
-        Once-per-lifetime bonus: Each person can receive the welcome bonus for a given Amex card only once, even after cancelling and reapplying.
-        Pop-up warning: Before submitting, Amex may show a "not eligible for welcome offer" pop-up. Proceeding gives approval but no bonus. Pop-up not guaranteed to appear — apply via targeted offer or referral to reduce risk.
-        Card limits: Max 5 Amex credit cards simultaneously (charge cards like Platinum/Gold/Green are charge cards with a separate limit).
-        Velocity: Amex may decline if you've applied for 4+ Amex cards in 90 days (not published, observed).
-        Financial Review: Amex may audit income/spending if unusual activity detected; can result in cancellations.
-        Hard pull bureau: Experian (often a soft pull if already a cardholder).
+        Amex rules:
+        Once-per-lifetime: You can only earn the welcome bonus on each Amex card once, even if cancelled and reapplied.
+        Pop-up: Amex may show a "not eligible" pop-up before you apply. Proceeding gives approval but no bonus.
+        Limit: Max 5 Amex credit cards at once. Platinum/Gold/Green are charge cards (separate limit).
+        Velocity: ~4 Amex cards per 90 days before potential declines.
         """,
         "citi": """
-        Citi application rules:
-        24-month rule (most cards): Cannot receive a bonus if you currently hold the card, closed it within 24 months, or received a bonus on it within 24 months.
-        48-month rule (Strata Premier, Prestige): Cooldown is 48 months from when you last received the bonus (not from open/close date).
-        Same family: Strata Premier and Prestige are treated as the same family for bonus eligibility.
-        Velocity: Max 1 card per 8 days; max 2 cards per 65 days; ~1 personal card per 6 months (observed).
-        Hard pull bureau: Equifax or Experian (varies by state).
+        Citi rules:
+        24-month rule: Can't earn a bonus if you hold the card, closed it, or earned its bonus within 24 months.
+        48-month rule: Strata Premier and Prestige have a 48-month bonus cooldown.
+        Velocity: Max 1 card per 8 days, 2 cards per 65 days.
         """,
         "capital one": """
-        Capital One application rules:
-        Card limit: Max 2 personal credit cards simultaneously. Business cards are separate.
-        Velocity: Typically declines if you opened a Capital One personal card in the past 6 months.
-        Triple bureau pull: Capital One pulls all 3 bureaus (Equifax, Experian, TransUnion) for most applications — plan accordingly.
-        Bonus cooldown: No published once-per-lifetime rule; generally must close and wait before reapplying for a new bonus (specific window unpublished).
+        Capital One rules:
+        Card limit: Max 2 personal cards at once.
+        Velocity: Typically 1 personal card per 6 months.
+        Bureau pull: Pulls all 3 bureaus (Equifax, Experian, TransUnion) on most applications.
         """,
     ]
 
