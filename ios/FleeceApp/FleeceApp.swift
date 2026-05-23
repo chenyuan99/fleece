@@ -1,12 +1,7 @@
 import SwiftUI
-import AppIntents
 
 @main
 struct FleeceApp: App {
-
-    init() {
-        FleeceShortcuts.updateAppShortcutParameters()
-    }
 
     @StateObject private var appState           = AppState()
     @StateObject private var locationManager    = LocationManager()
