@@ -1,6 +1,6 @@
 ---
 name: fleece
-description: Credit card research and redemption CLI. Looks up rewards rates, annual fees, welcome bonuses, statement credits, and transfer partners for Chase, Amex, Citi, Capital One, Bilt, and all major US issuers. Compare cards, analyze wallet gaps, estimate ROI, get recommendations, look up merchant category codes, and search award flights and hotels. Install with pip install fleece-cli.
+description: Credit card research and redemption CLI. Looks up rewards rates, annual fees, welcome bonuses, statement credits, transfer partners, point valuations, application rules, lounge access, and travel protections for Chase, Amex, Citi, Capital One, Bilt, and all major US issuers. Compare cards, analyze wallet gaps, estimate ROI, get recommendations, look up merchant category codes, and search award flights and hotels. Install with pip install fleece-cli.
 metadata:
   author: chenyuan99
   version: "1.6.0"
@@ -11,14 +11,18 @@ metadata:
 Use this skill when the user asks about:
 - **Specific cards**: "What are the Amex Gold benefits?", "Is the Chase Sapphire Preferred worth it?", "What changed with the Citi Double Cash?"
 - **Earning rates**: "Which card earns the most on dining?", "What's the best card for groceries?"
-- **Transfer partners**: "Where can I transfer Chase Ultimate Rewards?", "What airlines does Amex transfer to?"
+- **Transfer partners**: "Where can I transfer Chase Ultimate Rewards?", "What airlines does Amex transfer to?", "Do Bilt points transfer to Hyatt?"
+- **Point valuations**: "How much are Chase UR points worth?", "Best way to redeem Amex MR?", "What CPP can I get from Hyatt?", "Is it worth transferring to Flying Blue?"
+- **Application rules**: "What is Chase 5/24?", "Can I get the Sapphire bonus again?", "Am I eligible for the Amex Gold offer?", "How long before I can apply for Citi again?", "Does the Amex once-per-lifetime rule apply here?"
+- **Lounge access**: "Which cards get me into Centurion Lounges?", "Does Venture X include Priority Pass?", "Best card for airport lounge access?", "Can I bring guests to Chase Sapphire Lounges?"
+- **Travel protections**: "Does Sapphire Reserve cover rental cars?", "What trip delay coverage does Amex Platinum have?", "Which card has the best travel insurance?", "Does Freedom Flex have cell phone protection?"
 - **Statement credits**: "How do I use the Amex Gold dining credit?", "What credits does the Venture X have?"
 - **Wallet optimization**: "Which card should I use for travel?", "What gaps does my wallet have?"
 - **Card recommendations**: "Best travel credit card for beginners", "No annual fee cash back card"
 - **ROI / value**: "Is the Amex Platinum worth the $695 fee?", "First-year value of the Sapphire Preferred"
 - **Award redemptions**: "Find business class flights JFK to Tokyo", "Search hotels in Paris with points"
 - **Merchant lookup**: "What card should I use at Costco?", "Which card earns the most at gas stations?", "What MCC is a pharmacy?"
-- **Spending profile**: "Set up my profile", "Save my spending habits", "Remember I spend $600/month on dining"
+- **Spending profile**: "Set up my profile", "Save my spending habits", "Remember I spend $600/month on dining", "My preferred airline is United MileagePlus"
 
 Live US credit card data via Brave Search. All commands output JSON for programmatic use.
 
