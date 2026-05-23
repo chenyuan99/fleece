@@ -390,6 +390,50 @@ enum KnowledgeBase {
             )
         ),
         (
+            keys: ["double cash"],
+            data: CardBenefitData(
+                lounges: "None",
+                tripCancellation: nil,
+                tripDelay: nil,
+                rentalCar: "Secondary CDW",
+                baggage: nil,
+                other: "Worldwide travel accident insurance; Citi Concierge; no notable travel protections — pair with Strata Premier for transfer access"
+            )
+        ),
+        (
+            keys: ["freedom flex"],
+            data: CardBenefitData(
+                lounges: "None",
+                tripCancellation: "$1,500/trip",
+                tripDelay: "$500 after 12 hours",
+                rentalCar: "Primary CDW",
+                baggage: nil,
+                other: "Cell phone protection: $800/claim, $1,000/year, $50 deductible (pay phone bill with card); Purchase protection: 120 days up to $500"
+            )
+        ),
+        (
+            keys: ["blue cash preferred", "amex blue cash"],
+            data: CardBenefitData(
+                lounges: "None",
+                tripCancellation: nil,
+                tripDelay: nil,
+                rentalCar: "Secondary CDW only",
+                baggage: nil,
+                other: "Purchase protection: 90 days up to $1,000/item; Extended warranty: +1 year on warranties ≤ 5 years; Return protection: 90 days up to $300/item"
+            )
+        ),
+        (
+            keys: ["autograph", "wells fargo autograph"],
+            data: CardBenefitData(
+                lounges: "None",
+                tripCancellation: nil,
+                tripDelay: nil,
+                rentalCar: "Secondary CDW",
+                baggage: nil,
+                other: "Cell phone protection: $600/claim, $1,200/year, $25 deductible (pay phone bill with card); Travel accident insurance; Roadside dispatch"
+            )
+        ),
+        (
             keys: ["united club business", "united club"],
             data: CardBenefitData(
                 lounges: "Full United Club membership (45+ United hubs) + Star Alliance lounges internationally",
