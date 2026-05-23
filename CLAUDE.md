@@ -163,3 +163,9 @@ SEO notes tracked in `docs/SEO.md`.
 - Created: March 16, 2025
 - Chatbot uses custom CSS styling (`style.css`)
 - OpenAI API key entered via Streamlit sidebar — not stored
+
+---
+
+## Git Workflow
+
+**Always ask before pushing.** Do not run `git push` without explicit user confirmation. Commits are fine, but pushing to remote requires approval each time.
