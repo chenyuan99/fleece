@@ -148,7 +148,36 @@ The 3B on-device model handles simple retrieval well (wallet lookups, lounge acc
 
 ---
 
-## 6. `xcodebuild` CLI fails with plugin error
+## 6. Siri / App Intents integration not working
+
+**Status:** Unresolved  
+**Affected:** Physical device, iOS 26+  
+**Implementation:** `AskFleeceIntent` + `FleeceShortcuts` in `Intents/AskFleeceIntent.swift`
+
+### Symptom
+Fleece does not appear in Settings → Siri & Search. Saying "Ask Fleece about my cards" to Siri does not invoke the intent.
+
+### What was tried
+| Attempt | Change | Result |
+|---|---|---|
+| 1 | Added `AskFleeceIntent: AppIntent` + `FleeceShortcuts: AppShortcutsProvider` | App not visible in Siri |
+| 2 | Added `FleeceShortcuts.updateAppShortcutParameters()` to `FleeceApp.init()` | Still not working |
+
+### Possible root causes (unverified)
+- **Spotlight indexing delay** — App Shortcuts registration can take minutes to propagate after first launch; may need to wait longer or reboot the device.
+- **Provisioning profile** — Some App Intents features (especially those that run out-of-process) may require specific capabilities in the provisioning profile used for the physical device build.
+- **iOS 26 beta instability** — App Intents + Siri integration is known to be flaky in early iOS 26 betas; may resolve in later seeds.
+- **`#if canImport(FoundationModels)` gate** — The intent's `perform()` body is conditionally compiled; if there's a compile-time mismatch the intent registers but always falls through to the "requires iOS 26" message, which Siri may suppress.
+
+### Things to try if revisiting
+1. Reboot the device after first launch and wait 5 minutes before testing with Siri.
+2. Check **Settings → Siri & Search → Fleece** — if it appears but phrases don't trigger, the issue is phrase matching, not registration.
+3. Test the intent directly via the **Shortcuts app** (add a shortcut manually) to verify `perform()` executes correctly before debugging Siri phrase registration.
+4. Add `NSUserActivityTypes` to `Info.plist` if required by the specific iOS 26 build.
+
+---
+
+## 7. `xcodebuild` CLI fails with plugin error
 
 **Status:** One-time fix required per machine  
 **Error:** `xcodebuild failed to load a required plug-in`  
