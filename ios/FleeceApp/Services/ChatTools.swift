@@ -150,7 +150,7 @@ struct GetPointValuationsTool: Tool {
 @available(iOS 26.0, *)
 struct GetApplicationRulesTool: Tool {
     let name = "get_application_rules"
-    let description = "Returns issuer-specific application rules: Chase 5/24, Amex once-per-lifetime bonus, Citi 24/48-month cooldowns, Capital One card limits. Call when the user asks about eligibility, whether they can get a bonus again, or application strategy."
+    let description = "Returns issuer-specific application rules: Chase 5/24, Amex once-per-lifetime sign-up offer rule, Citi 24/48-month cooldowns, Capital One card limits. Call when the user asks about eligibility, sign-up offer availability, or application strategy."
 
     func call(arguments: ApplicationRulesArguments) async throws -> String {
         KnowledgeBase.applicationRules(for: arguments.issuer)

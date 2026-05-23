@@ -103,6 +103,9 @@ Three changes in `39157be` / follow-up commit:
 2. **KB terminology** — Replaced "welcome bonus" / "bonus cooldown" with "sign-up offer" / "offer cooldown" throughout `KnowledgeBase.rulesText` to reduce trigger words.
 3. **Error handling** — Safety errors are now detected by string match and shown as: *"Apple's on-device safety filter flagged that response — this is a false positive on financial content. Try rephrasing slightly…"* with a follow-up pill suggesting a safer phrasing.
 
+### Third fix (input sanitization)
+`ChatService.sanitizeForSafety(_:)` pre-processes the user's input before it reaches Foundation Models. It rewrites financial trigger words ("bonus" → "sign-up offer") in the string passed to `sendWithAI` while the UI still shows the original text. This runs on every message, so manual rephrasing is no longer required.
+
 ### Workaround if it still triggers
 Rephrase to avoid "bonus":
 - ❌ "Can I get the Amex Gold bonus again?"
