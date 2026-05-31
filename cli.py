@@ -410,7 +410,7 @@ def recommend(
     saved_ctx = _db.profile_as_context(cards=_db.get_card_names())
     ctx = f"{saved_ctx} | " if saved_ctx else ""
 
-    query = f"best credit cards {ctx}{profile} {pref}US 2025 site:nerdwallet.com OR site:thepointsguy.com OR site:doctorofcredit.com"
+    query = f"best credit cards {ctx}{profile} {pref}US 2025 site:nerdwallet.com OR site:thepointsguy.com OR site:doctorofcredit.com OR site:uscreditcardguide.com"
     _run_search(_get_wrapper(key), query, "recommend", as_json)
 
 
