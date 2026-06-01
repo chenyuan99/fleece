@@ -23,6 +23,10 @@ targets:
           - Info.plist
           - FleeceApp.entitlements
     assets: FleeceApp/Assets.xcassets
+    dependencies:
+      - target: FleeceWidget
+        embed: true
+        codeSign: true
     info:
       path: FleeceApp/Info.plist
       properties:
@@ -35,10 +39,17 @@ targets:
           UIColorName: ""
         UISupportedInterfaceOrientations:
           - UIInterfaceOrientationPortrait
+        UISupportedInterfaceOrientations~ipad:
+          - UIInterfaceOrientationPortrait
+          - UIInterfaceOrientationPortraitUpsideDown
+          - UIInterfaceOrientationLandscapeLeft
+          - UIInterfaceOrientationLandscapeRight
         ITSAppUsesNonExemptEncryption: false   # no custom encryption — skips export compliance Q
     entitlements:
       path: FleeceApp/FleeceApp.entitlements
-      properties: {}
+      properties:
+        com.apple.security.application-groups:
+          - group.io.getfleece.app
     settings:
       base:
         PRODUCT_BUNDLE_IDENTIFIER: io.getfleece.app
@@ -47,6 +58,41 @@ targets:
         CODE_SIGN_STYLE: Automatic
         DEVELOPMENT_TEAM: "UHR6VA2R4D"
         ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
+      configs:
+        Debug:
+          CODE_SIGNING_ALLOWED: YES
+        Release:
+          CODE_SIGNING_ALLOWED: YES
+          SWIFT_OPTIMIZATION_LEVEL: "-O"
+          ENABLE_TESTABILITY: NO
+
+  FleeceWidget:
+    type: app-extension
+    platform: iOS
+    deploymentTarget: "17.0"
+    sources:
+      - path: FleeceWidget
+      - path: FleeceApp/Models/FleeceWidgetData.swift
+    info:
+      path: FleeceWidget/Info.plist
+      properties:
+        NSExtension:
+          NSExtensionPointIdentifier: com.apple.widgetkit-extension
+    entitlements:
+      path: FleeceWidget/FleeceWidget.entitlements
+      properties:
+        com.apple.security.application-groups:
+          - group.io.getfleece.app
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: io.getfleece.app.widget
+        INFOPLIST_KEY_CFBundleDisplayName: Fleece Widget
+        CODE_SIGN_STYLE: Automatic
+        DEVELOPMENT_TEAM: "UHR6VA2R4D"
+        SKIP_INSTALL: YES
+        SWIFT_VERSION: "6.0"
+        MARKETING_VERSION: "1.1.0"
+        CURRENT_PROJECT_VERSION: "2"
       configs:
         Debug:
           CODE_SIGNING_ALLOWED: YES

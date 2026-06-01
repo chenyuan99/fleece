@@ -11,11 +11,15 @@
 		1C421BBC5ADB84E3F2B3C903 /* CreditCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = A529343561E11E145A0547A4 /* CreditCard.swift */; };
 		220DDADD3E072E2DB4DFD2F0 /* PlacesService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2B940D56E7DAE6767D1B5952 /* PlacesService.swift */; };
 		26EAE12A2BBC945D4C550890 /* WalletDetectionService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 421B143C13EC925B409964E3 /* WalletDetectionService.swift */; };
+		28DD764E157DE5E0E7F784E0 /* FleeceWidget.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 3B604758D7A904F6FE1FE122 /* FleeceWidget.appex */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		295016FCF109574F2F37A284 /* AskView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9BD936D99063C9DA8B3B55DE /* AskView.swift */; };
 		3B87CF9F384D042593119BAC /* CardDatabase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84525AB21DF76636B0AFC0B5 /* CardDatabase.swift */; };
 		405B50C34B02F69B2AC1F780 /* FleeceApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = FE1826DC93917C0B0B3EF296 /* FleeceApp.swift */; };
+		4C92A100EC8FB9B4313F3B34 /* FleeceWidgetData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54D481497856B9BD1BA693A2 /* FleeceWidgetData.swift */; };
 		4EB57DD58CE2A7D38443F587 /* SpendingProfile.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A52757C7417778C5A65ADA9 /* SpendingProfile.swift */; };
+		52115954F67280B10F178ACF /* FleeceWidgetData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54D481497856B9BD1BA693A2 /* FleeceWidgetData.swift */; };
 		53C5C1AE3D2EEE381F10C91F /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = F16000FD2325ECC3C11B2E46 /* Assets.xcassets */; };
+		614CD32EA980D6B2D6D4971B /* FleeceWidget.swift in Sources */ = {isa = PBXBuildFile; fileRef = 37ECE2F59AB406D9AB432C6E /* FleeceWidget.swift */; };
 		7B64DCEFFBB00E25EC4C3EEF /* ChatTools.swift in Sources */ = {isa = PBXBuildFile; fileRef = 23B438EF779764E83E4A1ACB /* ChatTools.swift */; };
 		908728529B78523F2F3A9BA9 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 671E0B0B4614A0153F1D0A84 /* ContentView.swift */; };
 		912E83201B7C80F87FE790C7 /* WalletView.swift in Sources */ = {isa = PBXBuildFile; fileRef = F39205E9FDF1B6C7D4B6FC4F /* WalletView.swift */; };
@@ -37,15 +41,43 @@
 		FF11E3BA4C76C82DF6EE91A0 /* CardRecommender.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0584042D04CF23A7856F1AB /* CardRecommender.swift */; };
 /* End PBXBuildFile section */
 
+/* Begin PBXContainerItemProxy section */
+		D4A47A381B814C8B725927CF /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 99E29DF128D2F447980C64D1 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 6FA3017C01BE38CA4F62C6E4;
+			remoteInfo = FleeceWidget;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		E98BA93AA2CA762FA461C5B6 /* Embed Foundation Extensions */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 13;
+			files = (
+				28DD764E157DE5E0E7F784E0 /* FleeceWidget.appex in Embed Foundation Extensions */,
+			);
+			name = "Embed Foundation Extensions";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
 /* Begin PBXFileReference section */
 		192F941696D50D67B574453C /* FleeceApp.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = FleeceApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		1A52757C7417778C5A65ADA9 /* SpendingProfile.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpendingProfile.swift; sourceTree = "<group>"; };
 		1F0F4AC23D675E1415DB4B6B /* NotificationManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NotificationManager.swift; sourceTree = "<group>"; };
 		23B438EF779764E83E4A1ACB /* ChatTools.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatTools.swift; sourceTree = "<group>"; };
 		2B940D56E7DAE6767D1B5952 /* PlacesService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlacesService.swift; sourceTree = "<group>"; };
+		37ECE2F59AB406D9AB432C6E /* FleeceWidget.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FleeceWidget.swift; sourceTree = "<group>"; };
+		3B604758D7A904F6FE1FE122 /* FleeceWidget.appex */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = "wrapper.app-extension"; path = FleeceWidget.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		421B143C13EC925B409964E3 /* WalletDetectionService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WalletDetectionService.swift; sourceTree = "<group>"; };
 		45FE76A687A76480310D39FA /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; path = PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
+		54D481497856B9BD1BA693A2 /* FleeceWidgetData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FleeceWidgetData.swift; sourceTree = "<group>"; };
 		671E0B0B4614A0153F1D0A84 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
+		6EF593201F58A1EC2EC3EEC9 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		703BF2836D6238B002869015 /* AppState.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppState.swift; sourceTree = "<group>"; };
 		7682486A135077BAE1B30D71 /* CardExplanationService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardExplanationService.swift; sourceTree = "<group>"; };
 		7EE28953FBEE5C7E87656FAB /* AskFleeceIntent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AskFleeceIntent.swift; sourceTree = "<group>"; };
@@ -63,6 +95,7 @@
 		BD349E07A432AB028C10E2FD /* MCCCategory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MCCCategory.swift; sourceTree = "<group>"; };
 		D0EE83ABED88C6D4A08C623B /* Config.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Config.swift; sourceTree = "<group>"; };
 		E1574A163081F73D8004D7C8 /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
+		E7595DB080362552396E5647 /* FleeceWidget.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = FleeceWidget.entitlements; sourceTree = "<group>"; };
 		EFECFC9447870006ADE29884 /* ChatService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatService.swift; sourceTree = "<group>"; };
 		F16000FD2325ECC3C11B2E46 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		F39205E9FDF1B6C7D4B6FC4F /* WalletView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WalletView.swift; sourceTree = "<group>"; };
@@ -70,6 +103,16 @@
 /* End PBXFileReference section */
 
 /* Begin PBXGroup section */
+		0E45B60B9D5182CE8CCB1A29 /* FleeceWidget */ = {
+			isa = PBXGroup;
+			children = (
+				E7595DB080362552396E5647 /* FleeceWidget.entitlements */,
+				37ECE2F59AB406D9AB432C6E /* FleeceWidget.swift */,
+				6EF593201F58A1EC2EC3EEC9 /* Info.plist */,
+			);
+			path = FleeceWidget;
+			sourceTree = "<group>";
+		};
 		3772F112F4E59E86BD0E34B0 /* Views */ = {
 			isa = PBXGroup;
 			children = (
@@ -97,6 +140,7 @@
 			children = (
 				B3D19C4B82DDA34743959D95 /* ChatMessage.swift */,
 				A529343561E11E145A0547A4 /* CreditCard.swift */,
+				54D481497856B9BD1BA693A2 /* FleeceWidgetData.swift */,
 				BD349E07A432AB028C10E2FD /* MCCCategory.swift */,
 				7F187A4598F6D209993AC22C /* NearbyPlace.swift */,
 				A14D8916A38C72FE58C7F85A /* Recommendation.swift */,
@@ -117,6 +161,7 @@
 			isa = PBXGroup;
 			children = (
 				192F941696D50D67B574453C /* FleeceApp.app */,
+				3B604758D7A904F6FE1FE122 /* FleeceWidget.appex */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -125,6 +170,7 @@
 			isa = PBXGroup;
 			children = (
 				D1E39780843F1B2DF24CE315 /* FleeceApp */,
+				0E45B60B9D5182CE8CCB1A29 /* FleeceWidget */,
 				AED3B4DF5B249CCD6C1F4B87 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -170,10 +216,12 @@
 			buildPhases = (
 				9930C162330617BEB1BC9AD9 /* Sources */,
 				9749D9528E7CEB80DA845E7E /* Resources */,
+				E98BA93AA2CA762FA461C5B6 /* Embed Foundation Extensions */,
 			);
 			buildRules = (
 			);
 			dependencies = (
+				23DDA4C855F8C12B00B9AA42 /* PBXTargetDependency */,
 			);
 			name = FleeceApp;
 			packageProductDependencies = (
@@ -181,6 +229,23 @@
 			productName = FleeceApp;
 			productReference = 192F941696D50D67B574453C /* FleeceApp.app */;
 			productType = "com.apple.product-type.application";
+		};
+		6FA3017C01BE38CA4F62C6E4 /* FleeceWidget */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 5E8BDF290B795D88BB731A0B /* Build configuration list for PBXNativeTarget "FleeceWidget" */;
+			buildPhases = (
+				CB521A8669E862380D5880CD /* Sources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = FleeceWidget;
+			packageProductDependencies = (
+			);
+			productName = FleeceWidget;
+			productReference = 3B604758D7A904F6FE1FE122 /* FleeceWidget.appex */;
+			productType = "com.apple.product-type.app-extension";
 		};
 /* End PBXNativeTarget section */
 
@@ -192,6 +257,10 @@
 				LastUpgradeCheck = 1600;
 				TargetAttributes = {
 					468F627EE4E953A86CB08F03 = {
+						DevelopmentTeam = UHR6VA2R4D;
+						ProvisioningStyle = Automatic;
+					};
+					6FA3017C01BE38CA4F62C6E4 = {
 						DevelopmentTeam = UHR6VA2R4D;
 						ProvisioningStyle = Automatic;
 					};
@@ -212,6 +281,7 @@
 			projectRoot = "";
 			targets = (
 				468F627EE4E953A86CB08F03 /* FleeceApp */,
+				6FA3017C01BE38CA4F62C6E4 /* FleeceWidget */,
 			);
 		};
 /* End PBXProject section */
@@ -246,6 +316,7 @@
 				908728529B78523F2F3A9BA9 /* ContentView.swift in Sources */,
 				1C421BBC5ADB84E3F2B3C903 /* CreditCard.swift in Sources */,
 				405B50C34B02F69B2AC1F780 /* FleeceApp.swift in Sources */,
+				4C92A100EC8FB9B4313F3B34 /* FleeceWidgetData.swift in Sources */,
 				CE6DE7FB4B5B30A91ECE5549 /* HomeView.swift in Sources */,
 				0080F60AEE4F4E92DB3A2BD3 /* KnowledgeBase.swift in Sources */,
 				FA1E9FAF3FC6498E9E83544B /* LocationManager.swift in Sources */,
@@ -262,7 +333,24 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		CB521A8669E862380D5880CD /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				614CD32EA980D6B2D6D4971B /* FleeceWidget.swift in Sources */,
+				52115954F67280B10F178ACF /* FleeceWidgetData.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		23DDA4C855F8C12B00B9AA42 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 6FA3017C01BE38CA4F62C6E4 /* FleeceWidget */;
+			targetProxy = D4A47A381B814C8B725927CF /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
 		0235A7B3AE5E5F8E81B8A32A /* Release */ = {
@@ -324,6 +412,31 @@
 			};
 			name = Release;
 		};
+		1739A9EE1AFC2C2EAAE572A4 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGNING_ALLOWED = YES;
+				CODE_SIGN_ENTITLEMENTS = FleeceWidget/FleeceWidget.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 2;
+				DEVELOPMENT_TEAM = UHR6VA2R4D;
+				INFOPLIST_FILE = FleeceWidget/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = "Fleece Widget";
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MARKETING_VERSION = 1.1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = io.getfleece.app.widget;
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+				SWIFT_VERSION = 6.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
 		532E7B28190BDD8F63BC4D3F /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -344,6 +457,33 @@
 				PRODUCT_BUNDLE_IDENTIFIER = io.getfleece.app;
 				SDKROOT = iphoneos;
 				SWIFT_OPTIMIZATION_LEVEL = "-O";
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+		550EFC67271962767918D47B /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGNING_ALLOWED = YES;
+				CODE_SIGN_ENTITLEMENTS = FleeceWidget/FleeceWidget.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 2;
+				DEVELOPMENT_TEAM = UHR6VA2R4D;
+				ENABLE_TESTABILITY = NO;
+				INFOPLIST_FILE = FleeceWidget/Info.plist;
+				INFOPLIST_KEY_CFBundleDisplayName = "Fleece Widget";
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MARKETING_VERSION = 1.1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = io.getfleece.app.widget;
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
+				SWIFT_VERSION = 6.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Release;
@@ -444,6 +584,15 @@
 			buildConfigurations = (
 				6AD7938D2DE031E905B9F5B7 /* Debug */,
 				0235A7B3AE5E5F8E81B8A32A /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		5E8BDF290B795D88BB731A0B /* Build configuration list for PBXNativeTarget "FleeceWidget" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				1739A9EE1AFC2C2EAAE572A4 /* Debug */,
+				550EFC67271962767918D47B /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Debug;

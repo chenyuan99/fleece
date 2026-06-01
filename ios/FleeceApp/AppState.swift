@@ -2,6 +2,7 @@ import SwiftUI
 import CoreLocation
 import Combine
 import PassKit
+import WidgetKit
 
 @MainActor
 final class AppState: ObservableObject {
@@ -77,8 +78,14 @@ final class AppState: ObservableObject {
             recommendations = recs
             nearbyPlaces    = pins
 
-            if notify, let best = recs.first(where: { $0.card.isInWallet }) ?? recs.first {
+            let bestCard = recs.first(where: { $0.card.isInWallet }) ?? recs.first
+
+            if notify, let best = bestCard {
                 notificationManager.notify(recommendation: best)
+            }
+
+            if let best = bestCard {
+                saveWidgetData(recommendation: best)
             }
         } catch PlacesError.noResults {
             searchError = nil   // silently ignore; user might be outdoors
@@ -116,8 +123,26 @@ final class AppState: ObservableObject {
         cards[idx].isInWallet.toggle()
         if let place = currentPlace {
             recommendations = CardRecommender.recommend(for: place, cards: cards)
+            if let best = recommendations.first(where: { $0.card.isInWallet }) ?? recommendations.first {
+                saveWidgetData(recommendation: best)
+            }
         }
         runWalletDetection()
+    }
+
+    private func saveWidgetData(recommendation: CardRecommendation) {
+        FleeceWidgetData(
+            cardName: recommendation.card.name,
+            cardColor: recommendation.card.cardColor,
+            textColor: recommendation.card.textColor,
+            multiplier: recommendation.multiplier,
+            categoryEmoji: recommendation.category.emoji,
+            categoryName: recommendation.category.rawValue,
+            placeName: recommendation.place.name,
+            rewardRate: recommendation.effectiveRate,
+            updatedAt: .now
+        ).save()
+        WidgetCenter.shared.reloadAllTimelines()
     }
 
     private func persistWallet() {
