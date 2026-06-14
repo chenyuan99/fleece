@@ -28,6 +28,9 @@ final class AppState: ObservableObject {
     @Published var detectedNetworks: Set<PKPaymentNetwork> = []
     @Published var suggestedCards: [CreditCard] = []
 
+    // Annual fee renewal dates — keyed by card UUID string
+    @Published var renewalDates: [String: Date] = [:]
+
     enum Tab: Hashable { case home, wallet, ask, settings }
 
     private let placesService = PlacesService()
@@ -36,6 +39,7 @@ final class AppState: ObservableObject {
 
     init() {
         cards = loadWallet()
+        renewalDates = loadRenewalDates()
         runWalletDetection()
     }
 
@@ -159,6 +163,31 @@ final class AppState: ObservableObject {
             c.isInWallet = walletIDs.contains(card.id.uuidString)
             return c
         }
+    }
+
+    // MARK: - Renewal dates
+
+    func renewalDate(for card: CreditCard) -> Date? {
+        renewalDates[card.id.uuidString]
+    }
+
+    func setRenewalDate(_ date: Date?, for card: CreditCard) {
+        if let date {
+            renewalDates[card.id.uuidString] = date
+        } else {
+            renewalDates.removeValue(forKey: card.id.uuidString)
+        }
+        persistRenewalDates()
+    }
+
+    private func persistRenewalDates() {
+        let raw = renewalDates.mapValues { $0.timeIntervalSince1970 }
+        UserDefaults.standard.set(raw, forKey: "fleeceRenewalDates")
+    }
+
+    private func loadRenewalDates() -> [String: Date] {
+        let raw = UserDefaults.standard.dictionary(forKey: "fleeceRenewalDates") as? [String: Double] ?? [:]
+        return raw.mapValues { Date(timeIntervalSince1970: $0) }
     }
 
     // MARK: - Util

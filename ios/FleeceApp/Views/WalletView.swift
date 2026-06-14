@@ -22,6 +22,16 @@ struct WalletView: View {
                     }
                 }
 
+                // Annual fee renewal tracker — only for wallet cards with a fee
+                let feeCards = walletCards.filter { $0.annualFee > 0 }
+                if !feeCards.isEmpty {
+                    Section("Annual Fee Calendar") {
+                        ForEach(feeCards) { card in
+                            RenewalRowView(card: card)
+                        }
+                    }
+                }
+
                 // Suggested cards (detected via Apple Wallet networks) shown first,
                 // then remaining cards — no detection UI exposed to the user.
                 let addSection = appState.suggestedCards + availableCards
@@ -35,6 +45,71 @@ struct WalletView: View {
             }
             .listStyle(.insetGrouped)
             .navigationTitle("Wallet")
+        }
+    }
+}
+
+// MARK: - Renewal Row
+
+struct RenewalRowView: View {
+    let card: CreditCard
+    @EnvironmentObject var appState: AppState
+    @State private var pickerDate: Date = .now
+    @State private var hasDate: Bool = false
+
+    private var daysUntil: Int {
+        guard hasDate else { return 0 }
+        let cal   = Calendar.current
+        let today = cal.startOfDay(for: .now)
+        var next  = cal.startOfDay(for: pickerDate)
+        while next < today {
+            next = cal.date(byAdding: .year, value: 1, to: next)!
+        }
+        return cal.dateComponents([.day], from: today, to: next).day ?? 0
+    }
+
+    var body: some View {
+        HStack {
+            VStack(alignment: .leading, spacing: 2) {
+                Text(card.name)
+                    .font(.subheadline).fontWeight(.medium)
+                if hasDate {
+                    let d = daysUntil
+                    Text(d == 0 ? "Due today" : "\(d) days away")
+                        .font(.caption)
+                        .foregroundStyle(d <= 30 ? .orange : .secondary)
+                } else {
+                    Text("Tap to set renewal date")
+                        .font(.caption)
+                        .foregroundStyle(.secondary)
+                }
+            }
+
+            Spacer()
+
+            if hasDate {
+                DatePicker("", selection: $pickerDate, displayedComponents: .date)
+                    .labelsHidden()
+                    .onChange(of: pickerDate) { _, date in
+                        appState.setRenewalDate(date, for: card)
+                    }
+            } else {
+                Button("Set") {
+                    pickerDate = .now
+                    hasDate    = true
+                    appState.setRenewalDate(.now, for: card)
+                }
+                .font(.caption)
+                .buttonStyle(.bordered)
+                .controlSize(.small)
+            }
+        }
+        .padding(.vertical, 2)
+        .onAppear {
+            if let saved = appState.renewalDate(for: card) {
+                pickerDate = saved
+                hasDate    = true
+            }
         }
     }
 }
