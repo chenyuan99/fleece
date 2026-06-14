@@ -280,6 +280,25 @@ enum CardDatabase {
             isInWallet: false
         ),
 
+        CreditCard(
+            id: UUID(uuidString: "A0000001-0000-0000-0000-000000000017")!,
+            name: "Discover it Cash Back",
+            issuer: "Discover",
+            annualFee: 0,
+            pointsProgram: "Cash Back",
+            pointValueCents: 1.0,
+            categoryMultipliers: [
+                MCCCategory.gas.rawValue:           5,
+                MCCCategory.groceries.rawValue:     5,
+                MCCCategory.dining.rawValue:        5,
+                MCCCategory.drugstore.rawValue:     5,
+            ],
+            baseMultiplier: 1,
+            cardColor: "#F76B1C",
+            textColor: "#FFFFFF",
+            isInWallet: false
+        ),
+
         // MARK: - Business Cards
 
         CreditCard(
