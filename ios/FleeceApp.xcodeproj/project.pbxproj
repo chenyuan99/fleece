@@ -13,6 +13,7 @@
 		26EAE12A2BBC945D4C550890 /* WalletDetectionService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 421B143C13EC925B409964E3 /* WalletDetectionService.swift */; };
 		28DD764E157DE5E0E7F784E0 /* FleeceWidget.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 3B604758D7A904F6FE1FE122 /* FleeceWidget.appex */; settings = {ATTRIBUTES = (CodeSignOnCopy, RemoveHeadersOnCopy, ); }; };
 		295016FCF109574F2F37A284 /* AskView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9BD936D99063C9DA8B3B55DE /* AskView.swift */; };
+		30BC3514C0AD635B1B2DA38D /* FeeCalendarWidgetData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3F1C38D95CDE2B2F0C462BDA /* FeeCalendarWidgetData.swift */; };
 		3B87CF9F384D042593119BAC /* CardDatabase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84525AB21DF76636B0AFC0B5 /* CardDatabase.swift */; };
 		405B50C34B02F69B2AC1F780 /* FleeceApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = FE1826DC93917C0B0B3EF296 /* FleeceApp.swift */; };
 		4C92A100EC8FB9B4313F3B34 /* FleeceWidgetData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54D481497856B9BD1BA693A2 /* FleeceWidgetData.swift */; };
@@ -27,6 +28,7 @@
 		A397AA02E9CF09021A4C8B02 /* AppState.swift in Sources */ = {isa = PBXBuildFile; fileRef = 703BF2836D6238B002869015 /* AppState.swift */; };
 		AFE04A07880B524D9183945D /* NearbyPlace.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F187A4598F6D209993AC22C /* NearbyPlace.swift */; };
 		B57F8DD66FDD8C0711E27D3B /* Recommendation.swift in Sources */ = {isa = PBXBuildFile; fileRef = A14D8916A38C72FE58C7F85A /* Recommendation.swift */; };
+		B76BFF06AFF548EC998D10D7 /* FeeCalendarWidgetData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3F1C38D95CDE2B2F0C462BDA /* FeeCalendarWidgetData.swift */; };
 		B9B17402C400AC33300E7E97 /* CardExplanationService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7682486A135077BAE1B30D71 /* CardExplanationService.swift */; };
 		BB70CF6EDE3084FE58378024 /* NotificationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F0F4AC23D675E1415DB4B6B /* NotificationManager.swift */; };
 		C0A5988803B897F2948A8932 /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E1574A163081F73D8004D7C8 /* SettingsView.swift */; };
@@ -73,6 +75,7 @@
 		2B940D56E7DAE6767D1B5952 /* PlacesService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlacesService.swift; sourceTree = "<group>"; };
 		37ECE2F59AB406D9AB432C6E /* FleeceWidget.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FleeceWidget.swift; sourceTree = "<group>"; };
 		3B604758D7A904F6FE1FE122 /* FleeceWidget.appex */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = "wrapper.app-extension"; path = FleeceWidget.appex; sourceTree = BUILT_PRODUCTS_DIR; };
+		3F1C38D95CDE2B2F0C462BDA /* FeeCalendarWidgetData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeeCalendarWidgetData.swift; sourceTree = "<group>"; };
 		421B143C13EC925B409964E3 /* WalletDetectionService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WalletDetectionService.swift; sourceTree = "<group>"; };
 		45FE76A687A76480310D39FA /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; path = PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
 		54D481497856B9BD1BA693A2 /* FleeceWidgetData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FleeceWidgetData.swift; sourceTree = "<group>"; };
@@ -140,6 +143,7 @@
 			children = (
 				B3D19C4B82DDA34743959D95 /* ChatMessage.swift */,
 				A529343561E11E145A0547A4 /* CreditCard.swift */,
+				3F1C38D95CDE2B2F0C462BDA /* FeeCalendarWidgetData.swift */,
 				54D481497856B9BD1BA693A2 /* FleeceWidgetData.swift */,
 				BD349E07A432AB028C10E2FD /* MCCCategory.swift */,
 				7F187A4598F6D209993AC22C /* NearbyPlace.swift */,
@@ -315,6 +319,7 @@
 				F124CDAD193AB5EDD27D24D7 /* Config.swift in Sources */,
 				908728529B78523F2F3A9BA9 /* ContentView.swift in Sources */,
 				1C421BBC5ADB84E3F2B3C903 /* CreditCard.swift in Sources */,
+				B76BFF06AFF548EC998D10D7 /* FeeCalendarWidgetData.swift in Sources */,
 				405B50C34B02F69B2AC1F780 /* FleeceApp.swift in Sources */,
 				4C92A100EC8FB9B4313F3B34 /* FleeceWidgetData.swift in Sources */,
 				CE6DE7FB4B5B30A91ECE5549 /* HomeView.swift in Sources */,
@@ -337,6 +342,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				30BC3514C0AD635B1B2DA38D /* FeeCalendarWidgetData.swift in Sources */,
 				614CD32EA980D6B2D6D4971B /* FleeceWidget.swift in Sources */,
 				52115954F67280B10F178ACF /* FleeceWidgetData.swift in Sources */,
 			);

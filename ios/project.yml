@@ -73,6 +73,7 @@ targets:
     sources:
       - path: FleeceWidget
       - path: FleeceApp/Models/FleeceWidgetData.swift
+      - path: FleeceApp/Models/FeeCalendarWidgetData.swift
     info:
       path: FleeceWidget/Info.plist
       properties:
