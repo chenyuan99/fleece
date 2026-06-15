@@ -28,6 +28,9 @@ final class AppState: ObservableObject {
     @Published var detectedNetworks: Set<PKPaymentNetwork> = []
     @Published var suggestedCards: [CreditCard] = []
 
+    // Annual fee renewal dates — keyed by card UUID string
+    @Published var renewalDates: [String: Date] = [:]
+
     enum Tab: Hashable { case home, wallet, ask, settings }
 
     private let placesService = PlacesService()
@@ -36,6 +39,7 @@ final class AppState: ObservableObject {
 
     init() {
         cards = loadWallet()
+        renewalDates = loadRenewalDates()
         runWalletDetection()
     }
 
@@ -128,6 +132,7 @@ final class AppState: ObservableObject {
             }
         }
         runWalletDetection()
+        saveFeeCalendarWidgetData()
     }
 
     private func saveWidgetData(recommendation: CardRecommendation) {
@@ -159,6 +164,59 @@ final class AppState: ObservableObject {
             c.isInWallet = walletIDs.contains(card.id.uuidString)
             return c
         }
+    }
+
+    // MARK: - Renewal dates
+
+    func renewalDate(for card: CreditCard) -> Date? {
+        renewalDates[card.id.uuidString]
+    }
+
+    func setRenewalDate(_ date: Date?, for card: CreditCard) {
+        if let date {
+            renewalDates[card.id.uuidString] = date
+        } else {
+            renewalDates.removeValue(forKey: card.id.uuidString)
+        }
+        persistRenewalDates()
+        saveFeeCalendarWidgetData()
+    }
+
+    private func persistRenewalDates() {
+        let raw = renewalDates.mapValues { $0.timeIntervalSince1970 }
+        UserDefaults.standard.set(raw, forKey: "fleeceRenewalDates")
+    }
+
+    func saveFeeCalendarWidgetData() {
+        let cal   = Calendar.current
+        let today = cal.startOfDay(for: .now)
+        let items: [FeeCalendarWidgetData.RenewalItem] = cards
+            .filter { $0.isInWallet && $0.annualFee > 0 }
+            .compactMap { card in
+                guard let date = renewalDates[card.id.uuidString] else { return nil }
+                var next = cal.startOfDay(for: date)
+                while next < today {
+                    next = cal.date(byAdding: .year, value: 1, to: next)!
+                }
+                let days = cal.dateComponents([.day], from: today, to: next).day ?? 0
+                return FeeCalendarWidgetData.RenewalItem(
+                    cardName:        card.name,
+                    cardColor:       card.cardColor,
+                    textColor:       card.textColor,
+                    annualFee:       card.annualFee,
+                    nextRenewalDate: next,
+                    daysUntil:       days
+                )
+            }
+            .sorted { $0.daysUntil < $1.daysUntil }
+
+        FeeCalendarWidgetData(renewals: items, updatedAt: .now).save()
+        WidgetCenter.shared.reloadTimelines(ofKind: "FeeCalendarWidget")
+    }
+
+    private func loadRenewalDates() -> [String: Date] {
+        let raw = UserDefaults.standard.dictionary(forKey: "fleeceRenewalDates") as? [String: Double] ?? [:]
+        return raw.mapValues { Date(timeIntervalSince1970: $0) }
     }
 
     // MARK: - Util

@@ -1,6 +1,6 @@
 import Foundation
 
-// Hard-coded card data for 9 major US cards.
+// Hard-coded card data for major US cards.
 // Multipliers reflect published category bonuses as of mid-2025.
 // Point values are conservative mid-market estimates (TPG/NerdWallet baseline).
 enum CardDatabase {
@@ -249,6 +249,52 @@ enum CardDatabase {
             ],
             baseMultiplier: 1,
             cardColor: "#C0392B",
+            textColor: "#FFFFFF",
+            isInWallet: false
+        ),
+
+        CreditCard(
+            id: UUID(uuidString: "A0000001-0000-0000-0000-000000000015")!,
+            name: "Robinhood Gold Card",
+            issuer: "Robinhood",
+            annualFee: 50,
+            pointsProgram: "Cash Back",
+            pointValueCents: 1.0,
+            categoryMultipliers: [:],
+            baseMultiplier: 3,
+            cardColor: "#C8A400",
+            textColor: "#000000",
+            isInWallet: false
+        ),
+        CreditCard(
+            id: UUID(uuidString: "A0000001-0000-0000-0000-000000000016")!,
+            name: "Active Cash",
+            issuer: "Wells Fargo",
+            annualFee: 0,
+            pointsProgram: "Cash Back",
+            pointValueCents: 1.0,
+            categoryMultipliers: [:],
+            baseMultiplier: 2,
+            cardColor: "#CC0000",
+            textColor: "#FFFFFF",
+            isInWallet: false
+        ),
+
+        CreditCard(
+            id: UUID(uuidString: "A0000001-0000-0000-0000-000000000017")!,
+            name: "Discover it Cash Back",
+            issuer: "Discover",
+            annualFee: 0,
+            pointsProgram: "Cash Back",
+            pointValueCents: 1.0,
+            categoryMultipliers: [
+                MCCCategory.gas.rawValue:           5,
+                MCCCategory.groceries.rawValue:     5,
+                MCCCategory.dining.rawValue:        5,
+                MCCCategory.drugstore.rawValue:     5,
+            ],
+            baseMultiplier: 1,
+            cardColor: "#F76B1C",
             textColor: "#FFFFFF",
             isInWallet: false
         ),

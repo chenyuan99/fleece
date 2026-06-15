@@ -715,6 +715,7 @@ def cards_list(
 def cards_add(
     name:       Annotated[str, typer.Argument(help="Card name to add.")],
     annual_fee: Annotated[str, typer.Option("--fee", help="Annual fee (e.g. $95).")] = "$0",
+    fee_date:   Annotated[Optional[str], typer.Option("--fee-date", help="Annual fee renewal date as MM-DD (e.g. 01-15).")] = None,
     as_json:    JsonOpt = False,
 ):
     """Add a card to your wallet.
@@ -723,7 +724,7 @@ def cards_add(
     fleece recommend, and fleece roi.
 
     Examples:
-      fleece cards add "Chase Sapphire Preferred" --fee "$95"
+      fleece cards add "Chase Sapphire Preferred" --fee "$95" --fee-date 03-20
       fleece cards add "Amex Gold" --fee "$250"
       fleece cards add "Citi Double Cash"
     """
@@ -733,6 +734,7 @@ def cards_add(
         "name": name,
         "annual_fee": annual_fee,
         "date_added": datetime.date.today().isoformat(),
+        "fee_date": fee_date or "",
     }
     try:
         db.add_card(new_card)
@@ -774,6 +776,108 @@ def cards_remove(
         typer.echo(json.dumps({"command": "cards remove", "removed": removed["name"], "ok": True, "error": None}))
     else:
         typer.echo(f'Removed "{removed["name"]}" from your profile. ({remaining} card(s) remaining)')
+
+
+@cards_app.command("renewal")
+def cards_renewal(
+    days:    Annotated[int,  typer.Option("--days", "-d", help="Only show renewals within N days (0 = all).")] = 0,
+    as_json: JsonOpt = False,
+):
+    """Show upcoming annual fee renewal schedule, sorted by days remaining.
+
+    Cards without a fee date set are listed separately at the bottom.
+    Use --days N to narrow the view (e.g. --days 60 for next two months).
+    Set a fee date with: fleece cards fee-date "<card>" MM-DD
+
+    Examples:
+      fleece cards renewal
+      fleece cards renewal --days 90
+      fleece cards renewal --json
+    """
+    import db
+    all_cards = db.get_cards()
+    if not all_cards:
+        if as_json:
+            typer.echo(json.dumps({"command": "renewal", "schedule": [], "no_date_set": [], "ok": True, "error": None}))
+        else:
+            typer.echo("No cards in wallet. Add one with: fleece cards add \"<card name>\"")
+        return
+
+    full_schedule = db.get_renewal_schedule()
+    schedule = [c for c in full_schedule if c["days_until"] <= days] if days > 0 else full_schedule
+    no_date  = [c for c in all_cards if not c.get("fee_date")]
+
+    if as_json:
+        typer.echo(json.dumps({
+            "command":     "renewal",
+            "schedule":    schedule,
+            "no_date_set": [c["name"] for c in no_date],
+            "ok":          True,
+            "error":       None,
+        }))
+        return
+
+    if schedule:
+        typer.echo("\nUpcoming annual fee renewals:\n")
+        typer.echo(f"  {'Date':<12}  {'Days':>6}  {'Card':<40}  Fee")
+        typer.echo("  " + "-" * 72)
+        for card in schedule:
+            days_str = "TODAY" if card["days_until"] == 0 else f"{card['days_until']}d"
+            fee_str  = card.get("annual_fee", "N/A")
+            typer.echo(f"  {card['next_renewal']:<12}  {days_str:>6}  {card['name']:<40}  {fee_str}")
+    else:
+        typer.echo("No upcoming renewals found.")
+
+    if no_date:
+        typer.echo(f"\n{len(no_date)} card(s) without a fee date:")
+        for c in no_date:
+            typer.echo(f"  - {c['name']}")
+        typer.echo("\n  Set one with: fleece cards fee-date \"<card>\" MM-DD")
+
+
+@cards_app.command("fee-date")
+def cards_fee_date(
+    name:    Annotated[str, typer.Argument(help="Card name (partial match OK).")],
+    date:    Annotated[str, typer.Argument(help="Annual fee renewal date as MM-DD (e.g. 01-15 for Jan 15).")],
+    as_json: JsonOpt = False,
+):
+    """Set the annual fee renewal date for a card (MM-DD format).
+
+    The date repeats each year. Use 'fleece cards renewal' to see the full schedule.
+
+    Examples:
+      fleece cards fee-date "Amex Gold" 01-15
+      fleece cards fee-date "Chase Sapphire" 03-20
+      fleece cards fee-date "sapphire" 06-01 --json
+    """
+    import datetime
+    import re
+    import db
+
+    if not re.match(r"^\d{2}-\d{2}$", date):
+        _error_exit("Date must be MM-DD format (e.g. 01-15 for Jan 15).", code=1)
+    try:
+        month, day = map(int, date.split("-"))
+        datetime.date(2024, month, day)
+    except ValueError:
+        _error_exit(f'Invalid date "{date}". Use MM-DD format (e.g. 01-15).', code=1)
+
+    all_cards = db.get_cards()
+    matches   = [c for c in all_cards if name.lower() in c["name"].lower()]
+    if not matches:
+        _error_exit(f'No card matching "{name}". Add it with: fleece cards add "<name>"', code=1)
+    if len(matches) > 1:
+        names = ", ".join(f'"{c["name"]}"' for c in matches)
+        _error_exit(f"Ambiguous match — found {names}. Be more specific.", code=1)
+
+    card = matches[0]
+    db.update_card(card["name"], {"fee_date": date})
+
+    if as_json:
+        typer.echo(json.dumps({"command": "fee-date", "card": card["name"], "fee_date": date, "ok": True, "error": None}))
+    else:
+        typer.echo(f'Set fee renewal date for "{card["name"]}" to {date}.')
+        typer.echo("Run 'fleece cards renewal' to see your full schedule.")
 
 
 # ---------------------------------------------------------------------------
