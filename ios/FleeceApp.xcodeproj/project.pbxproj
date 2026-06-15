@@ -74,7 +74,7 @@
 		23B438EF779764E83E4A1ACB /* ChatTools.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChatTools.swift; sourceTree = "<group>"; };
 		2B940D56E7DAE6767D1B5952 /* PlacesService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlacesService.swift; sourceTree = "<group>"; };
 		37ECE2F59AB406D9AB432C6E /* FleeceWidget.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FleeceWidget.swift; sourceTree = "<group>"; };
-		3B604758D7A904F6FE1FE122 /* FleeceWidget.appex */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = "wrapper.app-extension"; path = FleeceWidget.appex; sourceTree = BUILT_PRODUCTS_DIR; };
+		3B604758D7A904F6FE1FE122 /* FleeceWidget.appex */ = {isa = PBXFileReference; explicitFileType = "wrapper.app-extension"; includeInIndex = 0; path = FleeceWidget.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		3F1C38D95CDE2B2F0C462BDA /* FeeCalendarWidgetData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FeeCalendarWidgetData.swift; sourceTree = "<group>"; };
 		421B143C13EC925B409964E3 /* WalletDetectionService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WalletDetectionService.swift; sourceTree = "<group>"; };
 		45FE76A687A76480310D39FA /* PrivacyInfo.xcprivacy */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = PrivacyInfo.xcprivacy; sourceTree = "<group>"; };
@@ -264,7 +264,6 @@
 						ProvisioningStyle = Automatic;
 					};
 					6FA3017C01BE38CA4F62C6E4 = {
-						DevelopmentTeam = UHR6VA2R4D;
 						ProvisioningStyle = Automatic;
 					};
 				};
@@ -424,7 +423,7 @@
 				CODE_SIGN_ENTITLEMENTS = FleeceWidget/FleeceWidget.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 2;
-				DEVELOPMENT_TEAM = UHR6VA2R4D;
+				DEVELOPMENT_TEAM = 982H87JFFG;
 				INFOPLIST_FILE = FleeceWidget/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = "Fleece Widget";
 				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
@@ -473,7 +472,7 @@
 				CODE_SIGN_ENTITLEMENTS = FleeceWidget/FleeceWidget.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 2;
-				DEVELOPMENT_TEAM = UHR6VA2R4D;
+				DEVELOPMENT_TEAM = 982H87JFFG;
 				ENABLE_TESTABILITY = NO;
 				INFOPLIST_FILE = FleeceWidget/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = "Fleece Widget";
