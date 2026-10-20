@@ -75,6 +75,32 @@ struct HomeView: View {
     @ViewBuilder
     private var overlayLayer: some View {
         VStack(spacing: 0) {
+            if appState.currentPlace == nil && appState.recommendations.isEmpty && !appState.isSearching {
+                VStack(alignment: .leading, spacing: 10) {
+                    Image("SheepD2")
+                        .resizable()
+                        .scaledToFit()
+                        .frame(width: 72, height: 72)
+                        .clipShape(RoundedRectangle(cornerRadius: 20))
+                        .accessibilityHidden(true)
+                    Label("Make every swipe count", systemImage: "sparkles")
+                        .font(.headline)
+                    Text("Tap a place on the map to find the right card for your next purchase.")
+                        .font(.subheadline)
+                        .foregroundStyle(.secondary)
+                    Button {
+                        appState.selectedTab = .wallet
+                    } label: {
+                        Label("Review your wallet", systemImage: "creditcard.fill")
+                            .font(.subheadline.weight(.semibold))
+                    }
+                    .buttonStyle(.bordered)
+                }
+                .frame(maxWidth: .infinity, alignment: .leading)
+                .padding(20)
+                .background(.regularMaterial, in: RoundedRectangle(cornerRadius: 24))
+                .padding(16)
+            }
             if locationManager.authorizationStatus == .denied ||
                locationManager.authorizationStatus == .restricted {
                 locationDeniedBanner
@@ -82,7 +108,7 @@ struct HomeView: View {
 
             if appState.isSearching {
                 HStack(spacing: 8) {
-                    ProgressView().tint(.black).scaleEffect(0.85)
+                    ProgressView().scaleEffect(0.85)
                     Text("Finding nearby places…")
                         .font(.subheadline).fontWeight(.medium)
                 }
@@ -162,6 +188,8 @@ struct HomeView: View {
                     Image(systemName: "arrow.clockwise")
                 }
             }
+            .disabled(appState.isSearching)
+            .accessibilityLabel("Refresh nearby places")
         }
     }
 }

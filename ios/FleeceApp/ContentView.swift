@@ -31,7 +31,7 @@ struct ContentView: View {
                 .tabItem { Label("Settings", systemImage: "gear") }
                 .tag(AppState.Tab.settings)
         }
-        .tint(.indigo)
+        .tint(Color.primary)
         .preferredColorScheme(preferredColorScheme)
         .sheet(isPresented: $appState.showRecommendationSheet) {
             if let place = appState.currentPlace {
