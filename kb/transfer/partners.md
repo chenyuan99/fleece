@@ -141,6 +141,7 @@ Note: Must make 5 transactions per statement period to earn points (including on
 | Cathay Pacific Asia Miles | 1:1 | Instant | Oneworld premium cabins |
 | Emirates Skywards | 1:1 | Instant | Emirates metal |
 | Iberia Plus | 1:1 | Instant | Avios; transatlantic |
+| JetBlue TrueBlue | 1:1 | Instant | Added Oct 2026. 1,000-pt increments; min 1,000 (2,000 for Blue status). Link TrueBlue first. Best 1:1 JetBlue source alongside Chase/Citi — Amex is 250:200 |
 | Turkish Airlines Miles&Smiles | 1:1 | Instant | Star Alliance business class |
 | United MileagePlus | 1:1 | Instant | Star Alliance |
 | Virgin Atlantic Flying Club | 1:1 | Instant | ANA and Delta |
@@ -173,6 +174,7 @@ These partners appear across multiple programs — useful for identifying which 
 | Cathay Pacific Asia Miles | — | ✓ | — | ✓ | ✓ |
 | Alaska Mileage Plan | — | — | — | — | ✓ |
 | American AAdvantage | — | — | — | — | ✓ |
+| JetBlue TrueBlue | ✓ | ✓ (0.8:1) | ✓ (0.6:1) | ✓ | ✓ |
 | World of Hyatt | ✓ | — | — | — | ✓ |
 | Hilton Honors | — | ✓ (1:2) | — | — | ✓ (1:1) |
 | Marriott Bonvoy | ✓ | ✓ | — | — | ✓ |
