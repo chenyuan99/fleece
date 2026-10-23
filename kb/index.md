@@ -127,7 +127,7 @@ Transfer partners (1:1): Air France/KLM Flying Blue, Avianca LifeMiles, Cathay P
 
 ### Bilt Rewards
 Cards: Bilt Mastercard  
-Transfer partners (1:1): Air Canada Aeroplan, Air France/KLM Flying Blue, Alaska Mileage Plan, American AAdvantage, British Airways Avios, Cathay Pacific Asia Miles, Emirates Skywards, Iberia Avios, Turkish Miles&Smiles, United MileagePlus, Virgin Atlantic; Hyatt (1:1), IHG (1:1), Marriott (1:1), Hilton (1:1)  
+Transfer partners (1:1): Air Canada Aeroplan, Air France/KLM Flying Blue, Alaska Mileage Plan, American AAdvantage, British Airways Avios, Cathay Pacific Asia Miles, Emirates Skywards, Iberia Avios, JetBlue TrueBlue, Turkish Miles&Smiles, United MileagePlus, Virgin Atlantic; Hyatt (1:1), IHG (1:1), Marriott (1:1), Hilton (1:1)  
 Note: Rent Day (1st of each month) doubles earn rates for 24 hours.
 
 ### Airline/Hotel Currencies (non-transferable out)

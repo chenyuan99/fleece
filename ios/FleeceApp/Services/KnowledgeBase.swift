@@ -80,6 +80,7 @@ enum KnowledgeBase {
             Partner("Cathay Pacific Asia Miles",    "1:1", "Instant"),
             Partner("Emirates Skywards",             "1:1", "Instant"),
             Partner("Iberia Plus",                  "1:1", "Instant"),
+            Partner("JetBlue TrueBlue",             "1:1", "Instant",   note: "Added Oct 2026; 1,000-pt increments, 2,000 min for Blue status; link TrueBlue first"),
             Partner("Turkish Miles&Smiles",         "1:1", "Instant"),
             Partner("United MileagePlus",           "1:1", "Instant"),
             Partner("Virgin Atlantic Flying Club",  "1:1", "Instant",   note: "ANA and Delta One"),
